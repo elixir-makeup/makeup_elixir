@@ -1,0 +1,4 @@
+%{
+  "assert_value": {:hex, :assert_value, "0.8.2", "8aff2e2fc7906b842a5fac3077a5ae8d44d65c20894c9e63a2b2e175ec24c5bd", [], [], "hexpm"},
+  "nimble_parsec": {:hex, :nimble_parsec, "0.2.0", "2bc5fe62df3f3c3835a181bde714d505474bb03d1edd6d411ad0bb8c052e4c48", [], [], "hexpm"},
+}

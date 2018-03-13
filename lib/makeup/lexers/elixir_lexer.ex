@@ -1,8 +1,18 @@
+defmodule Makeup.Lexers.ElixirLexer.Helper do
+  @moduledoc false
+  import NimbleParsec
+
+  def with_optional_separator(combinator, separator) when is_binary(separator) do
+    combinator |> repeat(string(separator) |> concat(combinator))
+  end
+end
+
 defmodule Makeup.Lexers.ElixirLexer do
   import NimbleParsec
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
   alias Makeup.Lexer.Postprocess
+  import Makeup.Lexers.ElixirLexer.Helper
 
   ###################################################################
   # Step #1: tokenize the input (into a list of tokens)
@@ -12,9 +22,9 @@ defmodule Makeup.Lexers.ElixirLexer do
   # We'll adopt the following convention:
   #
   # 1. A combinator that ends with `_name` returns a string
-  # 2. Other combinators return a token
+  # 2. Other combinators will usually return a token
   #
-  # Why this convention? Tokens can't be composed firther, while raw strings can.
+  # Why this convention? Tokens can't be composed forther, while raw strings can.
   # This way, we immediately know which of the combinators we can compose.
   # TODO: check we're following this convention
   # NOTE: if Elixir had a good static type system it would hep us do the right thing here.
@@ -22,6 +32,44 @@ defmodule Makeup.Lexers.ElixirLexer do
   whitespace = token(ascii_string([?\s, ?\n], min: 1), :whitespace)
 
   any_char = token(utf8_string([], 1), :error)
+
+  # Numbers
+  digits = ascii_string([?0..?9], min: 1)
+  bin_digits = ascii_string([?0..?1], min: 1)
+  hex_digits = ascii_string([?0..?9, ?a..?f, ?A..?F], min: 1)
+  oct_digits = ascii_string([?0..?7], min: 1)
+  # Digits in an integer may be separated by underscores
+  number_bin_part = lexeme(with_optional_separator(bin_digits, "_"))
+  number_oct_part = lexeme(with_optional_separator(oct_digits, "_"))
+  number_hex_part = lexeme(with_optional_separator(hex_digits, "_"))
+  integer = lexeme(with_optional_separator(digits, "_"))
+
+  #
+  number_bin = token(string("0b") |> concat(number_bin_part), :number_bin)
+  number_hex = token(string("0x") |> concat(number_oct_part), :number_hex)
+  number_oct = token(string("0o") |> concat(number_hex_part), :number_oct)
+  # Base 10
+  number_integer = token(integer, :number_integer)
+
+
+  # An IEx prompt is supported in the normal Elixir lexer because false positives
+  # would be extremely rare
+  iex_prompt_continuation = string("...>")
+  iex_prompt_first_line =
+    lexeme(
+      string("iex")
+      |> optional(string("(") |> concat(digits) |> string(")"))
+      |> string(">"))
+
+  iex_prompt =
+    token(
+      choice([
+        iex_prompt_first_line,
+        iex_prompt_continuation
+      ]),
+      :generic_prompt,
+      %{selectable: false}
+    )
 
   # Yes, Elixir supports much more than this.
   # TODO: adapt the code from the official tokenizer, which parses the unicode database
@@ -62,6 +110,10 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   special_atom_name =
     word_from_list(~W(... <<>> %{} %{ % {}))
+
+  triple_colon = token(":::", :operator)
+  double_colon = token("::", :operator)
+  triple_dot = token("...", :name)
 
   _complex_name =
     choice([
@@ -122,6 +174,8 @@ defmodule Makeup.Lexers.ElixirLexer do
       whitespace,
       # Comments
       inline_comment,
+      # IEx prompt must come before names
+      iex_prompt,
       # Matching delimiters
       struct,
       parentheses,
@@ -131,10 +185,18 @@ defmodule Makeup.Lexers.ElixirLexer do
       list,
       # Attributes
       attribute,
+      # Triple dot (must come before operators)
+      triple_dot,
       # Operators
       operator,
-      # Numbers (in several bases)
-      # TODO: ...
+      # Numbers
+      number_bin,
+      number_oct,
+      number_hex,
+      number_integer,
+      # Some operators (must come before the atoms)
+      triple_colon,
+      double_colon,
       # Atoms
       special_atom,
       normal_atom,
@@ -282,10 +344,8 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   # Finally, the public API for the lexer
 
-  defp random_prefix(), do: Enum.map(1..8, fn _ -> Enum.random(?0..?9) end) |> to_string
-
   def lex(text, opts \\ []) do
-    group_prefix = Keyword.get(opts, :group_prefix, random_prefix())
+    group_prefix = Keyword.get(opts, :group_prefix, random_prefix(10))
     {:ok, tokens, "", _, _, _} = root(text)
 
     tokens |> postprocess |> group_matcher(group_prefix)

@@ -1,22 +1,22 @@
 defmodule Makeup.Lexer.Groups do
-  def make_match([] = _patterns, _varnames, rest_of_tokens_varname) do
+  defp make_match([] = _patterns, _varnames, rest_of_tokens_varname) do
     quote do
       unquote(Macro.var(rest_of_tokens_varname, __MODULE__))
     end
   end
 
-  def make_match([pattern | patterns], [varname | varnames], rest_of_tokens_varname) do
+  defp make_match([pattern | patterns], [varname | varnames], rest_of_tokens_varname) do
     var = Macro.var(varname, __MODULE__)
     quote do
       [unquote(pattern) = unquote(var) | unquote(make_match(patterns, varnames, rest_of_tokens_varname))]
     end
   end
 
-  def put_group_ids([], _group_id_varname) do
+  defp put_group_ids([], _group_id_varname) do
     quote(do: [])
   end
 
-  def put_group_ids(tokens, group_id_varname) do
+  defp put_group_ids(tokens, group_id_varname) do
     group_id = Macro.var(group_id_varname, __MODULE__)
 
     for {ttype_varname, attr_varname, text_varname} <- tokens do
@@ -40,7 +40,7 @@ defmodule Makeup.Lexer.Groups do
     end
   end
 
-  def open_branch(stack_name, pattern, group_prefix_varname, group_nr_varname) do
+  defp open_branch(stack_name, pattern, group_prefix_varname, group_nr_varname) do
     group_nr = Macro.var(group_nr_varname, __MODULE__)
     group_prefix = Macro.var(group_prefix_varname, __MODULE__)
     group_id = Macro.var(:group_id, __MODULE__)
@@ -83,7 +83,7 @@ defmodule Makeup.Lexer.Groups do
     end
   end
 
-  def close_branch(stack_name, pattern, group_prefix_varname, group_nr_varname) do
+  defp close_branch(stack_name, pattern, group_prefix_varname, group_nr_varname) do
     group_nr = Macro.var(group_nr_varname, __MODULE__)
     group_prefix = Macro.var(group_prefix_varname, __MODULE__)
     group_id = Macro.var(:group_id, __MODULE__)
@@ -128,7 +128,7 @@ defmodule Makeup.Lexer.Groups do
     end
   end
 
-  def middle_branch(stack_name, pattern, group_prefix_varname, group_nr_varname) do
+  defp middle_branch(stack_name, pattern, group_prefix_varname, group_nr_varname) do
     group_nr = Macro.var(group_nr_varname, __MODULE__)
 
     group_prefix = Macro.var(group_prefix_varname, __MODULE__)
@@ -174,7 +174,7 @@ defmodule Makeup.Lexer.Groups do
     end
   end
 
-  def branches_for_stack({stack_name, parts}) do
+  defp branches_for_stack({stack_name, parts}) do
     open_patterns = Keyword.fetch!(parts, :open)
     middle_patterns = Keyword.get(parts, :middle, [])
     close_patterns = Keyword.fetch!(parts, :close)
@@ -253,4 +253,6 @@ defmodule Makeup.Lexer.Groups do
 
     expr
   end
+
+  def random_prefix(n), do: Enum.map(1..n, fn _ -> Enum.random(?0..?9) end) |> to_string
 end

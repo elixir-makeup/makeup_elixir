@@ -115,6 +115,24 @@ defmodule Makeup.Lexers.ElixirLexer do
   double_colon = token("::", :operator)
   triple_dot = token("...", :name)
 
+  anon_function_arguments =
+    token(
+      lexeme(
+        string("&") |> concat(digits)),
+    :name_entity)
+
+  defparsec :xxx, anon_function_arguments
+
+  normal_char =
+    token(
+      lexeme(string("?") |> utf8_string([], 1)),
+    :string_char)
+
+  escape_char =
+    token(
+      lexeme(string("?\\") |> utf8_string([], 1)),
+    :string_char)
+
   _complex_name =
     choice([
       variable_name,
@@ -158,7 +176,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   binary = many_surrounded_by(parsec(:root_element), "<<", ">>")
   struct = many_surrounded_by(
     parsec(:root_element),
-    token("%", :punctuation) |> concat(module) |> token("{", :punctuation),
+    token("%", :punctuation) |> concat(module) |> concat(token("{", :punctuation)),
     token("}", :punctuation)
   )
 
@@ -176,6 +194,19 @@ defmodule Makeup.Lexers.ElixirLexer do
       inline_comment,
       # IEx prompt must come before names
       iex_prompt,
+      # Chars
+      escape_char,
+      normal_char,
+      # Some operators (must come before the atoms)
+      triple_colon,
+      double_colon,
+      # Atoms
+      special_atom,
+      normal_atom,
+      # Module attributes
+      attribute,
+      # Anonymous function arguments (must come before the operators)
+      anon_function_arguments,
       # Matching delimiters
       struct,
       parentheses,
@@ -183,8 +214,6 @@ defmodule Makeup.Lexers.ElixirLexer do
       tuple,
       binary,
       list,
-      # Attributes
-      attribute,
       # Triple dot (must come before operators)
       triple_dot,
       # Operators
@@ -193,13 +222,9 @@ defmodule Makeup.Lexers.ElixirLexer do
       number_bin,
       number_oct,
       number_hex,
+      # Floats must come before integers
+      # float, # TODO
       number_integer,
-      # Some operators (must come before the atoms)
-      triple_colon,
-      double_colon,
-      # Atoms
-      special_atom,
-      normal_atom,
       # Names
       variable,
       unused_variable,

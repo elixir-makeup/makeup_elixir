@@ -14,11 +14,11 @@ defmodule Makeup.Lexer.Combinators do
     map(combinator, {Makeup.Lexer.Combinators, :__token__, [token_type]})
   end
 
-  def token(literal, token_type, attrs) when is_binary(literal) do
+  def token(literal, token_type, attrs) when is_binary(literal) and is_map(attrs) do
     replace(string(literal), {token_type, attrs, literal})
   end
 
-  def token(combinator, token_type, attrs) do
+  def token(combinator, token_type, attrs) when is_map(attrs) do
     map(combinator, {Makeup.Lexer.Combinators, :__token__, [token_type, attrs]})
   end
 
@@ -36,7 +36,7 @@ defmodule Makeup.Lexer.Combinators do
 
   @doc false
   def __token__(text, token_type, attrs) do
-    {token_type, text, attrs}
+    {token_type, attrs, text}
   end
 
   @doc false

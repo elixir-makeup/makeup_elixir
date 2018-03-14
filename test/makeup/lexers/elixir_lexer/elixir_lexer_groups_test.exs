@@ -749,13 +749,13 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
 
     test "`{...}` + `%Struct{...}`" do
       assert ElixirLexer.lex("{%Struct{x}}", group_prefix: "group") == [
-        {:error, %{}, "{"},
-        {"{", {:punctuation, %{}, "%"}, :punctuation},
-        {"{", {:name_class, %{}, "Struct"}, :punctuation},
         {:punctuation, %{group_id: "group-1"}, "{"},
+        {:punctuation, %{group_id: "group-2"}, "%"},
+        {:name_class, %{group_id: "group-2"}, "Struct"},
+        {:punctuation, %{group_id: "group-2"}, "{"},
         {:name, %{}, "x"},
-        {:punctuation, %{group_id: "group-1"}, "}"},
-        {:punctuation, %{}, "}"}
+        {:punctuation, %{group_id: "group-2"}, "}"},
+        {:punctuation, %{group_id: "group-1"}, "}"}
       ]
     end
 
@@ -853,14 +853,13 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
 
     test "`%{...}` + `%Struct{...}`" do
       assert ElixirLexer.lex("%{%Struct{x}}", group_prefix: "group") == [
-        {:punctuation, %{}, "%"},
-        {:error, %{}, "{"},
-        {"{", {:punctuation, %{}, "%"}, :punctuation},
-        {"{", {:name_class, %{}, "Struct"}, :punctuation},
-        {:punctuation, %{group_id: "group-1"}, "{"},
+        {:punctuation, %{group_id: "group-1"}, "%{"},
+        {:punctuation, %{group_id: "group-2"}, "%"},
+        {:name_class, %{group_id: "group-2"}, "Struct"},
+        {:punctuation, %{group_id: "group-2"}, "{"},
         {:name, %{}, "x"},
-        {:punctuation, %{group_id: "group-1"}, "}"},
-        {:punctuation, %{}, "}"}
+        {:punctuation, %{group_id: "group-2"}, "}"},
+        {:punctuation, %{group_id: "group-1"}, "}"}
       ]
     end
 
@@ -972,15 +971,15 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
 
     test "`%Struct{...}` + `%Struct{...}`" do
       assert ElixirLexer.lex("%Struct{%Struct{x}}", group_prefix: "group") == [
-        {:punctuation, %{}, "%"},
-        {:name_class, %{}, "Struct"},
-        {:error, %{}, "{"},
-        {"{", {:punctuation, %{}, "%"}, :punctuation},
-        {"{", {:name_class, %{}, "Struct"}, :punctuation},
+        {:punctuation, %{group_id: "group-1"}, "%"},
+        {:name_class, %{group_id: "group-1"}, "Struct"},
         {:punctuation, %{group_id: "group-1"}, "{"},
+        {:punctuation, %{group_id: "group-2"}, "%"},
+        {:name_class, %{group_id: "group-2"}, "Struct"},
+        {:punctuation, %{group_id: "group-2"}, "{"},
         {:name, %{}, "x"},
-        {:punctuation, %{group_id: "group-1"}, "}"},
-        {:punctuation, %{}, "}"}
+        {:punctuation, %{group_id: "group-2"}, "}"},
+        {:punctuation, %{group_id: "group-1"}, "}"}
       ]
     end
 

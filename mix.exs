@@ -22,7 +22,7 @@ defmodule MakeupElixir.Mixfile do
   defp deps do
     [
       {:nimble_parsec, "~> 0.2.2"},
-      {:makeup, path: "../makeup"},
+      {:makeup, "~> 0.4.0"},
       {:benchee, "~> 0.12.1", only: [:test, :dev]}
     ]
   end

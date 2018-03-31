@@ -1,8 +1,6 @@
 %{
-  "assert_value": {:hex, :assert_value, "0.8.2", "8aff2e2fc7906b842a5fac3077a5ae8d44d65c20894c9e63a2b2e175ec24c5bd", [], [], "hexpm"},
-  "benchee": {:hex, :benchee, "0.12.1", "1286a79bab2f1899220134daf9a695586af00ea71968e6cd89d3d3afdf7cecba", [], [{:deep_merge, "~> 0.1", [hex: :deep_merge, repo: "hexpm", optional: false]}], "hexpm"},
-  "deep_merge": {:hex, :deep_merge, "0.1.1", "c27866a7524a337b6a039eeb8dd4f17d458fd40fbbcb8c54661b71a22fffe846", [], [], "hexpm"},
-  "exprintf": {:hex, :exprintf, "0.2.1", "b7e895dfb00520cfb7fc1671303b63b37dc3897c59be7cbf1ae62f766a8a0314", [], [], "hexpm"},
-  "exprof": {:hex, :exprof, "0.2.2", "19fead375683f959b45b11dd30d2c48143347970aeabd05b2dde05c50d1f63dc", [], [{:exprintf, "~> 0.2", [hex: :exprintf, repo: "hexpm", optional: false]}], "hexpm"},
+  "benchee": {:hex, :benchee, "0.12.1", "1286a79bab2f1899220134daf9a695586af00ea71968e6cd89d3d3afdf7cecba", [:mix], [{:deep_merge, "~> 0.1", [hex: :deep_merge, repo: "hexpm", optional: false]}], "hexpm"},
+  "deep_merge": {:hex, :deep_merge, "0.1.1", "c27866a7524a337b6a039eeb8dd4f17d458fd40fbbcb8c54661b71a22fffe846", [:mix], [], "hexpm"},
+  "makeup": {:hex, :makeup, "0.4.0", "fe516d00ca9bc8a0ea9e249a6cd857789f738ae242cf8ccd8f0b6fc6b624b7be", [], [{:nimble_parsec, "~> 0.2.2", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm"},
   "nimble_parsec": {:hex, :nimble_parsec, "0.2.2", "d526b23bdceb04c7ad15b33c57c4526bf5f50aaa70c7c141b4b4624555c68259", [:mix], [], "hexpm"},
 }

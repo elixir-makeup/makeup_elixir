@@ -1,6 +1,7 @@
 defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
   require EEx
   alias Makeup.Lexers.ElixirLexer
+  alias Makeup.Lexer.Postprocess
 
   def indent(text, n) do
     text
@@ -10,11 +11,29 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
     |> String.trim_leading
   end
 
+  def lex(text) do
+    text
+    |> ElixirLexer.lex(group_prefix: "group")
+    |> Postprocess.token_values_to_binaries()
+  end
+
   EEx.function_from_string :def, :gen_group_test_file, """
   defmodule <%= @name %> do
-    # The tests need to be checked manually!!!
+    # The tests need to be checked manually!!! (remove this line when they've been checked)
     use ExUnit.Case, async: true
     alias Makeup.Lexers.ElixirLexer
+    alias Makeup.Lexer.Postprocess
+
+    # This function has two purposes:
+    # 1. Ensure deterministic lexer output (no random prefix)
+    # 2. Convert the token values into binaries so that the output
+    #    is more obvious on visual inspection
+    #    (iolists are hard to parse by a human)
+    def lex(text) do
+      text
+      |> ElixirLexer.lex(group_prefix: "group")
+      |> Postprocess.token_values_to_binaries()
+    end
 
     describe "all group transitions" do\
   <%= for {name1, fun1} <- @funs do %><%= for {name2, fun2} <- @funs do %>
@@ -23,12 +42,12 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
   <% input = fun1.(fun2.("x"))
      output =
       input
-      |> ElixirLexer.lex(group_prefix: "group")
+      |> lex()
       |> inspect
       |> Code.format_string!
       |> Enum.join
       |> indent(6) %>
-        assert ElixirLexer.lex(<%= inspect input %>, group_prefix: "group") == <%= output %>
+        assert lex(<%= inspect input %>) == <%= output %>
       end<% end %><% end %>
     end
   end
@@ -44,6 +63,7 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
       {"{...}", fn s -> "{#{s}}" end},
       {"%{...}", fn s -> "%{#{s}}" end},
       {"%Struct{...}", fn s -> "%Struct{#{s}}" end},
+      {"#OpaqueStruct<...>", fn s -> "#Struct<#{s}>" end},
       {"<<...>>", fn s -> "<<#{s}>>" end}
     ]
   end

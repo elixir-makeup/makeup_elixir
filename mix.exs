@@ -21,7 +21,9 @@ defmodule MakeupElixir.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:nimble_parsec, "~> 0.2"}
+      {:nimble_parsec, "~> 0.2.2"},
+      {:makeup, path: "../makeup"},
+      {:benchee, "~> 0.12.1", only: [:test, :dev]}
     ]
   end
 end

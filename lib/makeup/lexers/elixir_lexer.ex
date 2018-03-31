@@ -211,8 +211,8 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   atom =
     choice([
-      normal_atom,
       special_atom,
+      normal_atom,
       string_atom
     ])
 

@@ -8,6 +8,24 @@ defmodule MakeupElixir.Mixfile do
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps()
+      # Package
+      package: package(),
+      description: description()
+    ]
+  end
+
+  defp description do
+    """
+    Elixir lexer for the Makeup syntax highlighter.
+    """
+  end
+
+  defp package do
+    [
+      name: :makeup_elixir,
+      licenses: ["BSD"],
+      maintainers: ["Tiago Barroso <tmbb@campus.ul.pt>"],
+      links: %{"GitHub" => "https://github.com/tmbb/makeup_elixir"}
     ]
   end
 

@@ -7,7 +7,7 @@ defmodule MakeupElixir.Mixfile do
       version: "0.2.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
       # Package
       package: package(),
       description: description()
@@ -40,6 +40,7 @@ defmodule MakeupElixir.Mixfile do
   defp deps do
     [
       {:nimble_parsec, "~> 0.2.2"},
+      {:ex_doc, "~> 0.18.3"},
       {:makeup, "~> 0.4.0"},
       {:benchee, "~> 0.12.1", only: [:test, :dev]}
     ]

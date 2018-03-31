@@ -78,8 +78,8 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   # Tokens for the lexer
   number_bin = string("0b") |> concat(number_bin_part) |> token(:number_bin)
-  number_hex = string("0x") |> concat(number_oct_part) |> token(:number_hex)
-  number_oct = string("0o") |> concat(number_hex_part) |> token(:number_oct)
+  number_oct = string("0o") |> concat(number_oct_part) |> token(:number_oct)
+  number_hex = string("0x") |> concat(number_hex_part) |> token(:number_hex)
   # Base 10
   number_integer = token(integer, :number_integer)
 

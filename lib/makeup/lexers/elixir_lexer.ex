@@ -232,7 +232,7 @@ defmodule Makeup.Lexers.ElixirLexer do
     choice([
       normal_keyword,
       string_keyword
-    ])
+    ]) |> concat(whitespace)
 
   sigil_delimiters = [
     {~S["""], ~S["""]},

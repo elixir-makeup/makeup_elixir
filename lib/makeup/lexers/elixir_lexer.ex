@@ -39,6 +39,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   import Makeup.Lexer.Groups
   alias Makeup.Lexer.Postprocess
   import Makeup.Lexers.ElixirLexer.Helper
+  import BranchPoint
 
   ###################################################################
   # Step #1: tokenize the input (into a list of tokens)
@@ -362,10 +363,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   # embed an Elixir lexer into another lexer, but other than that, they are not
   # meant to be used by end-users.
 
-  defparsec :root,
-    repeat(parsec(:root_element))
-
-  defparsec :root_element,
+  root_element_combinator =
     choice([
       # START of IEx-specific tokens
       # IEx prompt must come before names
@@ -426,25 +424,27 @@ defmodule Makeup.Lexers.ElixirLexer do
       any_char
     ])
 
+  branch_point :inline_vs_no_inline do
+    default do
+      defparsec :root_element, root_element_combinator
+
+      defparsec :root,
+        repeat(parsec(:root_element))
+    end
+
+    alternative "with inline" do
+      defparsec :root_element, root_element_combinator, inline: true
+
+      defparsec :root,
+        repeat(parsec(:root_element)), inline: true
+    end
+  end
+
   ###################################################################
   # Step #2: postprocess the list of tokens
   ###################################################################
 
   @def_like ~W[def defp defprotocol defmacro defmacrop defimpl defcallback]
-
-  @word_map Postprocess.invert_word_map(
-    keyword: ~W[
-      fn do end after else rescue catch with
-      case cond for if unless try receive raise
-      quote unquote unquote_splicing throw super],
-    operator_word: ~W[not and or when in],
-    keyword_declaration: ~W[
-      def defp defmodule defprotocol defmacro defmacrop
-      defdelegate defexception defstruct defimpl defcallback],
-    keyword_namespace: ~W[import require use alias],
-    name_constant: ~W[nil true false],
-    name_builtin_pseudo: ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
-  )
 
   # The `postprocess/1` function will require a major redesign when we decide to support
   # custom `def`-like keywords supplied by the user.
@@ -486,10 +486,54 @@ end
     [{:keyword_declaration, attrs1, text1}, ws, {:name_function, attrs2, text2} | postprocess(tokens)]
   end
 
-  # Elixir has some "keywords" which must be highlighted differently.
-  # See if the current token is one of such keywords.
-  defp postprocess([{:name, attrs, text} | tokens]), do:
-    [{Map.get(@word_map, text, :name), attrs, text} | postprocess(tokens)]
+
+  branch_point :map_lookup_vs_pattern_matching do
+    default do
+      @word_map Postprocess.invert_word_map(
+        keyword: ~W[
+          fn do end after else rescue catch with
+          case cond for if unless try receive raise
+          quote unquote unquote_splicing throw super],
+        operator_word: ~W[not and or when in],
+        keyword_declaration: ~W[
+          def defp defmodule defprotocol defmacro defmacrop
+          defdelegate defexception defstruct defimpl defcallback],
+        keyword_namespace: ~W[import require use alias],
+        name_constant: ~W[nil true false],
+        name_builtin_pseudo: ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
+      )
+
+      # Elixir has some "keywords" which must be highlighted differently.
+      # See if the current token is one of such keywords.
+      defp postprocess([{:name, attrs, text} | tokens]), do:
+        [{Map.get(@word_map, text, :name), attrs, text} | postprocess(tokens)]
+    end
+
+    alternative "pattern matching" do
+      word_map_inverted = [
+        keyword: ~W[
+          fn do end after else rescue catch with
+          case cond for if unless try receive raise
+          quote unquote unquote_splicing throw super],
+        operator_word: ~W[not and or when in],
+        keyword_declaration: ~W[
+          def defp defmodule defprotocol defmacro defmacrop
+          defdelegate defexception defstruct defimpl defcallback],
+        keyword_namespace: ~W[import require use alias],
+        name_constant: ~W[nil true false],
+        name_builtin_pseudo: ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
+      ]
+
+      for {ttype, words} <- word_map_inverted do
+        for word <- words do
+          quote do
+            defp postprocess({:name, attrs, unquote(word)} | tokens), do:
+              [{unquote(ttype), attrs, unquote(word)} | postprocess(tokens)]
+          end
+        end
+      end
+    end
+  end
 
   # Otherwise, don't do anything with the current token and go to the next token.
   defp postprocess([token | tokens]), do: [token | postprocess(tokens)]

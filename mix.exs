@@ -44,7 +44,7 @@ defmodule MakeupElixir.Mixfile do
       # {:makeup, path: "../makeup"},
       {:ex_doc, "~> 0.18.3", only: [:dev]},
       {:benchee, "~> 0.12.1", only: [:test, :dev]},
-      {:branch_point, git: "https://github.com/tmbb/branch_point", only: [:test, :dev]}
+      {:branch_point, git: "https://github.com/tmbb/branch_point"}
     ]
   end
 end

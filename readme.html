@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.18.3">
+    <title>MakeupElixir – makeup_elixir v0.4.0</title>
+    <link rel="stylesheet" href="dist/app-480ffdc169.css" />
+    
+    <script src="dist/sidebar_items-8b1e933a6b.js"></script>
+    
+    
+    
+    
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+<div class="main">
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<button class="sidebar-button night-mode-toggle">
+  <span class="icon-theme" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Theme</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="README.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        makeup_elixir
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.4.0
+      </h2>
+    </div>
+    
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="Search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+<h1>MakeupElixir</h1>
+<p><strong>TODO: Add description</strong></p>
+<h2 id="installation" class="section-heading">
+  <a href="#installation" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Installation
+</h2>
+
+<p>If <a href="https://hex.pm/docs/publish">available in Hex</a>, the package can be installed
+by adding <code class="inline">makeup_elixir</code> to your list of dependencies in <code class="inline">mix.exs</code>:</p>
+<pre><code class="elixir">def deps do
+  [
+    {:makeup_elixir, &quot;~&gt; 0.1.0&quot;}
+  ]
+end</code></pre>
+<p>Documentation can be generated with <a href="https://github.com/elixir-lang/ex_doc">ExDoc</a>
+and published on <a href="https://hexdocs.pm">HexDocs</a>. Once published, the docs can
+be found at <a href="https://hexdocs.pm/makeup_elixir">https://hexdocs.pm/makeup_elixir</a>.</p>
+<h2 id="benchmarks" class="section-heading">
+  <a href="#benchmarks" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Benchmarks
+</h2>
+
+<h3 id="inlining-parsecs" class="section-heading">
+  <a href="#inlining-parsecs" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Inlining parsecs
+</h3>
+
+<ul>
+<li><p>Lexing speed:
+  <a href="assets/benchmarks/inline_vs_no_inline-lexing-speed_comparison.html">comparison</a>;
+  <a href="assets/benchmarks/inline_vs_no_inline-lexing-speed_with_inline.html">with inlined parsecs</a>;
+  <a href="assets/benchmarks/inline_vs_no_inline-lexing-speed_without_inline.html">without inlined parsecs</a>.
+  Very weird performance characteristics.
+  Faster on average but extremely high latency in the worst case.</p>
+</li>
+<li><p>Compilation speed:
+  <a href="assets/benchmarks/inline_vs_no_inline-compilation-speed_comparison.html">comparison</a>;
+  <a href="assets/benchmarks/inline_vs_no_inline-compilation-speed_with_inline.html">with inlined parsecs</a>;
+  <a href="assets/benchmarks/inline_vs_no_inline-compilation-speed_without_inline.html">without inlined parsecs</a>.
+  As expected, compiling the inlined parsecs is much slower (about 2x slower)</p>
+</li>
+</ul>
+<h3 id="postprocessing-the-token-lists-using-map-lookup-vs-pattern-matching" class="section-heading">
+  <a href="#postprocessing-the-token-lists-using-map-lookup-vs-pattern-matching" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Postprocessing the token lists using map lookup VS pattern matching
+</h3>
+
+<ul>
+<li><p>Lexing speed:
+  <a href="assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_comparison.html">comparison</a>;
+  <a href="assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_map_lookup.html">map lookup</a>;
+  <a href="assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_pattern%20matching.html">pattern matching</a>.
+  Very weird performance characteristics.
+  Faster on average but extremely high latency in the worst case.</p>
+</li>
+<li><p>Compilation speed:
+  <a href="assets/benchmarks/map_lookup_vs_pattern_matching-compilation-speed_comparison.html">comparison</a>;
+  <a href="assets/benchmarks/map_lookup_vs_pattern_matching-compilation-speed_map_lookup.html">map lookup</a>;
+  <a href="assets/benchmarks/map_lookup_vs_pattern_matching-compilation-speed_pattern%20matching.html">pattern matching</a>.</p>
+</li>
+</ul>
+<h3 id="keep-language-specific-metadata" class="section-heading">
+  <a href="#keep-language-specific-metadata" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Keep language-specific metadata
+</h3>
+
+<p>This is important if one wants to embed a lexer inside another lexer.
+Unfortunately, it does slow down the lexer a bit.</p>
+<ul>
+<li><p>Lexing speed:
+  <a href="assets/benchmarks/language_metadata-lexing-speed_comparison.html">comparison</a>;
+  <a href="assets/benchmarks/language_metadata-lexing-speed_with_language_metadata.html">with language metadata</a>;
+  <a href="assets/benchmarks/language_metadata-lexing-speed_without_language_metadata.html">without language metadata</a>.</p>
+</li>
+<li><p>Compilation speed:
+  <a href="assets/benchmarks/language_metadata-compilation-speed_comparison.html">comparison</a>;
+  <a href="assets/benchmarks/language_metadata-compilation-speed_with_with_language_metadata.html">with language metadata</a>;
+  <a href="assets/benchmarks/language_metadata-compilation-speed_without_language_metadata.html">without language metadata</a>.</p>
+</li>
+</ul>
+
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.18.3),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-9bd040e5e5.js"></script>
+  
+  
+  
+  
+  </body>
+</html>
+

@@ -1,0 +1,284 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.18.3">
+    <title>Makeup.Lexers.ElixirLexer – makeup_elixir v0.4.0</title>
+    <link rel="stylesheet" href="dist/app-480ffdc169.css" />
+    
+    <script src="dist/sidebar_items-8b1e933a6b.js"></script>
+    
+    
+    
+    
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+    <div class="main">
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<button class="sidebar-button night-mode-toggle">
+  <span class="icon-theme" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Theme</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="README.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        makeup_elixir
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.4.0
+      </h2>
+    </div>
+    
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="Search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs">makeup_elixir v0.4.0</small>
+        Makeup.Lexers.ElixirLexer
+        
+      </h1>
+
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#lex/2">lex(text, opts \\ [])</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#root/2">root(binary, opts \\ [])</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Parses the given <code class="inline">binary</code> as root</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#root_element/2">root_element(binary, opts \\ [])</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Parses the given <code class="inline">binary</code> as root_element</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="lex/2">
+  
+  
+    <span id="lex/1"></span>
+  
+  <div class="detail-header">
+    <a href="#lex/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">lex(text, opts \\ [])</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="root/2">
+  
+  
+    <span id="root/1"></span>
+  
+  <div class="detail-header">
+    <a href="#root/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">root(binary, opts \\ [])</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>root(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()) ::
+  {:ok, [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], rest, context, line, byte_offset}
+  | {:error, reason, rest, context, line, byte_offset}
+when line: {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(), byte_offset},
+     byte_offset: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(),
+     rest: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+     reason: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+     context: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Parses the given <code class="inline">binary</code> as root.</p>
+<p>Returns <code class="inline">{:ok, [token], rest, context, line, byte_offset}</code> or
+<code class="inline">{:error, reason, rest, context, line, byte_offset}</code>.</p>
+<h2 id="root/2-options" class="section-heading">
+  <a href="#root/2-options" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Options
+</h2>
+
+<ul>
+<li><code class="inline">:line</code> - the initial line, defaults to 1
+</li>
+<li><code class="inline">:byte_offset</code> - the initial byte offset, defaults to 0
+</li>
+<li><code class="inline">:context</code> - the initial context value. It will be converted
+to a map
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="root_element/2">
+  
+  
+    <span id="root_element/1"></span>
+  
+  <div class="detail-header">
+    <a href="#root_element/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">root_element(binary, opts \\ [])</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>root_element(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">keyword</a>()) ::
+  {:ok, [<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()], rest, context, line, byte_offset}
+  | {:error, reason, rest, context, line, byte_offset}
+when line: {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(), byte_offset},
+     byte_offset: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(),
+     rest: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+     reason: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+     context: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Parses the given <code class="inline">binary</code> as root_element.</p>
+<p>Returns <code class="inline">{:ok, [token], rest, context, line, byte_offset}</code> or
+<code class="inline">{:error, reason, rest, context, line, byte_offset}</code>.</p>
+<h2 id="root_element/2-options" class="section-heading">
+  <a href="#root_element/2-options" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Options
+</h2>
+
+<ul>
+<li><code class="inline">:line</code> - the initial line, defaults to 1
+</li>
+<li><code class="inline">:byte_offset</code> - the initial byte offset, defaults to 0
+</li>
+<li><code class="inline">:context</code> - the initial context value. It will be converted
+to a map
+</li>
+</ul>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.18.3),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-9bd040e5e5.js"></script>
+  
+  
+  
+  
+  </body>
+</html>
+

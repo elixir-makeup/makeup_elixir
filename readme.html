@@ -90,11 +90,14 @@ be found at <a href="https://hexdocs.pm/makeup_elixir">https://hexdocs.pm/makeup
   Benchmarks
 </h2>
 
-<h3 id="inlining-parsecs" class="section-heading">
-  <a href="#inlining-parsecs" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
-  Inlining parsecs
+<h3 id="schism-inline-vs-no-inline" class="section-heading">
+  <a href="#schism-inline-vs-no-inline" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Schism: “inline vs no inline”
 </h3>
 
+<p>Whould we inline parsec or not?
+Currently this can be using a config option.
+By default, parsers are not inlined.</p>
 <ul>
 <li><p>Lexing speed:
   <a href="assets/benchmarks/inline_vs_no_inline-lexing-speed_comparison.html">comparison</a>;
@@ -110,11 +113,12 @@ be found at <a href="https://hexdocs.pm/makeup_elixir">https://hexdocs.pm/makeup
   As expected, compiling the inlined parsecs is much slower (about 2x slower)</p>
 </li>
 </ul>
-<h3 id="postprocessing-the-token-lists-using-map-lookup-vs-pattern-matching" class="section-heading">
-  <a href="#postprocessing-the-token-lists-using-map-lookup-vs-pattern-matching" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
-  Postprocessing the token lists using map lookup VS pattern matching
+<h3 id="schism-map-lookup-vs-pattern-matching" class="section-heading">
+  <a href="#schism-map-lookup-vs-pattern-matching" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Schism: “map lookup vs pattern matching”
 </h3>
 
+<p>Postprocessing the token lists using map lookup VS pattern matching</p>
 <ul>
 <li><p>Lexing speed:
   <a href="assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_comparison.html">comparison</a>;
@@ -129,12 +133,14 @@ be found at <a href="https://hexdocs.pm/makeup_elixir">https://hexdocs.pm/makeup
   <a href="assets/benchmarks/map_lookup_vs_pattern_matching-compilation-speed_pattern%20matching.html">pattern matching</a>.</p>
 </li>
 </ul>
-<h3 id="keep-language-specific-metadata" class="section-heading">
-  <a href="#keep-language-specific-metadata" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
-  Keep language-specific metadata
+<h3 id="schism-language-metadata" class="section-heading">
+  <a href="#schism-language-metadata" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Schism: “language metadata”
 </h3>
 
-<p>This is important if one wants to embed a lexer inside another lexer.
+<p>Should we store the name of the language in the token
+(<code class="inline">{ttype, %{language: :elixir, text}</code>)}).
+This is important if one wants to embed a lexer inside another lexer.
 Unfortunately, it does slow down the lexer a bit.</p>
 <ul>
 <li><p>Lexing speed:

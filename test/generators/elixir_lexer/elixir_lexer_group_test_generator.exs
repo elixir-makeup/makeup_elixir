@@ -15,6 +15,7 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
     text
     |> ElixirLexer.lex(group_prefix: "group")
     |> Postprocess.token_values_to_binaries()
+    |> Enum.map(fn {ttype, meta, value} -> {ttype, Map.delete(meta, :language), value} end)
   end
 
   EEx.function_from_string :def, :gen_group_test_file, """
@@ -33,6 +34,7 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
       text
       |> ElixirLexer.lex(group_prefix: "group")
       |> Postprocess.token_values_to_binaries()
+      |> Enum.map(fn {ttype, meta, value} -> {ttype, Map.delete(meta, :language), value} end)
     end
 
     describe "all group transitions" do\

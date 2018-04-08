@@ -10,7 +10,14 @@ defmodule MakeupElixir.Mixfile do
       deps: deps(),
       # Package
       package: package(),
-      description: description()
+      description: description(),
+      docs: [
+        main: "README",
+        assets: "assets",
+        extras: [
+          "README.md"
+        ]
+      ]
     ]
   end
 
@@ -43,8 +50,8 @@ defmodule MakeupElixir.Mixfile do
       {:makeup, "~> 0.4.0"},
       # {:makeup, path: "../makeup"},
       {:ex_doc, "~> 0.18.3", only: [:dev]},
-      {:benchee, "~> 0.12.1", only: [:test, :dev]},
-      {:branch_point, git: "https://github.com/tmbb/branch_point"}
+      {:benchee_html, "~> 0.4", only: [:dev, :dev]},
+      {:schism, path: "../../schism"}
     ]
   end
 end

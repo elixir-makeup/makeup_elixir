@@ -34,12 +34,19 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
 end
 
 defmodule Makeup.Lexers.ElixirLexer do
+  import Schism
   import NimbleParsec
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
-  alias Makeup.Lexer.Postprocess
+  schism "map lookup vs pattern matching" do
+    dogma "map lookup" do
+      alias Makeup.Lexer.Postprocess
+    end
+
+    heresy "pattern matching" do
+    end
+  end
   import Makeup.Lexers.ElixirLexer.Helper
-  import BranchPoint
 
   ###################################################################
   # Step #1: tokenize the input (into a list of tokens)
@@ -217,16 +224,17 @@ defmodule Makeup.Lexers.ElixirLexer do
       string_atom
     ])
 
-  normal_keyword =
-    choice([operator_name, normal_atom_name])
-    |> token(:string_symbol)
-    |> concat(token(string(":"), :punctuation))
 
   string_keyword =
     choice([
       string_like("\"", "\"", [escaped_char, interpolation], :string_symbol),
       string_like("'", "'", [escaped_char, interpolation], :string_symbol)
     ])
+    |> concat(token(string(":"), :punctuation))
+
+  normal_keyword =
+    choice([operator_name, normal_atom_name])
+    |> token(:string_symbol)
     |> concat(token(string(":"), :punctuation))
 
   keyword =
@@ -336,11 +344,6 @@ defmodule Makeup.Lexers.ElixirLexer do
     # |> lexeme
     |> token(:comment_single)
 
-  @doc false
-  def __as_elixir_language__({ttype, meta, value}) do
-    {ttype, Map.put(meta, :language, :elixir), value}
-  end
-
   # An IEx prompt is supported in the normal Elixir lexer because false positives
   # would be extremely rare
   iex_prompt =
@@ -424,21 +427,37 @@ defmodule Makeup.Lexers.ElixirLexer do
       any_char
     ])
 
-  branch_point :inline_vs_no_inline do
-    default do
-      defparsec :root_element, root_element_combinator
-
-      defparsec :root,
-        repeat(parsec(:root_element))
+  schism "inline vs no inline" do
+    dogma "no inline" do
+      @inline false
     end
 
-    alternative "with inline" do
-      defparsec :root_element, root_element_combinator, inline: true
-
-      defparsec :root,
-        repeat(parsec(:root_element)), inline: true
+    heresy "inline" do
+      @inline true
     end
   end
+
+  schism "language metadata" do
+    dogma "with language metadata" do
+        @doc false
+        def __as_elixir_language__({ttype, meta, value}) do
+          {ttype, Map.put(meta, :language, :elixir), value}
+        end
+
+      defparsec :root_element,
+        root_element_combinator |> map({__MODULE__, :__as_elixir_language__, []}),
+        inline: @inline
+    end
+
+    heresy "without language metadata" do
+      defparsec :root_element,
+        root_element_combinator,
+        inline: @inline
+    end
+  end
+
+  defparsec :root,
+    repeat(parsec(:root_element)), inline: @inline
 
   ###################################################################
   # Step #2: postprocess the list of tokens
@@ -487,8 +506,8 @@ end
   end
 
 
-  branch_point :map_lookup_vs_pattern_matching do
-    default do
+  schism "map lookup vs pattern matching" do
+    dogma "map lookup" do
       @word_map Postprocess.invert_word_map(
         keyword: ~W[
           fn do end after else rescue catch with
@@ -509,7 +528,7 @@ end
         [{Map.get(@word_map, text, :name), attrs, text} | postprocess(tokens)]
     end
 
-    alternative "pattern matching" do
+    heresy "pattern matching" do
       word_map_inverted = [
         keyword: ~W[
           fn do end after else rescue catch with

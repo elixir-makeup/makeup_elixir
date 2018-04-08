@@ -12,7 +12,7 @@ defmodule MakeupElixir.Mixfile do
       package: package(),
       description: description(),
       docs: [
-        main: "README",
+        main: "readme",
         assets: "assets",
         extras: [
           "README.md"

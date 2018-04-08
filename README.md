@@ -41,7 +41,7 @@ be found at [https://hexdocs.pm/makeup_elixir](https://hexdocs.pm/makeup_elixir)
 * Lexing speed:
   [comparison](assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_comparison.html);
   [map lookup](assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_map_lookup.html);
-  [pattern matching](assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_pattern matching.html).
+  [pattern matching](assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_pattern_matching.html).
   Very weird performance characteristics.
   Faster on average but extremely high latency in the worst case.
 

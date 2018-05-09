@@ -47,11 +47,9 @@ defmodule MakeupElixir.Mixfile do
   defp deps do
     [
       {:nimble_parsec, "~> 0.2.2"},
-      # {:makeup, path: "../makeup"},
       {:makeup, "~> 0.5.0"},
       {:ex_doc, "~> 0.18.3", only: [:dev]},
-      {:benchee_html, "~> 0.4", only: [:dev, :test]},
-      {:schism, path: "../../schism", only: [:dev, :test]}
+      {:benchee, "~> 0.13", only: [:dev, :test]}
     ]
   end
 end

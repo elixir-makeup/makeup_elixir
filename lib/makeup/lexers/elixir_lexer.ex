@@ -59,7 +59,6 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
 end
 
 defmodule Makeup.Lexers.ElixirLexer do
-  import Schism
   import NimbleParsec
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
@@ -83,7 +82,6 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   whitespace = ascii_string([?\s, ?\n], min: 1) |> token(:whitespace)
 
-  # newline = string("\n") |> token(:whitespace)
   newlines =
     string("\n")
     |> optional(ascii_string([?\s, ?\n], min: 1))
@@ -134,11 +132,6 @@ defmodule Makeup.Lexers.ElixirLexer do
     variable_name
     |> lexeme
     |> token(:name)
-
-  # unused_variable =
-  #   string("_")
-  #   |> concat(variable_name)
-  #   |> token(:name_builtin_pseudo)
 
   # TODO: as above
   alias_part =
@@ -202,59 +195,30 @@ defmodule Makeup.Lexers.ElixirLexer do
   interpolation = many_surrounded_by(parsec(:root_element), "\#{", "}", :string_interpol)
   tuple = many_surrounded_by(parsec(:root_element), "{", "}")
 
-  schism "delimited pairs" do
-    heresy "parse delimited pairs" do
-      parentheses = many_surrounded_by(parsec(:root_element), "(", ")")
-      list = many_surrounded_by(parsec(:root_element), "[", "]")
-      map = many_surrounded_by(parsec(:root_element), "%{", "}")
-      binary = many_surrounded_by(parsec(:root_element), "<<", ">>")
-      struct = many_surrounded_by(
-        parsec(:root_element),
-        token("%", :punctuation) |> concat(module) |> concat(token("{", :punctuation)),
-        token("}", :punctuation))
-      # Only for the IEx lexer (it's not valid Elixir code):
-      opaque_struct = many_surrounded_by(
-        parsec(:root_element),
-        token("#", :punctuation) |> concat(module) |> concat(token("<", :punctuation)),
-        token(">", :punctuation))
 
-      delimiter_pairs = [
-        tuple,
-        parentheses,
-        list,
-        map,
-        binary,
-        struct
-      ]
-    end
+  binary_inside_opaque_struct =
+    many_surrounded_by(parsec(:root_element), "<<", ">>")
+  # Only for the IEx lexer (it's not valid Elixir code):
+  opaque_struct = many_surrounded_by(
+    choice([
+      binary_inside_opaque_struct,
+      parsec(:root_element)
+    ]),
+    token("#", :punctuation) |> concat(module) |> concat(token("<", :punctuation)),
+    token(">", :punctuation))
 
-    dogma "no delimited pairs" do
-      binary_inside_opaque_struct =
-        many_surrounded_by(parsec(:root_element), "<<", ">>")
-      # Only for the IEx lexer (it's not valid Elixir code):
-      opaque_struct = many_surrounded_by(
-        choice([
-          binary_inside_opaque_struct,
-          parsec(:root_element)
-        ]),
-        token("#", :punctuation) |> concat(module) |> concat(token("<", :punctuation)),
-        token(">", :punctuation))
+  delimiters_punctuation = word_from_list(
+    ~W( ( \) [ ] << >>),
+    :punctuation
+  )
 
-      delimiters_punctuation = word_from_list(
-        ~W( ( \) [ ] << >>),
-        :punctuation
-      )
+  map = many_surrounded_by(parsec(:root_element), "%{", "}")
 
-      map = many_surrounded_by(parsec(:root_element), "%{", "}")
-
-      delimiter_pairs = [
-        delimiters_punctuation,
-        tuple,
-        map
-      ]
-    end
-
-  end
+  delimiter_pairs = [
+    delimiters_punctuation,
+    tuple,
+    map
+  ]
 
   normal_atom_name =
     utf8_string([?A..?Z, ?a..?z, ?_], 1)
@@ -313,6 +277,9 @@ defmodule Makeup.Lexers.ElixirLexer do
     {"(", ")"}
   ]
 
+  # These are the "generic" sigils, that is, those that are not defined by default.
+  # For example, `~c` is not a "normal" sigil because be default it represents a charlist
+  # and is highlighted as such.
   normal_sigil_interpol_range = [?a..?z, not: ?c, not: ?d, not: ?n, not: ?r, not: ?s]
   normal_sigil_no_interpol_range = [?A..?Z, not: ?c, not: ?D, not: ?N, not: ?R, not: ?S]
 
@@ -400,7 +367,6 @@ defmodule Makeup.Lexers.ElixirLexer do
   inline_comment =
     string("#")
     |> concat(line)
-    # |> lexeme
     |> token(:comment_single)
 
   # An IEx prompt is supported in the normal Elixir lexer because false positives
@@ -409,7 +375,6 @@ defmodule Makeup.Lexers.ElixirLexer do
     choice([string("iex"), string("...")])
     |> optional(string("(") |> concat(digits) |> string(")"))
     |> string(">")
-    # |> lexeme
     |> token(:generic_prompt, %{selectable: false})
 
   stacktrace =
@@ -418,7 +383,6 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> concat(line)
     # All lines indented by 4 spaces are part of the traceback
     |> repeat(string("\n    ") |> concat(line))
-    # |> lexeme
     |> token(:generic_traceback)
 
   root_element_combinator =
@@ -477,15 +441,10 @@ defmodule Makeup.Lexers.ElixirLexer do
       any_char
     ])
 
-  schism "inline vs no inline" do
-    dogma "no inline" do
-      @inline false
-    end
-
-    heresy "inline" do
-      @inline true
-    end
-  end
+  # By default, don't inline the lexers.
+  # Inlining them increases performance by ~20%
+  # at the cost of doubling the compilation times...
+  @inline false
 
   @doc false
   def __as_elixir_language__({ttype, meta, value}) do
@@ -551,63 +510,35 @@ end
     [{:keyword_declaration, attrs1, text1}, ws, {:name_function, attrs2, text2} | postprocess_helper(tokens)]
   end
 
+  @keyword ~W[
+    fn do end after else rescue catch with
+    case cond for if unless try receive raise
+    quote unquote unquote_splicing throw super]
+  @keyword_declaration ~W[
+    def defp defmodule defprotocol defmacro defmacrop
+    defdelegate defexception defstruct defimpl defcallback]
+  @operator_word ~W[not and or when in]
+  @keyword_namespace ~W[import require use alias]
+  @name_constant ~W[nil true false]
+  @name_builtin_pseudo ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
 
-  schism "map lookup vs pattern matching" do
-    heresy "map lookup" do
-      alias Makeup.Lexer.Postprocess
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword, do:
+    [{:keyword, attrs, text} | postprocess_helper(tokens)]
 
-      @word_map Postprocess.invert_word_map(
-        keyword: ~W[
-          fn do end after else rescue catch with
-          case cond for if unless try receive raise
-          quote unquote unquote_splicing throw super],
-        operator_word: ~W[not and or when in],
-        keyword_declaration: ~W[
-          def defp defmodule defprotocol defmacro defmacrop
-          defdelegate defexception defstruct defimpl defcallback],
-        keyword_namespace: ~W[import require use alias],
-        name_constant: ~W[nil true false],
-        name_builtin_pseudo: ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
-      )
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword_declaration, do:
+    [{:keyword_declaration, attrs, text} | postprocess_helper(tokens)]
 
-      # Elixir has some "keywords" which must be highlighted differently.
-      # See if the current token is one of such keywords.
-      defp postprocess_helper([{:name, attrs, text} | tokens]), do:
-        [{Map.get(@word_map, text, :name), attrs, text} | postprocess_helper(tokens)]
-    end
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @operator_word, do:
+    [{:operator_word, attrs, text} | postprocess_helper(tokens)]
 
-    dogma "pattern matching" do
-      @keyword ~W[
-        fn do end after else rescue catch with
-        case cond for if unless try receive raise
-        quote unquote unquote_splicing throw super]
-      @keyword_declaration ~W[
-        def defp defmodule defprotocol defmacro defmacrop
-        defdelegate defexception defstruct defimpl defcallback]
-      @operator_word ~W[not and or when in]
-      @keyword_namespace ~W[import require use alias]
-      @name_constant ~W[nil true false]
-      @name_builtin_pseudo ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword_namespace, do:
+    [{:keyword_namespace, attrs, text} | postprocess_helper(tokens)]
 
-      defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword, do:
-        [{:keyword, attrs, text} | postprocess_helper(tokens)]
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_constant, do:
+    [{:name_constant, attrs, text} | postprocess_helper(tokens)]
 
-      defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword_declaration, do:
-        [{:keyword_declaration, attrs, text} | postprocess_helper(tokens)]
-
-      defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @operator_word, do:
-        [{:operator_word, attrs, text} | postprocess_helper(tokens)]
-
-      defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword_namespace, do:
-        [{:keyword_namespace, attrs, text} | postprocess_helper(tokens)]
-
-      defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_constant, do:
-        [{:name_constant, attrs, text} | postprocess_helper(tokens)]
-
-      defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_builtin_pseudo, do:
-        [{:name_builtin_pseudo, attrs, text} | postprocess_helper(tokens)]
-    end
-  end
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_builtin_pseudo, do:
+    [{:name_builtin_pseudo, attrs, text} | postprocess_helper(tokens)]
 
   # Otherwise, don't do anything with the current token and go to the next token.
   defp postprocess_helper([token | tokens]), do: [token | postprocess_helper(tokens)]

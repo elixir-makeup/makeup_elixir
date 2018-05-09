@@ -1,5 +1,4 @@
-require Schism.Testing
-Schism.Testing.defsnippet ElixirLexerTokenizerTestSnippet do
+defmodule ElixirLexerTokenizerTestSnippet do
   use ExUnit.Case, async: false
   alias Makeup.Lexers.ElixirLexer
   alias Makeup.Lexer.Postprocess
@@ -282,49 +281,4 @@ Schism.Testing.defsnippet ElixirLexerTokenizerTestSnippet do
       ]
     end
   end
-end
-
-# Backward Compatibility
-
-# Test the dogma
-# --------------
-# To minimize testing time, first test the dogma.
-# Test not only the conversion to the dogma but also all
-# explicit conversions that match the dogma.
-# By testing all of these first, we won't waste so much time recompiling the code.
-defmodule ElixirLexerTokenizerTest.Dogma do
-  use ElixirLexerTokenizerTestSnippet,
-    conversions: %{}
-end
-
-defmodule ElixirLexerTokenizerTest.MapLookupVsPatternMatching.PatternMatching do
-  use ElixirLexerTokenizerTestSnippet,
-    conversions: %{"map lookup vs pattern matching" => "pattern matching"}
-end
-
-defmodule ElixirLexerTokenizerTest.InlineVsNoInline.NoInline do
-  use ElixirLexerTokenizerTestSnippet,
-    conversions: %{"inline vs no inline" => "no inline"}
-end
-
-defmodule ElixirLexerTokenizerTest.DelimitedPairs.NoDelimitedPairs do
-  use ElixirLexerTokenizerTestSnippet,
-    conversions: %{"delimited pairs" => "no delimited pairs"}
-end
-
-# Test the heretical beliefs
-# --------------------------
-defmodule ElixirLexerTokenizerTest.MapLookupVsPatternMatching.MapLookup do
-  use ElixirLexerTokenizerTestSnippet,
-    conversions: %{"map lookup vs pattern matching" => "map lookup"}
-end
-
-defmodule ElixirLexerTokenizerTest.InlineVsNoInline.Inline do
-  use ElixirLexerTokenizerTestSnippet,
-    conversions: %{"inline vs no inline" => "inline"}
-end
-
-defmodule ElixirLexerTokenizerTest.DelimitedPairs.ParseDelimitedPairs do
-  use ElixirLexerTokenizerTestSnippet,
-    conversions: %{"delimited pairs" => "parse delimited pairs"}
 end

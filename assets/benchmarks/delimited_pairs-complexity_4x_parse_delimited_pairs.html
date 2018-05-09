@@ -16,6 +16,10 @@
     <div class="header">
   <h1>benchee report</h1>
   
+  <span class="input-label">
+    4x
+  </span>
+
 
   <span class="version-note">
   <a href="javascript:toggleSystemDataInfo();" title="Click to toggle system info">System info</a>
@@ -39,12 +43,12 @@
 
     <article>
       <h2>
-        <a name="Without language metadata"></a>
-        Without language metadata
+        <a name="parse delimited pairs"></a>
+        parse delimited pairs
         <a href="https://github.com/PragTob/benchee_html/wiki/Chart-Types#individual">
           <i
             class="benchee-help-icon icon-question-circle-o"
-            title="Graphs showing the individual run time distribution for Without language metadata.
+            title="Graphs showing the individual run time distribution for parse delimited pairs.
 Run Times Histogram shows the distribution of occurrences of specific run times in buckets.
 Raw Run Times shows all individual recorded run times in the order they were recorded in."
           ></i>
@@ -70,15 +74,15 @@ Raw Run Times shows all individual recorded run times in the order they were rec
     
       <tr>
         
-          <td class="text-left">Without language metadata</td>
+          <td class="text-left">parse delimited pairs</td>
         
-        <td>0.26</td>
-        <td>3.87 s</td>
-        <td>±0.21%</td>
-        <td>3.87 s</td>
-        <td>3.86 s</td>
-        <td>3.88 s</td>
-        <td>2</td>
+        <td>5.50</td>
+        <td>181.89 ms</td>
+        <td>±13.85%</td>
+        <td>172 ms</td>
+        <td>141 ms</td>
+        <td>250 ms</td>
+        <td>28</td>
       </tr>
     
   </tbody>
@@ -87,10 +91,10 @@ Raw Run Times shows all individual recorded run times in the order they were rec
       </section>
 
       <section class="benchee-plot-container">
-        <div id="sorted-run-times" class="plot" data-job-name="Without language metadata"></div>
+        <div id="sorted-run-times" class="plot" data-job-name="parse delimited pairs"></div>
       </section>
       <section class="benchee-plot-container">
-        <div id="raw-run-times" class="plot" data-job-name="Without language metadata"></div>
+        <div id="raw-run-times" class="plot" data-job-name="parse delimited pairs"></div>
       </section>
     </article>
 
@@ -109,11 +113,11 @@ Raw Run Times shows all individual recorded run times in the order they were rec
 
 
     <script>
-      var measurements = {"run_times":[3.875e6,3.859e6],"statistics":{"average":3.867e6,"ips":0.2585983966899405,"maximum":3.875e6,"median":3.867e6,"minimum":3.859e6,"mode":null,"percentiles":{"50":3.867e6,"99":3.875e6},"sample_size":2,"std_dev":8.0e3,"std_dev_ips":5.349850461648627e-4,"std_dev_ratio":0.002068787173519524}};
+      var measurements = {"run_times":[1.56e5,1.56e5,1.41e5,1.72e5,2.18e5,1.88e5,2.03e5,1.72e5,1.72e5,1.72e5,2.03e5,1.56e5,1.87e5,1.57e5,2.18e5,2.04e5,2.5e5,1.71e5,2.04e5,1.71e5,2.04e5,1.71e5,2.04e5,1.56e5,1.72e5,1.56e5,2.03e5,1.56e5],"statistics":{"average":181892.85714285713,"ips":5.497741998821913,"maximum":2.5e5,"median":1.72e5,"minimum":1.41e5,"mode":1.56e5,"percentiles":{"50":1.72e5,"99":2.5e5},"sample_size":28,"std_dev":25185.510695230932,"std_dev_ips":0.7612362688997817,"std_dev_ratio":0.13846343991094956}};
       var runTimes     = measurements.run_times;
       var statistics   = measurements.statistics;
 
-      var inputHeadline = ""
+      var inputHeadline = " (4x)"
 
       drawRawRunTimeCharts(runTimes, inputHeadline, statistics);
       drawRunTimeHistograms(runTimes, inputHeadline);

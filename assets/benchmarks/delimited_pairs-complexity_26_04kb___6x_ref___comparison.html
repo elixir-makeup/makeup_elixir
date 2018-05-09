@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Benchee Report</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/benchee.css">
+    <link rel="stylesheet" type="text/css" href="assets/fontello/css/fontello.css">
+  
+</head>
+
+  <body>
+
+    <div class="header">
+  <h1>benchee report</h1>
+  
+  <span class="input-label">
+    26.04kB  (6x ref.)
+  </span>
+
+
+  <span class="version-note">
+  <a href="javascript:toggleSystemDataInfo();" title="Click to toggle system info">System info</a>
+</span>
+
+</div>
+
+
+    <article id="system-info" class="benchee-systeminfo" >
+  <h3>System info</h3>
+  <ul class="benchee-systeminfo-list">
+    <li>Elixir: 1.6.2</li>
+    <li>Erlang: 20.0</li>
+    <li>Operating system: Windows</li>
+    <li>Available memory: 7.87 GB</li>
+    <li>CPU Information: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz</li>
+    <li>Number of Available Cores: 8</li>
+  </ul>
+</article>
+
+
+    <article>
+      <h2>
+        Comparison
+        <a href="https://github.com/PragTob/benchee_html/wiki/Chart-Types#comparison">
+          <i
+          class="benchee-help-icon icon-question-circle-o"
+          title="Comparisons of the different benchmarking jobs.
+For Iterations per Second higher is better, the black whiskers denote standard deviation. otherwise it is runtime so lower is better.
+The Box Plot shows a distribution of run times with the median and outliers."
+          ></i>
+        </a>
+      </h2>
+      <section>
+        <h3>Data Table</h3>
+<table>
+  <thead>
+    <tr>
+      <th class="text-left">Name</th>
+      <th>Iterations per Second</th>
+      <th>Average</th>
+      <th>Deviation</th>
+      <th>median</th>
+      <th>minimum</th>
+      <th>maximum</th>
+      <th>Sample size</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+      <tr>
+        
+          <td class="text-left"><a href="delimited_pairs-complexity_26_04kb___6x_ref___no_delimited_pairs.html">no delimited pairs</a></td>
+        
+        <td>11.92</td>
+        <td>83.87 ms</td>
+        <td>±14.34%</td>
+        <td>78 ms</td>
+        <td>47 ms</td>
+        <td>125 ms</td>
+        <td>60</td>
+      </tr>
+    
+      <tr>
+        
+          <td class="text-left"><a href="delimited_pairs-complexity_26_04kb___6x_ref___parse_delimited_pairs.html">parse delimited pairs</a></td>
+        
+        <td>1.33</td>
+        <td>752.29 ms</td>
+        <td>±3.58%</td>
+        <td>766 ms</td>
+        <td>703 ms</td>
+        <td>781 ms</td>
+        <td>7</td>
+      </tr>
+    
+  </tbody>
+</table>
+
+      </section>
+
+      <section class="benchee-plot-container">
+        <div id="ips-comparison" class="job-count-2 plot"></div>
+      </section>
+
+      <section class="benchee-plot-container">
+        <div id="box-plot" class="job-count-2 plot"></div>
+      </section>
+    </article>
+
+    <footer>
+      <a href="https://github.com/PragTob/benchee" target="blank">benchee version: 0.12.1 </a>
+<br/>
+<a href="https://github.com/PragTob/benchee_html" target="blank">benchee_html version: 0.5.0</a>
+
+
+    </footer>
+
+    
+  <script src="assets/javascripts/plotly-1.30.1.min.js"></script>
+  <script src="assets/javascripts/benchee.js"></script>
+
+
+
+    <script>
+      var suite      = {"run_times":{"no delimited pairs":[7.9e4,7.8e4,1.25e5,1.09e5,7.8e4,9.4e4,7.8e4,9.4e4,9.4e4,9.3e4,7.8e4,7.9e4,9.3e4,7.8e4,7.9e4,9.3e4,7.8e4,7.9e4,7.8e4,7.8e4,7.8e4,7.8e4,7.8e4,7.8e4,9.4e4,1.25e5,9.4e4,7.8e4,9.4e4,9.3e4,7.9e4,9.3e4,7.8e4,9.4e4,7.8e4,9.4e4,7.8e4,7.8e4,7.8e4,9.4e4,7.8e4,7.8e4,7.9e4,9.3e4,6.3e4,7.8e4,7.8e4,7.8e4,4.7e4,7.8e4,7.8e4,9.4e4,7.8e4,7.8e4,7.8e4,9.4e4,7.8e4,7.8e4,7.9e4,7.8e4],"parse delimited pairs":[7.19e5,7.81e5,7.66e5,7.65e5,7.03e5,7.66e5,7.66e5]},"sort_order":["no delimited pairs","parse delimited pairs"],"statistics":{"no delimited pairs":{"average":83866.66666666667,"ips":11.92368839427663,"maximum":1.25e5,"median":7.8e4,"minimum":4.7e4,"mode":7.8e4,"percentiles":{"50":7.8e4,"99":1.25e5},"sample_size":60,"std_dev":12022.848617897876,"std_dev_ips":1.7093406263677313,"std_dev_ratio":0.14335670053137373},"parse delimited pairs":{"average":752285.7142857143,"ips":1.3292821876186858,"maximum":7.81e5,"median":7.66e5,"minimum":7.03e5,"mode":7.66e5,"percentiles":{"50":7.66e5,"99":7.81e5},"sample_size":7,"std_dev":26958.774271173414,"std_dev_ips":0.04763591512930614,"std_dev_ratio":0.03583581843870374}}};
+      var runTimes   = suite.run_times;
+      var statistics = suite.statistics;
+      var sortOrder  = suite.sort_order;
+
+      var inputHeadline = " (26.04kB  (6x ref.))"
+
+      drawIpsComparisonChart(statistics, sortOrder, inputHeadline);
+      drawComparisonBoxPlot(runTimes, sortOrder, inputHeadline);
+    </script>
+  </body>
+</html>

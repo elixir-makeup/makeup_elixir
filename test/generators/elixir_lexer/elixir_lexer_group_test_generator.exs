@@ -65,7 +65,7 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
       {"{...}", fn s -> "{#{s}}" end},
       {"%{...}", fn s -> "%{#{s}}" end},
       {"%Struct{...}", fn s -> "%Struct{#{s}}" end},
-      {"#OpaqueStruct<...>", fn s -> "#Struct<#{s}>" end},
+      {"#OpaqueStruct<...>", fn s -> "#OpaqueStruct<#{s}>" end},
       {"<<...>>", fn s -> "<<#{s}>>" end}
     ]
   end

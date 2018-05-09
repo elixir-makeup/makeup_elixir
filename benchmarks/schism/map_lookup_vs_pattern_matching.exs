@@ -2,7 +2,7 @@ defmodule Makeup.Lexers.ElixirLexer.Benchmarks.Schism.MapLookupVsPatternMatching
   alias Makeup.Lexers.ElixirLexer
   # Test file taken from the Pygments' test suite
   # Read the file into a variable because we're not interested in the time it takes to read from disk.
-  @code File.read!("benchmarks/data/example_file.exs")
+  @code File.read!("benchmarks/data/example_file.exs") |> String.duplicate(10)
 
   def run() do
     # Runtime speed
@@ -56,3 +56,5 @@ defmodule Makeup.Lexers.ElixirLexer.Benchmarks.Schism.MapLookupVsPatternMatching
     )
   end
 end
+
+# Makeup.Lexers.ElixirLexer.Benchmarks.Schism.MapLookupVsPatternMatching.run()

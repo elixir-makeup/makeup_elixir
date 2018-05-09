@@ -16,6 +16,10 @@
     <div class="header">
   <h1>benchee report</h1>
   
+  <span class="input-label">
+    5x ref. (21.7kB)
+  </span>
+
 
   <span class="version-note">
   <a href="javascript:toggleSystemDataInfo();" title="Click to toggle system info">System info</a>
@@ -68,28 +72,28 @@ The Box Plot shows a distribution of run times with the median and outliers."
     
       <tr>
         
-          <td class="text-left"><a href="language_metadata-compilation_with_language_metadata.html">With language metadata</a></td>
+          <td class="text-left"><a href="delimited_pairs-complexity_5x_ref___21_7kb__no_delimited_pairs.html">no delimited pairs</a></td>
         
-        <td>0.24</td>
-        <td>4.18 s</td>
-        <td>±0.95%</td>
-        <td>4.18 s</td>
-        <td>4.14 s</td>
-        <td>4.22 s</td>
-        <td>2</td>
+        <td>15.10</td>
+        <td>66.21 ms</td>
+        <td>±15.74%</td>
+        <td>63 ms</td>
+        <td>46 ms</td>
+        <td>93 ms</td>
+        <td>76</td>
       </tr>
     
       <tr>
         
-          <td class="text-left"><a href="language_metadata-compilation_without_language_metadata.html">Without language metadata</a></td>
+          <td class="text-left"><a href="delimited_pairs-complexity_5x_ref___21_7kb__parse_delimited_pairs.html">parse delimited pairs</a></td>
         
-        <td>0.26</td>
-        <td>3.87 s</td>
-        <td>±0.21%</td>
-        <td>3.87 s</td>
-        <td>3.86 s</td>
-        <td>3.88 s</td>
-        <td>2</td>
+        <td>2.67</td>
+        <td>375 ms</td>
+        <td>±7.07%</td>
+        <td>359.50 ms</td>
+        <td>344 ms</td>
+        <td>422 ms</td>
+        <td>14</td>
       </tr>
     
   </tbody>
@@ -121,12 +125,12 @@ The Box Plot shows a distribution of run times with the median and outliers."
 
 
     <script>
-      var suite      = {"run_times":{"With language metadata":[4.219e6,4.14e6],"Without language metadata":[3.875e6,3.859e6]},"sort_order":["Without language metadata","With language metadata"],"statistics":{"With language metadata":{"average":4.1795e6,"ips":0.23926306974518483,"maximum":4.219e6,"median":4.1795e6,"minimum":4.14e6,"mode":null,"percentiles":{"50":4.1795e6,"99":4.219e6},"sample_size":2,"std_dev":3.95e4,"std_dev_ips":0.0022612492534836224,"std_dev_ratio":0.0094508912549348},"Without language metadata":{"average":3.867e6,"ips":0.2585983966899405,"maximum":3.875e6,"median":3.867e6,"minimum":3.859e6,"mode":null,"percentiles":{"50":3.867e6,"99":3.875e6},"sample_size":2,"std_dev":8.0e3,"std_dev_ips":5.349850461648627e-4,"std_dev_ratio":0.002068787173519524}}};
+      var suite      = {"run_times":{"no delimited pairs":[4.7e4,6.3e4,6.2e4,6.3e4,4.7e4,4.7e4,4.6e4,6.3e4,6.2e4,6.3e4,6.2e4,7.9e4,7.8e4,6.2e4,7.8e4,7.8e4,6.3e4,7.8e4,6.3e4,4.6e4,7.9e4,6.2e4,7.8e4,6.3e4,7.8e4,7.8e4,7.8e4,6.3e4,6.2e4,6.3e4,6.2e4,6.3e4,9.3e4,6.3e4,7.8e4,7.8e4,7.8e4,6.3e4,7.8e4,7.8e4,6.2e4,6.3e4,6.2e4,6.3e4,7.8e4,7.8e4,7.8e4,7.8e4,7.9e4,6.2e4,7.8e4,7.8e4,4.7e4,6.3e4,4.7e4,4.6e4,6.3e4,6.2e4,6.3e4,6.2e4,6.3e4,7.8e4,6.3e4,6.2e4,7.8e4,6.3e4,6.2e4,6.3e4,4.7e4,6.2e4,6.3e4,6.2e4,6.3e4,6.2e4,7.8e4,6.3e4],"parse delimited pairs":[3.59e5,3.91e5,4.22e5,3.59e5,4.22e5,4.22e5,3.75e5,3.59e5,3.44e5,3.6e5,3.59e5,3.59e5,3.6e5,3.59e5]},"sort_order":["no delimited pairs","parse delimited pairs"],"statistics":{"no delimited pairs":{"average":66210.52631578948,"ips":15.103338632750395,"maximum":9.3e4,"median":6.3e4,"minimum":4.6e4,"mode":6.3e4,"percentiles":{"50":6.3e4,"99":9.3e4},"sample_size":76,"std_dev":10421.78360009467,"std_dev_ips":2.377321788966623,"std_dev_ratio":0.15740372686947432},"parse delimited pairs":{"average":3.75e5,"ips":2.6666666666666665,"maximum":4.22e5,"median":3.595e5,"minimum":3.44e5,"mode":3.59e5,"percentiles":{"50":3.595e5,"99":4.22e5},"sample_size":14,"std_dev":26497.978359543908,"std_dev_ips":0.18843006833453446,"std_dev_ratio":0.07066127562545042}}};
       var runTimes   = suite.run_times;
       var statistics = suite.statistics;
       var sortOrder  = suite.sort_order;
 
-      var inputHeadline = ""
+      var inputHeadline = " (5x ref. (21.7kB))"
 
       drawIpsComparisonChart(statistics, sortOrder, inputHeadline);
       drawComparisonBoxPlot(runTimes, sortOrder, inputHeadline);

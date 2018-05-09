@@ -21,7 +21,11 @@ be found at [https://hexdocs.pm/makeup_elixir](https://hexdocs.pm/makeup_elixir)
 
 ## Benchmarks
 
-### Inlining parsecs
+### Schism: "inline vs no inline"
+
+Should we inline parsec or not?
+Currently this can be done using a config option.
+By default, parsers are not inlined because inlining doubles compilation time.
 
 * Lexing speed:
   [comparison](assets/benchmarks/inline_vs_no_inline-lexing-speed_comparison.html);
@@ -36,7 +40,9 @@ be found at [https://hexdocs.pm/makeup_elixir](https://hexdocs.pm/makeup_elixir)
   [without inlined parsecs](assets/benchmarks/inline_vs_no_inline-compilation-speed_without_inline.html).
   As expected, compiling the inlined parsecs is much slower (about 2x slower)
 
-### Postprocessing the token lists using map lookup VS pattern matching
+### Schism: "map lookup vs pattern matching"
+
+Postprocessing the token lists using map lookup VS pattern matching
 
 * Lexing speed:
   [comparison](assets/benchmarks/map_lookup_vs_pattern_matching-lexing-speed_comparison.html);
@@ -48,19 +54,12 @@ be found at [https://hexdocs.pm/makeup_elixir](https://hexdocs.pm/makeup_elixir)
 * Compilation speed:
   [comparison](assets/benchmarks/map_lookup_vs_pattern_matching-compilation-speed_comparison.html);
   [map lookup](assets/benchmarks/map_lookup_vs_pattern_matching-compilation-speed_map_lookup.html);
-  [pattern matching](assets/benchmarks/map_lookup_vs_pattern_matching-compilation-speed_pattern matching.html).
+  [pattern matching](assets/benchmarks/map_lookup_vs_pattern_matching-compilation-speed_pattern_matching.html).
 
-### Keep language-specific metadata
+### Schism: "parse delimiter pairs"
 
-This is important if one wants to embed a lexer inside another lexer.
-Unfortunately, it does slow down the lexer a bit.
+This lexer used to use a very expensive operation to match some delimiters,
+which seemed to have supralinear complexity.
+Now, only a couple delimiters are parsed like this.
 
-* Lexing speed:
-  [comparison](assets/benchmarks/language_metadata-lexing-speed_comparison.html);
-  [with language metadata](assets/benchmarks/language_metadata-lexing-speed_with_language_metadata.html);
-  [without language metadata](assets/benchmarks/language_metadata-lexing-speed_without_language_metadata.html).
-
-* Compilation speed:
-  [comparison](assets/benchmarks/language_metadata-compilation-speed_comparison.html);
-  [with language metadata](assets/benchmarks/language_metadata-compilation-speed_with_with_language_metadata.html);
-  [without language metadata](assets/benchmarks/language_metadata-compilation-speed_without_language_metadata.html).
+* [Benchmark](assets/benchmarks/delimited_pairs-complexity.html)

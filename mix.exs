@@ -1,10 +1,12 @@
 defmodule MakeupElixir.Mixfile do
   use Mix.Project
 
+  @version "0.5.0"
+
   def project do
     [
       app: :makeup_elixir,
-      version: "0.4.0",
+      version: @version,
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps(),

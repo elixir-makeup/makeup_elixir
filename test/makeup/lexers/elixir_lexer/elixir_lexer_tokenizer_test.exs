@@ -23,9 +23,9 @@ defmodule ElixirLexerTokenizerTestSnippet do
   end
 
   test "unused variables" do
-    assert lex("_123") == [{:comment_special, %{}, "_123"}]
-    assert lex("_a") == [{:comment_special, %{}, "_a"}]
-    assert lex("_unused") == [{:comment_special, %{}, "_unused"}]
+    assert lex("_123") == [{:comment, %{}, "_123"}]
+    assert lex("_a") == [{:comment, %{}, "_a"}]
+    assert lex("_unused") == [{:comment, %{}, "_unused"}]
   end
 
   describe "iex prompt" do

@@ -480,6 +480,10 @@ end
   defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_builtin_pseudo, do:
     [{:name_builtin_pseudo, attrs, text} | postprocess_helper(tokens)]
 
+  # Unused variables
+  defp postprocess_helper([{:name, attrs, "_" <> _name = text} | tokens]), do:
+    [{:comment_special, attrs, text} | postprocess_helper(tokens)]
+
   # Otherwise, don't do anything with the current token and go to the next token.
   defp postprocess_helper([token | tokens]), do: [token | postprocess_helper(tokens)]
 

@@ -17,6 +17,17 @@ defmodule ElixirLexerTokenizerTestSnippet do
     |> Enum.map(fn {ttype, meta, value} -> {ttype, Map.delete(meta, :language), value} end)
   end
 
+  test "builtins" do
+    # is a builtin and not an unused variable!
+    assert lex("_") == [{:name_builtin_pseudo, %{}, "_"}]
+  end
+
+  test "unused variables" do
+    assert lex("_123") == [{:comment_special, %{}, "_123"}]
+    assert lex("_a") == [{:comment_special, %{}, "_a"}]
+    assert lex("_unused") == [{:comment_special, %{}, "_unused"}]
+  end
+
   describe "iex prompt" do
     test "parses iex prompt correctly (first line)" do
       assert lex("iex>") == [{:generic_prompt, %{selectable: false}, "iex>"}]

@@ -315,6 +315,7 @@ defmodule Makeup.Lexers.ElixirLexer do
     choice([string("iex"), string("...")])
     |> optional(string("(") |> concat(digits) |> string(")"))
     |> string(">")
+    |> optional(string(" "))
     |> token(:generic_prompt, %{selectable: false})
 
   stacktrace =

@@ -36,8 +36,13 @@ defmodule ElixirLexerTokenizerTestSnippet do
     end
 
     test "accepts correct iex prompt (continuation)" do
-      # misses the `>`
       assert lex("...>") == [{:generic_prompt, %{selectable: false}, "...>"}]
+    end
+
+    test "parses iex prompt with extra space" do
+      assert lex("iex> ") == [{:generic_prompt, %{selectable: false}, "iex> "}]
+      assert lex("iex(1)> ") == [{:generic_prompt, %{selectable: false}, "iex(1)> "}]
+      assert lex("...(12)> ") == [{:generic_prompt, %{selectable: false}, "...(12)> "}]
     end
 
     test "rejects incomplete iex prompt (first line)" do
@@ -235,7 +240,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
   end
 
   describe "stacktrace" do
-    test "raw stacktrace" do
+    test "raw" do
       # real error from a `mix docs` task (some problem when interfacing with node)
       assert lex("""
       ** (ErlangError) Erlang error: :eacces
@@ -259,7 +264,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
       ]
     end
 
-    test "stacktrace inside iex" do
+    test "inside iex" do
       assert lex("""
       iex> raise_error
       ** (ErlangError) Erlang error: :eacces
@@ -268,8 +273,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
       iex> 1 + 2
       3
       """) == [
-        {:generic_prompt, %{selectable: false}, "iex>"},
-        {:whitespace, %{}, " "},
+        {:generic_prompt, %{selectable: false}, "iex> "},
         {:name, %{}, "raise_error"},
         {:whitespace, %{}, "\n"},
         {:generic_traceback, %{},
@@ -279,8 +283,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
              (elixir) lib/system.ex:629: System.cmd/3\
          """},
         {:whitespace, %{}, "\n"},
-        {:generic_prompt, %{selectable: false}, "iex>"},
-        {:whitespace, %{}, " "},
+        {:generic_prompt, %{selectable: false}, "iex> "},
         {:number_integer, %{}, "1"},
         {:whitespace, %{}, " "},
         {:operator, %{}, "+"},

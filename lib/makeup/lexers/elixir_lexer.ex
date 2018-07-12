@@ -456,12 +456,12 @@ end
     case cond for if unless try receive raise
     quote unquote unquote_splicing throw super]
   @keyword_declaration ~W[
-    def defp defmodule defprotocol defmacro defmacrop
+    def defp defmodule defprotocol defmacro defmacrop defguard defguardp
     defdelegate defexception defstruct defimpl defcallback]
   @operator_word ~W[not and or when in]
   @keyword_namespace ~W[import require use alias]
   @name_constant ~W[nil true false]
-  @name_builtin_pseudo ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
+  @name_builtin_pseudo ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__ __STACKTRACE__]
 
   defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword, do:
     [{:keyword, attrs, text} | postprocess_helper(tokens)]

@@ -91,6 +91,11 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   operator = token(operator_name, :operator)
 
+  # The lexer needs to test these before `>>` and `<<`
+  bitshifts =
+    word_from_list(~W(<<< >>>))
+    |> token(:operator)
+
   special_atom_name =
     word_from_list(~W(... <<>> %{} %{ % {}))
 
@@ -169,15 +174,23 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> choice([operator_name, normal_atom_name])
     |> token(:string_symbol)
 
+  unicode_char_in_string =
+    string("\\u")
+    |> ascii_string([?0..?9, ?a..?f, ?A..?F], 4)
+    |> token(:string_escape)
+
+
   escaped_char =
     string("\\")
     |> utf8_string([], 1)
-    |> token(:string_char)
+    |> token(:string_escape)
+
+  combinators_inside_string = [unicode_char_in_string, escaped_char, interpolation]
 
   string_atom =
     choice([
-      string_like(":\"", "\"", [escaped_char, interpolation], :string_symbol),
-      string_like(":'", "'", [escaped_char, interpolation], :string_symbol)
+      string_like(":\"", "\"", combinators_inside_string, :string_symbol),
+      string_like(":'", "'", combinators_inside_string, :string_symbol)
     ])
 
   atom =
@@ -190,8 +203,8 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   string_keyword =
     choice([
-      string_like("\"", "\"", [escaped_char, interpolation], :string_symbol),
-      string_like("'", "'", [escaped_char, interpolation], :string_symbol)
+      string_like("\"", "\"", combinators_inside_string, :string_symbol),
+      string_like("'", "'", combinators_inside_string, :string_symbol)
     ])
     |> concat(token(string(":"), :punctuation))
 
@@ -229,7 +242,7 @@ defmodule Makeup.Lexers.ElixirLexer do
         ldelim,
         rdelim,
         normal_sigil_interpol_range,
-        [escaped_char, interpolation],
+        combinators_inside_string,
         :string_sigil)
     end
 
@@ -245,7 +258,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_string_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?s], [escaped_char, interpolation], :string)
+      sigil(ldelim, rdelim, [?s], combinators_inside_string, :string)
     end
 
   sigils_string_no_interpol =
@@ -255,7 +268,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_charlist_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?c], [escaped_char, interpolation], :string)
+      sigil(ldelim, rdelim, [?c], combinators_inside_string, :string)
     end
 
   sigils_charlist_no_interpol =
@@ -265,7 +278,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_regex_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?r], [escaped_char, interpolation], :string_regex)
+      sigil(ldelim, rdelim, [?r], combinators_inside_string, :string_regex)
     end
 
   sigils_regex_no_interpol =
@@ -276,7 +289,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   # Dates (both naïve and with timezone)
   sigils_date_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?d, ?n], [escaped_char, interpolation], :literal_date)
+      sigil(ldelim, rdelim, [?d, ?n], combinators_inside_string, :literal_date)
     end
 
   sigils_date_no_interpol =
@@ -296,10 +309,10 @@ defmodule Makeup.Lexers.ElixirLexer do
     sigils_date_interpol ++
     sigils_date_no_interpol
 
-  double_quoted_string_interpol = string_like("\"", "\"", [escaped_char, interpolation], :string)
-  single_quoted_string_interpol = string_like("'", "'", [escaped_char, interpolation], :string_char)
-  double_quoted_heredocs = string_like(~S["""], ~S["""], [escaped_char, interpolation], :string)
-  single_quoted_heredocs = string_like("'''", "'''", [escaped_char, interpolation], :string_char)
+  double_quoted_string_interpol = string_like("\"", "\"", combinators_inside_string, :string)
+  single_quoted_string_interpol = string_like("'", "'", combinators_inside_string, :string_char)
+  double_quoted_heredocs = string_like(~S["""], ~S["""], combinators_inside_string, :string)
+  single_quoted_heredocs = string_like("'''", "'''", combinators_inside_string, :string_char)
 
   line =
     repeat_until(utf8_string([], 1), [ascii_char([?\n])])
@@ -356,7 +369,9 @@ defmodule Makeup.Lexers.ElixirLexer do
       # Module attributes
       attribute,
       # Anonymous function arguments (must come before the operators)
-      anon_function_arguments
+      anon_function_arguments,
+      # Bitwise operators must match first
+      bitshifts
       # Matching delimiters
     ] ++ delimiter_pairs ++ [
       # Triple dot (must come before operators)

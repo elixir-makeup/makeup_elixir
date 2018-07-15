@@ -65,8 +65,11 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
       {"{...}", fn s -> "{#{s}}" end},
       {"%{...}", fn s -> "%{#{s}}" end},
       {"%Struct{...}", fn s -> "%Struct{#{s}}" end},
-      {"#OpaqueStruct<...>", fn s -> "#OpaqueStruct<#{s}>" end},
-      {"<<...>>", fn s -> "<<#{s}>>" end}
+      # Extra whitespace in order to avoid syntax errors with the bitwise operators
+      {"#OpaqueStruct<...>", fn s -> "#OpaqueStruct< #{s} >" end},
+      # Extra whitespace for the same reason
+      # TODO: find a better way to fix this without requiring the whitespace
+      {"<<...>>", fn s -> "<< #{s} >>" end}
     ]
   end
 

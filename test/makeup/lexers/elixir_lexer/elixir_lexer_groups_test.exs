@@ -1,6 +1,6 @@
 defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
-  use ExUnit.Case, async: false
   # The tests need to be checked manually!!! (remove this line when they've been checked)
+  use ExUnit.Case, async: true
   alias Makeup.Lexers.ElixirLexer
   alias Makeup.Lexer.Postprocess
 
@@ -145,11 +145,13 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`do ... end` + `<<...>>`" do
-      assert lex("do <<x>> end") == [
+      assert lex("do << x >> end") == [
         {:keyword, %{group_id: "group-1"}, "do"},
         {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-1"}, "end"}
@@ -355,17 +357,21 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`do ... else ... end` + `<<...>>`" do
-      assert lex("do <<x>> else <<x>> end") == [
+      assert lex("do << x >> else << x >> end") == [
         {:keyword, %{group_id: "group-1"}, "do"},
         {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-1"}, "else"},
         {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-3"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-3"}, ">>"},
         {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-1"}, "end"}
@@ -517,13 +523,15 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`fn ... end` + `<<...>>`" do
-      assert lex("fn -> <<x>> end") == [
+      assert lex("fn -> << x >> end") == [
         {:keyword, %{group_id: "group-1"}, "fn"},
         {:whitespace, %{}, " "},
         {:operator, %{}, "->"},
         {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-1"}, "end"}
@@ -639,10 +647,12 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`(...)` + `<<...>>`" do
-      assert lex("(<<x>>)") == [
+      assert lex("(<< x >>)") == [
         {:punctuation, %{group_id: "group-1"}, "("},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:punctuation, %{group_id: "group-1"}, ")"}
       ]
@@ -757,10 +767,12 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`[...]` + `<<...>>`" do
-      assert lex("[<<x>>]") == [
+      assert lex("[<< x >>]") == [
         {:punctuation, %{group_id: "group-1"}, "["},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:punctuation, %{group_id: "group-1"}, "]"}
       ]
@@ -875,10 +887,12 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`{...}` + `<<...>>`" do
-      assert lex("{<<x>>}") == [
+      assert lex("{<< x >>}") == [
         {:punctuation, %{group_id: "group-1"}, "{"},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:punctuation, %{group_id: "group-1"}, "}"}
       ]
@@ -993,10 +1007,12 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`%{...}` + `<<...>>`" do
-      assert lex("%{<<x>>}") == [
+      assert lex("%{<< x >>}") == [
         {:punctuation, %{group_id: "group-1"}, "%{"},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:punctuation, %{group_id: "group-1"}, "}"}
       ]
@@ -1129,12 +1145,14 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`%Struct{...}` + `<<...>>`" do
-      assert lex("%Struct{<<x>>}") == [
+      assert lex("%Struct{<< x >>}") == [
         {:punctuation, %{group_id: "group-1"}, "%"},
         {:name_class, %{group_id: "group-1"}, "Struct"},
         {:punctuation, %{group_id: "group-1"}, "{"},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:punctuation, %{group_id: "group-1"}, "}"}
       ]
@@ -1285,13 +1303,15 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`#OpaqueStruct<...>` + `<<...>>`" do
-      assert lex("#OpaqueStruct< <<x>> >") == [
+      assert lex("#OpaqueStruct< << x >> >") == [
         {:punctuation, %{group_id: "group-1"}, "#"},
         {:name_class, %{group_id: "group-1"}, "OpaqueStruct"},
         {:punctuation, %{group_id: "group-1"}, "<"},
         {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
         {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">"}
@@ -1299,20 +1319,23 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
     end
 
     test "`<<...>>` + `do ... end`" do
-      assert lex("<<do x end>>") == [
+      assert lex("<< do x end >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-2"}, "do"},
         {:whitespace, %{}, " "},
         {:name, %{}, "x"},
         {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-2"}, "end"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `do ... else ... end`" do
-      assert lex("<<do x else x end>>") == [
+      assert lex("<< do x else x end >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-2"}, "do"},
         {:whitespace, %{}, " "},
         {:name, %{}, "x"},
@@ -1322,13 +1345,15 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
         {:name, %{}, "x"},
         {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-2"}, "end"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `fn ... end`" do
-      assert lex("<<fn -> x end>>") == [
+      assert lex("<< fn -> x end >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-2"}, "fn"},
         {:whitespace, %{}, " "},
         {:operator, %{}, "->"},
@@ -1336,65 +1361,77 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
         {:name, %{}, "x"},
         {:whitespace, %{}, " "},
         {:keyword, %{group_id: "group-2"}, "end"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `(...)`" do
-      assert lex("<<(x)>>") == [
+      assert lex("<< (x) >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "("},
         {:name, %{}, "x"},
         {:punctuation, %{group_id: "group-2"}, ")"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `[...]`" do
-      assert lex("<<[x]>>") == [
+      assert lex("<< [x] >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "["},
         {:name, %{}, "x"},
         {:punctuation, %{group_id: "group-2"}, "]"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `{...}`" do
-      assert lex("<<{x}>>") == [
+      assert lex("<< {x} >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "{"},
         {:name, %{}, "x"},
         {:punctuation, %{group_id: "group-2"}, "}"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `%{...}`" do
-      assert lex("<<%{x}>>") == [
+      assert lex("<< %{x} >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "%{"},
         {:name, %{}, "x"},
         {:punctuation, %{group_id: "group-2"}, "}"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `%Struct{...}`" do
-      assert lex("<<%Struct{x}>>") == [
+      assert lex("<< %Struct{x} >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "%"},
         {:name_class, %{group_id: "group-2"}, "Struct"},
         {:punctuation, %{group_id: "group-2"}, "{"},
         {:name, %{}, "x"},
         {:punctuation, %{group_id: "group-2"}, "}"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `#OpaqueStruct<...>`" do
-      assert lex("<<#OpaqueStruct< x >>>") == [
+      assert lex("<< #OpaqueStruct< x > >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "#"},
         {:name_class, %{group_id: "group-2"}, "OpaqueStruct"},
         {:punctuation, %{group_id: "group-2"}, "<"},
@@ -1402,16 +1439,21 @@ defmodule Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest do
         {:name, %{}, "x"},
         {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end
 
     test "`<<...>>` + `<<...>>`" do
-      assert lex("<<<<x>>>>") == [
+      assert lex("<< << x >> >>") == [
         {:punctuation, %{group_id: "group-1"}, "<<"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, "<<"},
+        {:whitespace, %{}, " "},
         {:name, %{}, "x"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-2"}, ">>"},
+        {:whitespace, %{}, " "},
         {:punctuation, %{group_id: "group-1"}, ">>"}
       ]
     end

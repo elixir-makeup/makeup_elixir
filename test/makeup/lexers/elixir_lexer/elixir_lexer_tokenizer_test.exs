@@ -141,6 +141,24 @@ defmodule ElixirLexerTokenizerTestSnippet do
     end
   end
 
+  test "bitwise operators" do
+    assert lex("1 >>> 2") == [
+      {:number_integer, %{}, "1"},
+      {:whitespace, %{}, " "},
+      {:operator, %{}, ">>>"},
+      {:whitespace, %{}, " "},
+      {:number_integer, %{}, "2"}
+    ]
+
+    assert lex("1 <<< 2") == [
+      {:number_integer, %{}, "1"},
+      {:whitespace, %{}, " "},
+      {:operator, %{}, "<<<"},
+      {:whitespace, %{}, " "},
+      {:number_integer, %{}, "2"}
+    ]
+  end
+
   describe "syntax sugar for keyword lists" do
     test "keys are normal atoms" do
       assert lex("atom: value") == [
@@ -182,9 +200,9 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
       assert lex(~S["\n\s\t": value]) == [
         {:string_symbol, %{}, "\""},
-        {:string_char, %{}, "\\n"},
-        {:string_char, %{}, "\\s"},
-        {:string_char, %{}, "\\t"},
+        {:string_escape, %{}, "\\n"},
+        {:string_escape, %{}, "\\s"},
+        {:string_escape, %{}, "\\t"},
         {:string_symbol, %{}, "\""},
         {:punctuation, %{}, ":"},
         {:whitespace, %{}, " "},
@@ -292,6 +310,29 @@ defmodule ElixirLexerTokenizerTestSnippet do
         {:whitespace, %{}, "\n"},
         {:number_integer, %{}, "3"},
         {:whitespace, %{}, "\n"}
+      ]
+    end
+  end
+
+  describe "strings and sigils" do
+    test "unicode codepoints" do
+      assert lex(~S["\u0000"]) ==  [
+        {:string, %{}, "\""},
+        {:string_escape, %{}, "\\u0000"},
+        {:string, %{}, "\""}
+      ]
+
+      # Uppercase decimal digits are allowed
+      assert lex(~S["\ua1B2"]) ==  [
+        {:string, %{}, "\""},
+        {:string_escape, %{}, "\\ua1B2"},
+        {:string, %{}, "\""}
+      ]
+
+      assert lex(~S["X\ua1B2Y"]) ==  [
+        {:string, %{}, "\"X"},
+        {:string_escape, %{}, "\\ua1B2"},
+        {:string, %{}, "Y\""}
       ]
     end
   end

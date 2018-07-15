@@ -108,6 +108,61 @@ defmodule ElixirLexerTokenizerTestSnippet do
     end
   end
 
+  describe "def-like macros" do
+    test "normal function/macro definition" do
+      assert lex("def f") == [
+        {:keyword_declaration, %{}, "def"},
+        {:whitespace, %{}, " "},
+        {:name_function, %{}, "f"}
+      ]
+
+      assert lex("defp g") == [
+        {:keyword_declaration, %{}, "defp"},
+        {:whitespace, %{}, " "},
+        {:name_function, %{}, "g"}
+      ]
+
+      assert lex("defguard h") == [
+        {:keyword_declaration, %{}, "defguard"},
+        {:whitespace, %{}, " "},
+        {:name_function, %{}, "h"}
+      ]
+    end
+
+    test "operator definition" do
+      # Must not highlight the first argument!
+      assert lex("def a + b") == [
+        {:keyword_declaration, %{}, "def"},
+        {:whitespace, %{}, " "},
+        {:name, %{}, "a"},
+        {:whitespace, %{}, " "},
+        {:operator, %{}, "+"},
+        {:whitespace, %{}, " "},
+        {:name, %{}, "b"}
+      ]
+
+      assert lex("defp a - b") == [
+        {:keyword_declaration, %{}, "defp"},
+        {:whitespace, %{}, " "},
+        {:name, %{}, "a"},
+        {:whitespace, %{}, " "},
+        {:operator, %{}, "-"},
+        {:whitespace, %{}, " "},
+        {:name, %{}, "b"}
+      ]
+
+      assert lex("defguard a <<< b") == [
+        {:keyword_declaration, %{}, "defguard"},
+        {:whitespace, %{}, " "},
+        {:name, %{}, "a"},
+        {:whitespace, %{}, " "},
+        {:operator, %{}, "<<<"},
+        {:whitespace, %{}, " "},
+        {:name, %{}, "b"}
+      ]
+    end
+  end
+
   describe "anonymous functions" do
     test "accepts anonymous function argument" do
       assert lex("&1") == [{:name_entity, %{}, "&1"}]

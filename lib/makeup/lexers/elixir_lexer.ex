@@ -424,7 +424,17 @@ defmodule Makeup.Lexers.ElixirLexer do
   # Step #2: postprocess the list of tokens
   ###################################################################
 
-  @def_like ~W[def defp defprotocol defmacro defmacrop defimpl defcallback]
+  @def_like ~W[def defp defmacro defmacrop defguard defguardp defcallback defmacrocallback]
+  @keyword_declaration @def_like ++ ~W[
+    defmodule defprotocol defdelegate defexception defstruct defimpl defcallback]
+  @keyword ~W[
+    fn do end after else rescue catch with
+    case cond for if unless try receive raise
+    quote unquote unquote_splicing throw super]
+  @operator_word ~W[not and or when in]
+  @keyword_namespace ~W[import require use alias]
+  @name_constant ~W[nil true false]
+  @name_builtin_pseudo ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
 
   # The `postprocess/1` function will require a major redesign when we decide to support
   # custom `def`-like keywords supplied by the user.
@@ -466,17 +476,6 @@ end
     [{:keyword_declaration, attrs1, text1}, ws, {:name_function, attrs2, text2} | postprocess_helper(tokens)]
   end
 
-  @keyword ~W[
-    fn do end after else rescue catch with
-    case cond for if unless try receive raise
-    quote unquote unquote_splicing throw super]
-  @keyword_declaration ~W[
-    def defp defmodule defprotocol defmacro defmacrop
-    defdelegate defexception defstruct defimpl defcallback]
-  @operator_word ~W[not and or when in]
-  @keyword_namespace ~W[import require use alias]
-  @name_constant ~W[nil true false]
-  @name_builtin_pseudo ~W[_ __MODULE__ __DIR__ __ENV__ __CALLER__]
 
   defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword, do:
     [{:keyword, attrs, text} | postprocess_helper(tokens)]

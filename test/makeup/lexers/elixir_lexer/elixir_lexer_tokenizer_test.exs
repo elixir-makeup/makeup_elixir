@@ -1,21 +1,6 @@
 defmodule ElixirLexerTokenizerTestSnippet do
   use ExUnit.Case, async: false
-  alias Makeup.Lexers.ElixirLexer
-  alias Makeup.Lexer.Postprocess
-
-  # This function has three purposes:
-  # 1. Ensure deterministic lexer output (no random prefix)
-  # 2. Convert the token values into binaries so that the output
-  #    is more obvious on visual inspection
-  #    (iolists are hard to parse by a human)
-  # 3. remove language metadata
-
-  def lex(text) do
-    text
-    |> ElixirLexer.lex(group_prefix: "group")
-    |> Postprocess.token_values_to_binaries()
-    |> Enum.map(fn {ttype, meta, value} -> {ttype, Map.delete(meta, :language), value} end)
-  end
+  import Makeup.Lexers.ElixirLexer.Testing, only: [lex: 1]
 
   test "builtins" do
     # is a builtin and not an unused variable!
@@ -366,6 +351,49 @@ defmodule ElixirLexerTokenizerTestSnippet do
         {:number_integer, %{}, "3"},
         {:whitespace, %{}, "\n"}
       ]
+    end
+  end
+
+  @sigil_delimiters [
+    {~S["""], ~S["""]},
+    {"'''", "'''"},
+    {"\"", "\""},
+    {"'", "'"},
+    {"/", "/"},
+    {"{", "}"},
+    {"[", "]"},
+    {"(", ")"}
+  ]
+
+  describe "interpolation" do
+    test "sigils with interpolation (lowercase letters)" do
+      for b <- ?a..?z do
+        for {llim, rlim} <- @sigil_delimiters do
+          left = "~#{<< b >>}#{llim}x"
+          middle = "\#{y}"
+          right = "z#{rlim}"
+
+          sigil = left <> middle <> right
+
+          assert [
+            {sigil_tag, %{}, ^left},
+            {:string_interpol, %{group_id: "group-1"}, "\#{"},
+            {:name, %{}, "y"},
+            {:string_interpol, %{group_id: "group-1"}, "}"},
+            {sigil_tag, %{}, ^right}
+          ] = lex(sigil)
+        end
+      end
+    end
+
+    test "sigils without interpolation (uppercase letter)" do
+      for b <- ?A..?Z do
+        for {llim, rlim} <- @sigil_delimiters, {llim, rlim} != {"{", "}"} do
+          sigil = "~#{<< b >>}#{llim}x\#{y}z#{rlim}"
+
+          assert [{_sigil_tag, %{}, ^sigil}] = lex(sigil)
+        end
+      end
     end
   end
 

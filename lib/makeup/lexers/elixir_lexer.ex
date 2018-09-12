@@ -252,7 +252,7 @@ defmodule Makeup.Lexers.ElixirLexer do
         ldelim,
         rdelim,
         normal_sigil_no_interpol_range,
-        [escape_delim(rdelim), interpolation],
+        [escape_delim(rdelim)],
         :string_sigil)
     end
 
@@ -263,7 +263,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_string_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?S], [escape_delim(rdelim), interpolation], :string)
+      sigil(ldelim, rdelim, [?S], [escape_delim(rdelim)], :string)
     end
 
   sigils_charlist_interpol =
@@ -273,7 +273,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_charlist_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?C], [escape_delim(rdelim), interpolation], :string)
+      sigil(ldelim, rdelim, [?C], [escape_delim(rdelim)], :string)
     end
 
   sigils_regex_interpol =
@@ -283,7 +283,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_regex_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?R], [escape_delim(rdelim), interpolation], :string_regex)
+      sigil(ldelim, rdelim, [?R], [escape_delim(rdelim)], :string_regex)
     end
 
   # Dates (both naïve and with timezone)
@@ -294,7 +294,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_date_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?D, ?N], [escape_delim(rdelim), interpolation], :literal_date)
+      sigil(ldelim, rdelim, [?D, ?N], [escape_delim(rdelim)], :literal_date)
     end
 
   all_sigils =

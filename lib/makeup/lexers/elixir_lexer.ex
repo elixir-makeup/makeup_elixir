@@ -411,12 +411,12 @@ defmodule Makeup.Lexers.ElixirLexer do
   # embed an Elixir lexer into another lexer, but other than that, they are not
   # meant to be used by end-users.
 
-  @impl Makeup.Lexer
+  # @impl Makeup.Lexer
   defparsec :root_element,
     root_element_combinator |> map({__MODULE__, :__as_elixir_language__, []}),
     inline: @inline
 
-  @impl Makeup.Lexer
+  # @impl Makeup.Lexer
   defparsec :root,
     repeat(parsec(:root_element)), inline: @inline
 

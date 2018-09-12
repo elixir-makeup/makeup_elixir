@@ -1,7 +1,7 @@
 defmodule MakeupElixir.Mixfile do
   use Mix.Project
 
-  @version "0.8.0"
+  @version "0.8.1"
   @url "https://github.com/tmbb/makeup_elixir"
 
   def project do
@@ -50,7 +50,7 @@ defmodule MakeupElixir.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:makeup, "~> 0.5.0"},
+      {:makeup, "~> 0.5.4"},
       {:benchee, "~> 0.13", only: [:dev, :test]}
     ]
   end

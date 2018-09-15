@@ -1,7 +1,6 @@
 defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
   require EEx
-  alias Makeup.Lexers.ElixirLexer
-  alias Makeup.Lexer.Postprocess
+  import Makeup.Lexers.ElixirLexer.Testing, only: [lex: 1]
 
   def indent(text, n) do
     text
@@ -11,31 +10,12 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
     |> String.trim_leading
   end
 
-  def lex(text) do
-    text
-    |> ElixirLexer.lex(group_prefix: "group")
-    |> Postprocess.token_values_to_binaries()
-    |> Enum.map(fn {ttype, meta, value} -> {ttype, Map.delete(meta, :language), value} end)
-  end
-
   EEx.function_from_string :def, :gen_group_test_file, """
   defmodule <%= @name %> do
     # The tests need to be checked manually!!! (remove this line when they've been checked)
     use ExUnit.Case, async: true
-    alias Makeup.Lexers.ElixirLexer
-    alias Makeup.Lexer.Postprocess
-
-    # This function has two purposes:
-    # 1. Ensure deterministic lexer output (no random prefix)
-    # 2. Convert the token values into binaries so that the output
-    #    is more obvious on visual inspection
-    #    (iolists are hard to parse by a human)
-    def lex(text) do
-      text
-      |> ElixirLexer.lex(group_prefix: "group")
-      |> Postprocess.token_values_to_binaries()
-      |> Enum.map(fn {ttype, meta, value} -> {ttype, Map.delete(meta, :language), value} end)
-    end
+    import Makeup.Lexers.ElixirLexer.Testing, only: [lex: 1]
+    alias Makeup.Lexer
 
     describe "all group transitions" do\
   <%= for {name1, fun1} <- @funs do %><%= for {name2, fun2} <- @funs do %>
@@ -49,7 +29,9 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
       |> Code.format_string!
       |> Enum.join
       |> indent(6) %>
-        assert lex(<%= inspect input %>) == <%= output %>
+        code = <%= inspect(input) %>
+        assert lex(code) == <%= output %>
+        assert code |> lex() |> Lexer.unlex() == code
       end<% end %><% end %>
     end
   end

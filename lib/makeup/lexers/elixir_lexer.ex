@@ -179,13 +179,33 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> ascii_string([?0..?9, ?a..?f, ?A..?F], 4)
     |> token(:string_escape)
 
-
   escaped_char =
     string("\\")
     |> utf8_string([], 1)
     |> token(:string_escape)
 
-  combinators_inside_string = [unicode_char_in_string, escaped_char, interpolation]
+  # We must support iex prompts inside a string, sigil or heredoc.
+  # For example:
+  #
+  #   iex(1)> a = """
+  #   ...(1)> line1
+  #   ...(1)> line2
+  #   ...(1)> """
+  #
+  # Inside the string we don't expect the `iex>` prompt, only the `...>` prompt.
+  iex_prompt_inside_string =
+    string("\n...")
+    |> optional(string("(") |> concat(digits) |> string(")"))
+    |> string(">")
+    |> optional(string(" "))
+    |> token(:generic_prompt, %{selectable: false})
+
+  combinators_inside_string = [
+    unicode_char_in_string,
+    escaped_char,
+    interpolation,
+    iex_prompt_inside_string,
+  ]
 
   string_atom =
     choice([
@@ -252,7 +272,7 @@ defmodule Makeup.Lexers.ElixirLexer do
         ldelim,
         rdelim,
         normal_sigil_no_interpol_range,
-        [escape_delim(rdelim)],
+        [escape_delim(rdelim), iex_prompt_inside_string],
         :string_sigil)
     end
 
@@ -263,7 +283,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_string_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?S], [escape_delim(rdelim)], :string)
+      sigil(ldelim, rdelim, [?S], [escape_delim(rdelim), iex_prompt_inside_string], :string)
     end
 
   sigils_charlist_interpol =
@@ -273,7 +293,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_charlist_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?C], [escape_delim(rdelim)], :string)
+      sigil(ldelim, rdelim, [?C], [escape_delim(rdelim), iex_prompt_inside_string], :string)
     end
 
   sigils_regex_interpol =
@@ -283,7 +303,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_regex_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?R], [escape_delim(rdelim)], :string_regex)
+      sigil(ldelim, rdelim, [?R], [escape_delim(rdelim), iex_prompt_inside_string], :string_regex)
     end
 
   # Dates (both naïve and with timezone)
@@ -294,7 +314,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_date_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?D, ?N], [escape_delim(rdelim)], :literal_date)
+      sigil(ldelim, rdelim, [?D, ?N], [escape_delim(rdelim), iex_prompt_inside_string], :literal_date)
     end
 
   all_sigils =
@@ -313,6 +333,18 @@ defmodule Makeup.Lexers.ElixirLexer do
   single_quoted_string_interpol = string_like("'", "'", combinators_inside_string, :string_char)
   double_quoted_heredocs = string_like(~S["""], ~S["""], combinators_inside_string, :string)
   single_quoted_heredocs = string_like("'''", "'''", combinators_inside_string, :string_char)
+
+  # `#PID<123.456.789>`
+  pid =
+    token("#", :punctuation)
+    |> concat(token("PID", :name_class))
+    |> concat(token("<", :punctuation))
+    |> concat(number_integer)
+    |> concat(token(".", :operator))
+    |> concat(number_integer)
+    |> concat(token(".", :operator))
+    |> concat(number_integer)
+    |> concat(token(">", :punctuation))
 
   line =
     repeat_until(utf8_string([], 1), [ascii_char([?\n])])
@@ -344,6 +376,8 @@ defmodule Makeup.Lexers.ElixirLexer do
       # START of IEx-specific tokens
       # IEx prompt must come before names
       newlines |> choice([iex_prompt, stacktrace]),
+      # a PID is a special kind of opaque struct
+      pid,
       # Opaque struct (must come before inline comments)
       opaque_struct,
       # END of IEx-specific tokens

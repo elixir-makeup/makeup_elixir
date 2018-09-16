@@ -365,6 +365,14 @@ defmodule ElixirLexerTokenizerTestSnippet do
     {"(", ")"}
   ]
 
+  # A subset of `@sigil_delimiters`
+  @string_like_delimiters [
+    {~S["""], ~S["""]},
+    {"'''", "'''"},
+    {"\"", "\""},
+    {"'", "'"}
+  ]
+
   describe "interpolation" do
     test "sigils with interpolation (lowercase letters)" do
       for b <- ?a..?z do
@@ -418,5 +426,137 @@ defmodule ElixirLexerTokenizerTestSnippet do
         {:string, %{}, "Y\""}
       ]
     end
+  end
+
+  test "iex prompt inside string" do
+    code = """
+    iex> a = "
+    ...> ine1
+    ...> line2
+    ...> ilne3
+    ...> "
+    """
+
+    assert lex(code) == [
+      {:generic_prompt, %{selectable: false}, "iex> "},
+      {:name, %{}, "a"},
+      {:whitespace, %{}, " "},
+      {:operator, %{}, "="},
+      {:whitespace, %{}, " "},
+      {:string, %{}, "\""},
+      {:generic_prompt, %{selectable: false}, "\n...> "},
+      {:string, %{}, "ine1"},
+      {:generic_prompt, %{selectable: false}, "\n...> "},
+      {:string, %{}, "line2"},
+      {:generic_prompt, %{selectable: false}, "\n...> "},
+      {:string, %{}, "ilne3"},
+      {:generic_prompt, %{selectable: false}, "\n...> "},
+      {:string, %{}, "\""},
+      {:whitespace, %{}, "\n"}
+    ]
+  end
+
+  # Generalization of the above
+  test "iex prompt inside strings, charlists and heredocs" do
+    for prompt_number <- ["", "(1)", "(22)"] do
+      for {ldelim, rdelim} <- @string_like_delimiters do
+        code = ~s'''
+        iex#{prompt_number}> x = #{ldelim}
+        ...#{prompt_number}> line1
+        ...#{prompt_number}> line2
+        ...#{prompt_number}> line3
+        ...#{prompt_number}> #{rdelim}
+        '''
+
+        first_prompt = "iex#{prompt_number}> "
+        other_prompt = "\n...#{prompt_number}> "
+
+        assert [
+          {:generic_prompt, %{selectable: false}, ^first_prompt},
+          {:name, %{}, "x"},
+          {:whitespace, %{}, " "},
+          {:operator, %{}, "="},
+          {:whitespace, %{}, " "},
+          {ttype, %{}, ^ldelim},
+          {:generic_prompt, %{selectable: false}, ^other_prompt},
+          {ttype, %{}, "line1"},
+          {:generic_prompt, %{selectable: false}, ^other_prompt},
+          {ttype, %{}, "line2"},
+          {:generic_prompt, %{selectable: false}, ^other_prompt},
+          {ttype, %{}, "line3"},
+          {:generic_prompt, %{selectable: false}, ^other_prompt},
+          {ttype, %{}, ^rdelim},
+          {:whitespace, %{}, "\n"}
+        ] = lex(code)
+      end
+    end
+  end
+
+  test "iex prompt inside sigils (not strings, charlists or heredocs)" do
+    lowercase = Enum.map(?a..?z, fn c -> <<"~", c>> end)
+    uppercase = Enum.map(?A..?Z, fn c -> <<"~", c>> end)
+    sigil_prefixes = lowercase ++ uppercase
+    for prompt_number <- ["", "(1)", "(22)"] do
+      for {ldelim, rdelim} <- @sigil_delimiters do
+        for sigil_prefix <- sigil_prefixes do
+          code = ~s'''
+          iex#{prompt_number}> x = #{sigil_prefix}#{ldelim}
+          ...#{prompt_number}> line1
+          ...#{prompt_number}> line2
+          ...#{prompt_number}> line3
+          ...#{prompt_number}> #{rdelim}
+          '''
+
+          first_prompt = "iex#{prompt_number}> "
+          other_prompt = "\n...#{prompt_number}> "
+
+          sigil_start = sigil_prefix <> ldelim
+
+          assert [
+            {:generic_prompt, %{selectable: false}, ^first_prompt},
+            {:name, %{}, "x"},
+            {:whitespace, %{}, " "},
+            {:operator, %{}, "="},
+            {:whitespace, %{}, " "},
+            {ttype, %{}, ^sigil_start},
+            {:generic_prompt, %{selectable: false}, ^other_prompt},
+            {ttype, %{}, "line1"},
+            {:generic_prompt, %{selectable: false}, ^other_prompt},
+            {ttype, %{}, "line2"},
+            {:generic_prompt, %{selectable: false}, ^other_prompt},
+            {ttype, %{}, "line3"},
+            {:generic_prompt, %{selectable: false}, ^other_prompt},
+            {ttype, %{}, ^rdelim},
+            {:whitespace, %{}, "\n"}
+          ] = lex(code)
+        end
+      end
+    end
+  end
+
+  test "PIDs" do
+    assert lex("#PID<0.489.0>") == [
+      {:punctuation, %{group_id: "group-1"}, "#"},
+      {:name_class, %{group_id: "group-1"}, "PID"},
+      {:punctuation, %{group_id: "group-1"}, "<"},
+      {:number_integer, %{}, "0"},
+      {:operator, %{}, "."},
+      {:number_integer, %{}, "489"},
+      {:operator, %{}, "."},
+      {:number_integer, %{}, "0"},
+      {:punctuation, %{group_id: "group-1"}, ">"}
+    ]
+
+    assert lex("#PID<112.489.940>") == [
+      {:punctuation, %{group_id: "group-1"}, "#"},
+      {:name_class, %{group_id: "group-1"}, "PID"},
+      {:punctuation, %{group_id: "group-1"}, "<"},
+      {:number_integer, %{}, "112"},
+      {:operator, %{}, "."},
+      {:number_integer, %{}, "489"},
+      {:operator, %{}, "."},
+      {:number_integer, %{}, "940"},
+      {:punctuation, %{group_id: "group-1"}, ">"}
+    ]
   end
 end

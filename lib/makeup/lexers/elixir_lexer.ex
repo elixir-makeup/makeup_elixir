@@ -20,11 +20,11 @@ defmodule Makeup.Lexers.ElixirLexer do
   # TODO: check we're following this convention
   # NOTE: if Elixir had a good static type system it would hep us do the right thing here.
 
-  whitespace = ascii_string([?\s, ?\n], min: 1) |> token(:whitespace)
+  whitespace = ascii_string([?\s, ?\n, ?\f], min: 1) |> token(:whitespace)
 
   newlines =
     string("\n")
-    |> optional(ascii_string([?\s, ?\n], min: 1))
+    |> optional(ascii_string([?\s, ?\n, ?\f], min: 1))
     |> token(:whitespace)
 
   any_char = utf8_char([]) |> token(:error)

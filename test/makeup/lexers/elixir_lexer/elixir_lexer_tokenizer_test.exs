@@ -2,6 +2,10 @@ defmodule ElixirLexerTokenizerTestSnippet do
   use ExUnit.Case, async: false
   import Makeup.Lexers.ElixirLexer.Testing, only: [lex: 1]
 
+  test "?\\f is recognized as whitespace character" do
+    assert lex("\f") == [{:whitespace, %{}, "\f"}]
+  end
+
   test "builtins" do
     # is a builtin and not an unused variable!
     assert lex("_") == [{:name_builtin_pseudo, %{}, "_"}]

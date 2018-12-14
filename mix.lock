@@ -10,5 +10,5 @@
   "jason": {:hex, :jason, "1.0.0", "0f7cfa9bdb23fed721ec05419bcee2b2c21a77e926bce0deda029b5adc716fe2", [:mix], [{:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm"},
   "makeup": {:hex, :makeup, "0.5.5", "9e08dfc45280c5684d771ad58159f718a7b5788596099bdfb0284597d368a882", [:mix], [{:nimble_parsec, "~> 0.4", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm"},
   "makeup_elixir": {:hex, :makeup_elixir, "0.8.0", "1204a2f5b4f181775a0e456154830524cf2207cf4f9112215c05e0b76e4eca8b", [:mix], [{:makeup, "~> 0.5.0", [hex: :makeup, repo: "hexpm", optional: false]}, {:nimble_parsec, "~> 0.2.2", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm"},
-  "nimble_parsec": {:hex, :nimble_parsec, "0.4.0", "ee261bb53214943679422be70f1658fff573c5d0b0a1ecd0f18738944f818efe", [:mix], [], "hexpm"},
+  "nimble_parsec": {:hex, :nimble_parsec, "0.5.0", "90e2eca3d0266e5c53f8fbe0079694740b9c91b6747f2b7e3c5d21966bba8300", [:mix], [], "hexpm"},
 }

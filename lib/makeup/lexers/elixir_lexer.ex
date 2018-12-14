@@ -347,7 +347,7 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> concat(token(">", :punctuation))
 
   line =
-    repeat_until(utf8_string([], 1), [ascii_char([?\n])])
+    repeat(lookahead_not(ascii_char([?\n])) |> utf8_string([], 1))
 
   inline_comment =
     string("#")

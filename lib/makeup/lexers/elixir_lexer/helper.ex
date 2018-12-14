@@ -22,10 +22,10 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
     choices = middle ++ [utf8_char([])]
 
     left
-    |> repeat_until(choice(choices), [right])
+    |> repeat(lookahead_not(right) |> choice(choices))
     |> concat(right)
     |> optional(utf8_string([?a..?z, ?A..?Z], min: 1))
-    |> traverse({Combinators, :collect_raw_chars_and_binaries, [ttype, attrs]})
+    |> post_traverse({Combinators, :collect_raw_chars_and_binaries, [ttype, attrs]})
   end
 
   def escaped(literal) when is_binary(literal) do

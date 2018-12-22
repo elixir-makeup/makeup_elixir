@@ -9,12 +9,12 @@ defmodule MakeupElixir.Mixfile do
       app: :makeup_elixir,
       version: @version,
       elixir: "~> 1.4",
-      start_permanent: Mix.env == :prod,
+      start_permanent: Mix.env() == :prod,
       deps: deps(),
       # Package
       package: package(),
       description: description(),
-      aliases: [docs: &build_docs/1],
+      aliases: aliases(),
       docs: [
         main: "readme",
         assets: "assets",
@@ -52,6 +52,13 @@ defmodule MakeupElixir.Mixfile do
     [
       {:makeup, "~> 0.6"},
       {:benchee, "~> 0.13", only: [:dev, :test]}
+    ]
+  end
+
+  defp aliases do
+    [
+      docs: &build_docs/1,
+      release: "run scripts/release.exs"
     ]
   end
 

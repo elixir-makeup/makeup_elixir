@@ -10,7 +10,7 @@ by adding `makeup_elixir` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:makeup_elixir, "~> 0.8.0"}
+    {:makeup_elixir, "~> x.y.z"}
   ]
 end
 ```

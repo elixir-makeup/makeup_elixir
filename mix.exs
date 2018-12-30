@@ -43,14 +43,16 @@ defmodule MakeupElixir.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Makeup.Lexers.ElixirLexer.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:makeup, "~> 0.6"},
+      # {:makeup, "~> 0.6"},
+      {:makeup, path: "../makeup"},
       {:benchee, "~> 0.13", only: [:dev, :test]}
     ]
   end

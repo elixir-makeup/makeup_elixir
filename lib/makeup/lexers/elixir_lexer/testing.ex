@@ -1,4 +1,5 @@
 defmodule Makeup.Lexers.ElixirLexer.Testing do
+  @moduledoc false
   # The tests need to be checked manually!!! (remove this line when they've been checked)
   alias Makeup.Lexers.ElixirLexer
   alias Makeup.Lexer.Postprocess

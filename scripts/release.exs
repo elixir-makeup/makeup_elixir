@@ -147,18 +147,6 @@ defmodule Releaser.Tests do
   end
 end
 
-defmodule Releaser.Publish do
-  def publish!() do
-    error_code = Mix.Shell.IO.cmd("mix hex.publish", [])
-
-    if error_code != 0 do
-      raise "Couldn't publish package on hex."
-    end
-
-    :ok
-  end
-end
-
 defmodule Releaser do
   alias Releaser.VersionUtils
   alias Releaser.Changelog
@@ -184,12 +172,8 @@ defmodule Releaser do
     Git.add_commit_and_tag(new_version)
     # Now that we have commited the changes, we can remove the release file
     Changelog.remove_release_file()
-    # Try to publish the package on hex.
-    # If this fails, we don't want to run all the code above,
-    # so you should run `mix hex.publish" again manually to try to solve the problem
-    Publish.publish!()
   end
 end
 
-# Generate and publish a new release
+# Generate a new release
 Releaser.run()

@@ -1,3 +1,3 @@
 RELEASE_TYPE: minor
 
-Make use of Makeup's registry.
+Register the `.ex` and `.exs` extensions as being supported by the `ElixirLexer`.

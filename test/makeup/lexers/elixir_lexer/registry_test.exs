@@ -4,8 +4,15 @@ defmodule Makeup.Lexers.ElixirLexer.RegistryTest do
   alias Makeup.Registry
   alias Makeup.Lexers.ElixirLexer
 
-  test "the elixir lexer has successfully registered itself" do
-    assert {:ok, {ElixirLexer, []}} == Registry.fetch_lexer_by_name("elixir")
-    assert {:ok, {ElixirLexer, []}} == Registry.fetch_lexer_by_name("iex")
+  describe "the elixir lexer has successfully registered itself:" do
+    test "language name" do
+      assert {:ok, {ElixirLexer, []}} == Registry.fetch_lexer_by_name("elixir")
+      assert {:ok, {ElixirLexer, []}} == Registry.fetch_lexer_by_name("iex")
+    end
+
+    test "file extension" do
+      assert {:ok, {ElixirLexer, []}} == Registry.fetch_lexer_by_extension("exs")
+      assert {:ok, {ElixirLexer, []}} == Registry.fetch_lexer_by_extension("ex")
+    end
   end
 end

@@ -51,8 +51,7 @@ defmodule MakeupElixir.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:makeup, "~> 0.6"},
-      {:makeup, path: "../makeup"},
+      {:makeup, "~> 0.8"},
       {:benchee, "~> 0.13", only: [:dev, :test]}
     ]
   end

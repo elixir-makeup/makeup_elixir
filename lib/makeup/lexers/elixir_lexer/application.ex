@@ -6,9 +6,12 @@ defmodule Makeup.Lexers.ElixirLexer.Application do
   alias Makeup.Lexers.ElixirLexer
 
   def start(_type, _args) do
-    Registry.register_lexer_with_name("elixir", {ElixirLexer, []})
-    # USe the normal Elixir lexer for `iex` prompts
-    Registry.register_lexer_with_name("iex", {ElixirLexer, []})
+    Registry.register_lexer(ElixirLexer,
+      options: [],
+      names: ["elixir", "iex"],
+      extensions: ["ex", "exs"]
+    )
+
     Supervisor.start_link([], strategy: :one_for_one)
   end
 end

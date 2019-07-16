@@ -2,6 +2,11 @@
 
 <!-- %% CHANGELOG_ENTRIES %% -->
 
+### 0.14.0 - 2019-07-16 22:54:32
+
+Upgrade `:makeup` dependency to version 1.0.:wq
+
+
 ### 0.13.0 - 2019-01-01 17:33:33
 
 Register the `.ex` and `.exs` extensions as being supported by the `ElixirLexer`.

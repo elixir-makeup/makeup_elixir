@@ -1,23 +1,22 @@
 # MakeupElixir
 
-**TODO: Add description**
+A [Makeup](https://github.com/tmbb/makeup/) lexer for the Elixir language.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `makeup_elixir` to your list of dependencies in `mix.exs`:
+Add `makeup_elixir` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:makeup_elixir, "~> x.y.z"}
+    {:makeup_elixir, "~> 0.14.0"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/makeup_elixir](https://hexdocs.pm/makeup_elixir).
+The lexer will be automatically registered in Makeup for
+the languages "elixir" and "iex" as well as the extensions
+".ex" and ".exs".
 
 ## Benchmarks
 

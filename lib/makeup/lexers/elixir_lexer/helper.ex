@@ -33,27 +33,30 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
   end
 
   def keyword_matcher(kind, fun_name, words) do
-    heads = for {ttype, words} <- words do
-      for word <- words do
-        case kind do
-          :defp ->
-            quote do
-              defp unquote(fun_name)([{:name, attrs, unquote(ttype)} | tokens]) do
-                [{unquote(ttype), attrs, unquote(word)} | unquote(fun_name)(tokens)]
+    heads =
+      for {ttype, words} <- words do
+        for word <- words do
+          case kind do
+            :defp ->
+              quote do
+                defp unquote(fun_name)([{:name, attrs, unquote(ttype)} | tokens]) do
+                  [{unquote(ttype), attrs, unquote(word)} | unquote(fun_name)(tokens)]
+                end
               end
-            end |> IO.inspect
-          :def ->
-            quote do
-              def unquote(fun_name)([{:name, attrs, unquote(ttype)} | tokens]) do
-                [{unquote(ttype), attrs, unquote(word)} | unquote(fun_name)(tokens)]
+              |> IO.inspect()
+
+            :def ->
+              quote do
+                def unquote(fun_name)([{:name, attrs, unquote(ttype)} | tokens]) do
+                  [{unquote(ttype), attrs, unquote(word)} | unquote(fun_name)(tokens)]
+                end
               end
-            end
+          end
         end
       end
-    end
 
     quote do
-      unquote_splicing(heads)
+      (unquote_splicing(heads))
     end
   end
 end

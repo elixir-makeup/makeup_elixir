@@ -7,35 +7,40 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
     |> String.split("\n")
     |> Enum.map(fn line -> String.duplicate(" ", n) <> line end)
     |> Enum.join("\n")
-    |> String.trim_leading
+    |> String.trim_leading()
   end
 
-  EEx.function_from_string :def, :gen_group_test_file, """
-  defmodule <%= @name %> do
-    # The tests need to be checked manually!!! (remove this line when they've been checked)
-    use ExUnit.Case, async: true
-    import Makeup.Lexers.ElixirLexer.Testing, only: [lex: 1]
-    alias Makeup.Lexer
+  EEx.function_from_string(
+    :def,
+    :gen_group_test_file,
+    """
+    defmodule <%= @name %> do
+      # The tests need to be checked manually!!! (remove this line when they've been checked)
+      use ExUnit.Case, async: true
+      import Makeup.Lexers.ElixirLexer.Testing, only: [lex: 1]
+      alias Makeup.Lexer
 
-    describe "all group transitions" do\
-  <%= for {name1, fun1} <- @funs do %><%= for {name2, fun2} <- @funs do %>
+      describe "all group transitions" do\
+    <%= for {name1, fun1} <- @funs do %><%= for {name2, fun2} <- @funs do %>
 
-      test "`<%= name1 %>` + `<%= name2 %>`" do\
-  <% input = fun1.(fun2.("x"))
-     output =
-      input
-      |> lex()
-      |> inspect
-      |> Code.format_string!
-      |> Enum.join
-      |> indent(6) %>
-        code = <%= inspect(input) %>
-        assert lex(code) == <%= output %>
-        assert code |> lex() |> Lexer.unlex() == code
-      end<% end %><% end %>
+        test "`<%= name1 %>` + `<%= name2 %>`" do\
+    <% input = fun1.(fun2.("x"))
+       output =
+        input
+        |> lex()
+        |> inspect
+        |> Code.format_string!
+        |> Enum.join
+        |> indent(6) %>
+          code = <%= inspect(input) %>
+          assert lex(code) == <%= output %>
+          assert code |> lex() |> Lexer.unlex() == code
+        end<% end %><% end %>
+      end
     end
-  end
-  """, [:assigns]
+    """,
+    [:assigns]
+  )
 
   def funs do
     [
@@ -56,14 +61,15 @@ defmodule Makeup.Test.Generators.ElixirLexer.ElixirLexerGroupTestGenerator do
   end
 
   def run() do
-    content = gen_group_test_file(
-      funs: funs(),
-      name: "Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest"
-    )
+    content =
+      gen_group_test_file(
+        funs: funs(),
+        name: "Makeup.Lexers.ElixirLexer.ElixirLexerGroupsTest"
+      )
 
     filename = "test/makeup/lexers/elixir_lexer/elixir_lexer_groups_test.exs"
     File.write!(filename, content)
-    IO.puts "Done."
+    IO.puts("Done.")
   end
 end
 

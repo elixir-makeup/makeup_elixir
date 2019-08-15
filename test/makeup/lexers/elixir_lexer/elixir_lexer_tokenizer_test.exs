@@ -39,116 +39,117 @@ defmodule ElixirLexerTokenizerTestSnippet do
       assert lex("iex") == [{:name, %{}, "iex"}]
       # with number but missing the `>`
       assert lex("iex(8)") == [
-        {:name, %{}, "iex"},
-        {:punctuation, %{group_id: "group-1"}, "("},
-        {:number_integer, %{}, "8"},
-        {:punctuation, %{group_id: "group-1"}, ")"}
-      ]
+               {:name, %{}, "iex"},
+               {:punctuation, %{group_id: "group-1"}, "("},
+               {:number_integer, %{}, "8"},
+               {:punctuation, %{group_id: "group-1"}, ")"}
+             ]
+
       # missing the number
       assert lex("iex()>") == [
-        {:name, %{}, "iex"},
-        {:punctuation, %{group_id: "group-1"}, "("},
-        {:punctuation, %{group_id: "group-1"}, ")"},
-        {:operator, %{}, ">"}
-      ]
+               {:name, %{}, "iex"},
+               {:punctuation, %{group_id: "group-1"}, "("},
+               {:punctuation, %{group_id: "group-1"}, ")"},
+               {:operator, %{}, ">"}
+             ]
     end
 
     test "rejects incomplete iex prompt (continuation)" do
       # missing the `>`
-      assert lex("...") ==  [{:name, %{}, "..."}]
+      assert lex("...") == [{:name, %{}, "..."}]
       # missing the `>`
       assert lex("...<") == [{:name, %{}, "..."}, {:operator, %{}, "<"}]
     end
 
     test "iex prompt must start a new line" do
       assert lex("x iex>") == [
-        {:name, %{}, "x"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "iex"},
-        {:operator, %{}, ">"}
-      ]
+               {:name, %{}, "x"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "iex"},
+               {:operator, %{}, ">"}
+             ]
 
       assert lex("x iex(1)>") == [
-        {:name, %{}, "x"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "iex"},
-        {:punctuation, %{group_id: "group-1"}, "("},
-        {:number_integer, %{}, "1"},
-        {:punctuation, %{group_id: "group-1"}, ")"},
-        {:operator, %{}, ">"}
-      ]
+               {:name, %{}, "x"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "iex"},
+               {:punctuation, %{group_id: "group-1"}, "("},
+               {:number_integer, %{}, "1"},
+               {:punctuation, %{group_id: "group-1"}, ")"},
+               {:operator, %{}, ">"}
+             ]
 
       assert lex("x ...>") == [
-        {:name, %{}, "x"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "..."},
-        {:operator, %{}, ">"}
-      ]
+               {:name, %{}, "x"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "..."},
+               {:operator, %{}, ">"}
+             ]
 
       assert lex("x ...(1)>") == [
-        {:name, %{}, "x"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "..."},
-        {:punctuation, %{group_id: "group-1"}, "("},
-        {:number_integer, %{}, "1"},
-        {:punctuation, %{group_id: "group-1"}, ")"},
-        {:operator, %{}, ">"}
-      ]
+               {:name, %{}, "x"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "..."},
+               {:punctuation, %{group_id: "group-1"}, "("},
+               {:number_integer, %{}, "1"},
+               {:punctuation, %{group_id: "group-1"}, ")"},
+               {:operator, %{}, ">"}
+             ]
     end
   end
 
   describe "def-like macros" do
     test "normal function/macro definition" do
       assert lex("def f") == [
-        {:keyword_declaration, %{}, "def"},
-        {:whitespace, %{}, " "},
-        {:name_function, %{}, "f"}
-      ]
+               {:keyword_declaration, %{}, "def"},
+               {:whitespace, %{}, " "},
+               {:name_function, %{}, "f"}
+             ]
 
       assert lex("defp g") == [
-        {:keyword_declaration, %{}, "defp"},
-        {:whitespace, %{}, " "},
-        {:name_function, %{}, "g"}
-      ]
+               {:keyword_declaration, %{}, "defp"},
+               {:whitespace, %{}, " "},
+               {:name_function, %{}, "g"}
+             ]
 
       assert lex("defguard h") == [
-        {:keyword_declaration, %{}, "defguard"},
-        {:whitespace, %{}, " "},
-        {:name_function, %{}, "h"}
-      ]
+               {:keyword_declaration, %{}, "defguard"},
+               {:whitespace, %{}, " "},
+               {:name_function, %{}, "h"}
+             ]
     end
 
     test "operator definition" do
       # Must not highlight the first argument!
       assert lex("def a + b") == [
-        {:keyword_declaration, %{}, "def"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "a"},
-        {:whitespace, %{}, " "},
-        {:operator, %{}, "+"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "b"}
-      ]
+               {:keyword_declaration, %{}, "def"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "a"},
+               {:whitespace, %{}, " "},
+               {:operator, %{}, "+"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "b"}
+             ]
 
       assert lex("defp a - b") == [
-        {:keyword_declaration, %{}, "defp"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "a"},
-        {:whitespace, %{}, " "},
-        {:operator, %{}, "-"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "b"}
-      ]
+               {:keyword_declaration, %{}, "defp"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "a"},
+               {:whitespace, %{}, " "},
+               {:operator, %{}, "-"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "b"}
+             ]
 
       assert lex("defguard a <<< b") == [
-        {:keyword_declaration, %{}, "defguard"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "a"},
-        {:whitespace, %{}, " "},
-        {:operator, %{}, "<<<"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "b"}
-      ]
+               {:keyword_declaration, %{}, "defguard"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "a"},
+               {:whitespace, %{}, " "},
+               {:operator, %{}, "<<<"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "b"}
+             ]
     end
   end
 
@@ -167,101 +168,101 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
     test "anonymous function with arguments" do
       assert lex("&(&1)") == [
-        {:operator, %{}, "&"},
-        {:punctuation, %{group_id: "group-1"}, "("},
-        {:name_entity, %{}, "&1"},
-        {:punctuation, %{group_id: "group-1"}, ")"}
-      ]
+               {:operator, %{}, "&"},
+               {:punctuation, %{group_id: "group-1"}, "("},
+               {:name_entity, %{}, "&1"},
+               {:punctuation, %{group_id: "group-1"}, ")"}
+             ]
 
       assert lex("&(&1, &2)") == [
-        {:operator, %{}, "&"},
-        {:punctuation, %{group_id: "group-1"}, "("},
-        {:name_entity, %{}, "&1"},
-        {:punctuation, %{}, ","},
-        {:whitespace, %{}, " "},
-        {:name_entity, %{}, "&2"},
-        {:punctuation, %{group_id: "group-1"}, ")"}
-      ]
+               {:operator, %{}, "&"},
+               {:punctuation, %{group_id: "group-1"}, "("},
+               {:name_entity, %{}, "&1"},
+               {:punctuation, %{}, ","},
+               {:whitespace, %{}, " "},
+               {:name_entity, %{}, "&2"},
+               {:punctuation, %{group_id: "group-1"}, ")"}
+             ]
     end
   end
 
   test "bitwise operators" do
     assert lex("1 >>> 2") == [
-      {:number_integer, %{}, "1"},
-      {:whitespace, %{}, " "},
-      {:operator, %{}, ">>>"},
-      {:whitespace, %{}, " "},
-      {:number_integer, %{}, "2"}
-    ]
+             {:number_integer, %{}, "1"},
+             {:whitespace, %{}, " "},
+             {:operator, %{}, ">>>"},
+             {:whitespace, %{}, " "},
+             {:number_integer, %{}, "2"}
+           ]
 
     assert lex("1 <<< 2") == [
-      {:number_integer, %{}, "1"},
-      {:whitespace, %{}, " "},
-      {:operator, %{}, "<<<"},
-      {:whitespace, %{}, " "},
-      {:number_integer, %{}, "2"}
-    ]
+             {:number_integer, %{}, "1"},
+             {:whitespace, %{}, " "},
+             {:operator, %{}, "<<<"},
+             {:whitespace, %{}, " "},
+             {:number_integer, %{}, "2"}
+           ]
   end
 
   describe "syntax sugar for keyword lists" do
     test "keys are normal atoms" do
       assert lex("atom: value") == [
-        {:string_symbol, %{}, "atom"},
-        {:punctuation, %{}, ":"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "value"}
-      ]
+               {:string_symbol, %{}, "atom"},
+               {:punctuation, %{}, ":"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "value"}
+             ]
 
       assert lex("Atom: value") == [
-        {:string_symbol, %{}, "Atom"},
-        {:punctuation, %{}, ":"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "value"}
-      ]
+               {:string_symbol, %{}, "Atom"},
+               {:punctuation, %{}, ":"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "value"}
+             ]
 
       assert lex("atom@host: value") == [
-        {:string_symbol, %{}, "atom@host"},
-        {:punctuation, %{}, ":"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "value"}
-      ]
+               {:string_symbol, %{}, "atom@host"},
+               {:punctuation, %{}, ":"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "value"}
+             ]
     end
 
     test "keys are string-like atomes" do
       assert lex(~S["atom": value]) == [
-        {:string_symbol, %{}, "\"atom\""},
-        {:punctuation, %{}, ":"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "value"}
-      ]
+               {:string_symbol, %{}, "\"atom\""},
+               {:punctuation, %{}, ":"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "value"}
+             ]
 
       assert lex(~S["!a-b?c": value]) == [
-        {:string_symbol, %{}, "\"!a-b?c\""},
-        {:punctuation, %{}, ":"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "value"}
-      ]
+               {:string_symbol, %{}, "\"!a-b?c\""},
+               {:punctuation, %{}, ":"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "value"}
+             ]
 
       assert lex(~S["\n\s\t": value]) == [
-        {:string_symbol, %{}, "\""},
-        {:string_escape, %{}, "\\n"},
-        {:string_escape, %{}, "\\s"},
-        {:string_escape, %{}, "\\t"},
-        {:string_symbol, %{}, "\""},
-        {:punctuation, %{}, ":"},
-        {:whitespace, %{}, " "},
-        {:name, %{}, "value"}
-      ]
+               {:string_symbol, %{}, "\""},
+               {:string_escape, %{}, "\\n"},
+               {:string_escape, %{}, "\\s"},
+               {:string_escape, %{}, "\\t"},
+               {:string_symbol, %{}, "\""},
+               {:punctuation, %{}, ":"},
+               {:whitespace, %{}, " "},
+               {:name, %{}, "value"}
+             ]
     end
   end
 
   describe "declarations" do
     test "defmodule" do
       assert lex("defmodule MyModule") == [
-        {:keyword_declaration, %{}, "defmodule"},
-        {:whitespace, %{}, " "},
-        {:name_class, %{}, "MyModule"}
-      ]
+               {:keyword_declaration, %{}, "defmodule"},
+               {:whitespace, %{}, " "},
+               {:name_class, %{}, "MyModule"}
+             ]
     end
 
     test "def, defmacro, etc. - no function name" do
@@ -287,9 +288,9 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
     test "normal atoms - '@' character is not valid at the beginning" do
       assert lex(":@atom") == [
-        {:punctuation, %{}, ":"},
-        {:name_attribute, %{}, "@atom"}
-      ]
+               {:punctuation, %{}, ":"},
+               {:name_attribute, %{}, "@atom"}
+             ]
     end
 
     test "string-like atoms" do
@@ -305,56 +306,56 @@ defmodule ElixirLexerTokenizerTestSnippet do
     test "raw" do
       # real error from a `mix docs` task (some problem when interfacing with node)
       assert lex("""
-      ** (ErlangError) Erlang error: :eacces
-          erlang.erl:2112: :erlang.open_port({:spawn_executable, 'c:/Program Files/nodejs/npm.cmd'}, [:use_stdio, :exit_status, :binary, :hide, {:args, ["run", "docs"]}])
-          (elixir) lib/system.ex:629: System.cmd/3
-          (mix) lib/mix/task.ex:353: Mix.Task.run_alias/3
-          (mix) lib/mix/task.ex:277: Mix.Task.run/2
-          (mix) lib/mix/cli.ex:80: Mix.CLI.run_task/2
-          (elixir) lib/code.ex:677: Code.require_file/2\
-      """) == [
-        {:generic_traceback, %{},
-         """
-         ** (ErlangError) Erlang error: :eacces
-             erlang.erl:2112: :erlang.open_port({:spawn_executable, 'c:/Program Files/nodejs/npm.cmd'}, [:use_stdio, :exit_status, :binary, :hide, {:args, ["run", "docs"]}])
-             (elixir) lib/system.ex:629: System.cmd/3
-             (mix) lib/mix/task.ex:353: Mix.Task.run_alias/3
-             (mix) lib/mix/task.ex:277: Mix.Task.run/2
-             (mix) lib/mix/cli.ex:80: Mix.CLI.run_task/2
-             (elixir) lib/code.ex:677: Code.require_file/2\
-         """}
-      ]
+             ** (ErlangError) Erlang error: :eacces
+                 erlang.erl:2112: :erlang.open_port({:spawn_executable, 'c:/Program Files/nodejs/npm.cmd'}, [:use_stdio, :exit_status, :binary, :hide, {:args, ["run", "docs"]}])
+                 (elixir) lib/system.ex:629: System.cmd/3
+                 (mix) lib/mix/task.ex:353: Mix.Task.run_alias/3
+                 (mix) lib/mix/task.ex:277: Mix.Task.run/2
+                 (mix) lib/mix/cli.ex:80: Mix.CLI.run_task/2
+                 (elixir) lib/code.ex:677: Code.require_file/2\
+             """) == [
+               {:generic_traceback, %{},
+                """
+                ** (ErlangError) Erlang error: :eacces
+                    erlang.erl:2112: :erlang.open_port({:spawn_executable, 'c:/Program Files/nodejs/npm.cmd'}, [:use_stdio, :exit_status, :binary, :hide, {:args, ["run", "docs"]}])
+                    (elixir) lib/system.ex:629: System.cmd/3
+                    (mix) lib/mix/task.ex:353: Mix.Task.run_alias/3
+                    (mix) lib/mix/task.ex:277: Mix.Task.run/2
+                    (mix) lib/mix/cli.ex:80: Mix.CLI.run_task/2
+                    (elixir) lib/code.ex:677: Code.require_file/2\
+                """}
+             ]
     end
 
     test "inside iex" do
       assert lex("""
-      iex> raise_error
-      ** (ErlangError) Erlang error: :eacces
-          erlang.erl:2112: :erlang.open_port({:spawn_executable, :error})
-          (elixir) lib/system.ex:629: System.cmd/3
-      iex> 1 + 2
-      3
-      """) == [
-        {:generic_prompt, %{selectable: false}, "iex> "},
-        {:name, %{}, "raise_error"},
-        {:whitespace, %{}, "\n"},
-        {:generic_traceback, %{},
-         """
-         ** (ErlangError) Erlang error: :eacces
-             erlang.erl:2112: :erlang.open_port({:spawn_executable, :error})
-             (elixir) lib/system.ex:629: System.cmd/3\
-         """},
-        {:whitespace, %{}, "\n"},
-        {:generic_prompt, %{selectable: false}, "iex> "},
-        {:number_integer, %{}, "1"},
-        {:whitespace, %{}, " "},
-        {:operator, %{}, "+"},
-        {:whitespace, %{}, " "},
-        {:number_integer, %{}, "2"},
-        {:whitespace, %{}, "\n"},
-        {:number_integer, %{}, "3"},
-        {:whitespace, %{}, "\n"}
-      ]
+             iex> raise_error
+             ** (ErlangError) Erlang error: :eacces
+                 erlang.erl:2112: :erlang.open_port({:spawn_executable, :error})
+                 (elixir) lib/system.ex:629: System.cmd/3
+             iex> 1 + 2
+             3
+             """) == [
+               {:generic_prompt, %{selectable: false}, "iex> "},
+               {:name, %{}, "raise_error"},
+               {:whitespace, %{}, "\n"},
+               {:generic_traceback, %{},
+                """
+                ** (ErlangError) Erlang error: :eacces
+                    erlang.erl:2112: :erlang.open_port({:spawn_executable, :error})
+                    (elixir) lib/system.ex:629: System.cmd/3\
+                """},
+               {:whitespace, %{}, "\n"},
+               {:generic_prompt, %{selectable: false}, "iex> "},
+               {:number_integer, %{}, "1"},
+               {:whitespace, %{}, " "},
+               {:operator, %{}, "+"},
+               {:whitespace, %{}, " "},
+               {:number_integer, %{}, "2"},
+               {:whitespace, %{}, "\n"},
+               {:number_integer, %{}, "3"},
+               {:whitespace, %{}, "\n"}
+             ]
     end
   end
 
@@ -381,19 +382,19 @@ defmodule ElixirLexerTokenizerTestSnippet do
     test "sigils with interpolation (lowercase letters)" do
       for b <- ?a..?z do
         for {llim, rlim} <- @sigil_delimiters do
-          left = "~#{<< b >>}#{llim}x"
+          left = "~#{<<b>>}#{llim}x"
           middle = "\#{y}"
           right = "z#{rlim}"
 
           sigil = left <> middle <> right
 
           assert [
-            {sigil_tag, %{}, ^left},
-            {:string_interpol, %{group_id: "group-1"}, "\#{"},
-            {:name, %{}, "y"},
-            {:string_interpol, %{group_id: "group-1"}, "}"},
-            {sigil_tag, %{}, ^right}
-          ] = lex(sigil)
+                   {sigil_tag, %{}, ^left},
+                   {:string_interpol, %{group_id: "group-1"}, "\#{"},
+                   {:name, %{}, "y"},
+                   {:string_interpol, %{group_id: "group-1"}, "}"},
+                   {sigil_tag, %{}, ^right}
+                 ] = lex(sigil)
         end
       end
     end
@@ -401,7 +402,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
     test "sigils without interpolation (uppercase letter)" do
       for b <- ?A..?Z do
         for {llim, rlim} <- @sigil_delimiters, {llim, rlim} != {"{", "}"} do
-          sigil = "~#{<< b >>}#{llim}x\#{y}z#{rlim}"
+          sigil = "~#{<<b>>}#{llim}x\#{y}z#{rlim}"
 
           assert [{_sigil_tag, %{}, ^sigil}] = lex(sigil)
         end
@@ -411,24 +412,24 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
   describe "strings and sigils" do
     test "unicode codepoints" do
-      assert lex(~S["\u0000"]) ==  [
-        {:string, %{}, "\""},
-        {:string_escape, %{}, "\\u0000"},
-        {:string, %{}, "\""}
-      ]
+      assert lex(~S["\u0000"]) == [
+               {:string, %{}, "\""},
+               {:string_escape, %{}, "\\u0000"},
+               {:string, %{}, "\""}
+             ]
 
       # Uppercase decimal digits are allowed
-      assert lex(~S["\ua1B2"]) ==  [
-        {:string, %{}, "\""},
-        {:string_escape, %{}, "\\ua1B2"},
-        {:string, %{}, "\""}
-      ]
+      assert lex(~S["\ua1B2"]) == [
+               {:string, %{}, "\""},
+               {:string_escape, %{}, "\\ua1B2"},
+               {:string, %{}, "\""}
+             ]
 
-      assert lex(~S["X\ua1B2Y"]) ==  [
-        {:string, %{}, "\"X"},
-        {:string_escape, %{}, "\\ua1B2"},
-        {:string, %{}, "Y\""}
-      ]
+      assert lex(~S["X\ua1B2Y"]) == [
+               {:string, %{}, "\"X"},
+               {:string_escape, %{}, "\\ua1B2"},
+               {:string, %{}, "Y\""}
+             ]
     end
   end
 
@@ -442,22 +443,22 @@ defmodule ElixirLexerTokenizerTestSnippet do
     """
 
     assert lex(code) == [
-      {:generic_prompt, %{selectable: false}, "iex> "},
-      {:name, %{}, "a"},
-      {:whitespace, %{}, " "},
-      {:operator, %{}, "="},
-      {:whitespace, %{}, " "},
-      {:string, %{}, "\""},
-      {:generic_prompt, %{selectable: false}, "\n...> "},
-      {:string, %{}, "ine1"},
-      {:generic_prompt, %{selectable: false}, "\n...> "},
-      {:string, %{}, "line2"},
-      {:generic_prompt, %{selectable: false}, "\n...> "},
-      {:string, %{}, "ilne3"},
-      {:generic_prompt, %{selectable: false}, "\n...> "},
-      {:string, %{}, "\""},
-      {:whitespace, %{}, "\n"}
-    ]
+             {:generic_prompt, %{selectable: false}, "iex> "},
+             {:name, %{}, "a"},
+             {:whitespace, %{}, " "},
+             {:operator, %{}, "="},
+             {:whitespace, %{}, " "},
+             {:string, %{}, "\""},
+             {:generic_prompt, %{selectable: false}, "\n...> "},
+             {:string, %{}, "ine1"},
+             {:generic_prompt, %{selectable: false}, "\n...> "},
+             {:string, %{}, "line2"},
+             {:generic_prompt, %{selectable: false}, "\n...> "},
+             {:string, %{}, "ilne3"},
+             {:generic_prompt, %{selectable: false}, "\n...> "},
+             {:string, %{}, "\""},
+             {:whitespace, %{}, "\n"}
+           ]
   end
 
   # Generalization of the above
@@ -476,22 +477,22 @@ defmodule ElixirLexerTokenizerTestSnippet do
         other_prompt = "\n...#{prompt_number}> "
 
         assert [
-          {:generic_prompt, %{selectable: false}, ^first_prompt},
-          {:name, %{}, "x"},
-          {:whitespace, %{}, " "},
-          {:operator, %{}, "="},
-          {:whitespace, %{}, " "},
-          {ttype, %{}, ^ldelim},
-          {:generic_prompt, %{selectable: false}, ^other_prompt},
-          {ttype, %{}, "line1"},
-          {:generic_prompt, %{selectable: false}, ^other_prompt},
-          {ttype, %{}, "line2"},
-          {:generic_prompt, %{selectable: false}, ^other_prompt},
-          {ttype, %{}, "line3"},
-          {:generic_prompt, %{selectable: false}, ^other_prompt},
-          {ttype, %{}, ^rdelim},
-          {:whitespace, %{}, "\n"}
-        ] = lex(code)
+                 {:generic_prompt, %{selectable: false}, ^first_prompt},
+                 {:name, %{}, "x"},
+                 {:whitespace, %{}, " "},
+                 {:operator, %{}, "="},
+                 {:whitespace, %{}, " "},
+                 {ttype, %{}, ^ldelim},
+                 {:generic_prompt, %{selectable: false}, ^other_prompt},
+                 {ttype, %{}, "line1"},
+                 {:generic_prompt, %{selectable: false}, ^other_prompt},
+                 {ttype, %{}, "line2"},
+                 {:generic_prompt, %{selectable: false}, ^other_prompt},
+                 {ttype, %{}, "line3"},
+                 {:generic_prompt, %{selectable: false}, ^other_prompt},
+                 {ttype, %{}, ^rdelim},
+                 {:whitespace, %{}, "\n"}
+               ] = lex(code)
       end
     end
   end
@@ -500,6 +501,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
     lowercase = Enum.map(?a..?z, fn c -> <<"~", c>> end)
     uppercase = Enum.map(?A..?Z, fn c -> <<"~", c>> end)
     sigil_prefixes = lowercase ++ uppercase
+
     for prompt_number <- ["", "(1)", "(22)"] do
       for {ldelim, rdelim} <- @sigil_delimiters do
         for sigil_prefix <- sigil_prefixes do
@@ -517,22 +519,22 @@ defmodule ElixirLexerTokenizerTestSnippet do
           sigil_start = sigil_prefix <> ldelim
 
           assert [
-            {:generic_prompt, %{selectable: false}, ^first_prompt},
-            {:name, %{}, "x"},
-            {:whitespace, %{}, " "},
-            {:operator, %{}, "="},
-            {:whitespace, %{}, " "},
-            {ttype, %{}, ^sigil_start},
-            {:generic_prompt, %{selectable: false}, ^other_prompt},
-            {ttype, %{}, "line1"},
-            {:generic_prompt, %{selectable: false}, ^other_prompt},
-            {ttype, %{}, "line2"},
-            {:generic_prompt, %{selectable: false}, ^other_prompt},
-            {ttype, %{}, "line3"},
-            {:generic_prompt, %{selectable: false}, ^other_prompt},
-            {ttype, %{}, ^rdelim},
-            {:whitespace, %{}, "\n"}
-          ] = lex(code)
+                   {:generic_prompt, %{selectable: false}, ^first_prompt},
+                   {:name, %{}, "x"},
+                   {:whitespace, %{}, " "},
+                   {:operator, %{}, "="},
+                   {:whitespace, %{}, " "},
+                   {ttype, %{}, ^sigil_start},
+                   {:generic_prompt, %{selectable: false}, ^other_prompt},
+                   {ttype, %{}, "line1"},
+                   {:generic_prompt, %{selectable: false}, ^other_prompt},
+                   {ttype, %{}, "line2"},
+                   {:generic_prompt, %{selectable: false}, ^other_prompt},
+                   {ttype, %{}, "line3"},
+                   {:generic_prompt, %{selectable: false}, ^other_prompt},
+                   {ttype, %{}, ^rdelim},
+                   {:whitespace, %{}, "\n"}
+                 ] = lex(code)
         end
       end
     end
@@ -540,27 +542,27 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
   test "PIDs" do
     assert lex("#PID<0.489.0>") == [
-      {:punctuation, %{group_id: "group-1"}, "#"},
-      {:name_class, %{group_id: "group-1"}, "PID"},
-      {:punctuation, %{group_id: "group-1"}, "<"},
-      {:number_integer, %{}, "0"},
-      {:operator, %{}, "."},
-      {:number_integer, %{}, "489"},
-      {:operator, %{}, "."},
-      {:number_integer, %{}, "0"},
-      {:punctuation, %{group_id: "group-1"}, ">"}
-    ]
+             {:punctuation, %{group_id: "group-1"}, "#"},
+             {:name_class, %{group_id: "group-1"}, "PID"},
+             {:punctuation, %{group_id: "group-1"}, "<"},
+             {:number_integer, %{}, "0"},
+             {:operator, %{}, "."},
+             {:number_integer, %{}, "489"},
+             {:operator, %{}, "."},
+             {:number_integer, %{}, "0"},
+             {:punctuation, %{group_id: "group-1"}, ">"}
+           ]
 
     assert lex("#PID<112.489.940>") == [
-      {:punctuation, %{group_id: "group-1"}, "#"},
-      {:name_class, %{group_id: "group-1"}, "PID"},
-      {:punctuation, %{group_id: "group-1"}, "<"},
-      {:number_integer, %{}, "112"},
-      {:operator, %{}, "."},
-      {:number_integer, %{}, "489"},
-      {:operator, %{}, "."},
-      {:number_integer, %{}, "940"},
-      {:punctuation, %{group_id: "group-1"}, ">"}
-    ]
+             {:punctuation, %{group_id: "group-1"}, "#"},
+             {:name_class, %{group_id: "group-1"}, "PID"},
+             {:punctuation, %{group_id: "group-1"}, "<"},
+             {:number_integer, %{}, "112"},
+             {:operator, %{}, "."},
+             {:number_integer, %{}, "489"},
+             {:operator, %{}, "."},
+             {:number_integer, %{}, "940"},
+             {:punctuation, %{group_id: "group-1"}, ">"}
+           ]
   end
 end

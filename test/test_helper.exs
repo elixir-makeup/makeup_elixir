@@ -1,1 +1,1 @@
-ExUnit.start([timeout: :infinity])
+ExUnit.start(timeout: :infinity)

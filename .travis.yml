@@ -5,10 +5,14 @@ elixir: '1.9'
 otp_release: '22.0'
 
 stages:
+  - check formatted
   - test
 
 jobs:
   include:
+    - stage: check formatted
+      script: mix format --check-formatted
+
     - stage: test
 
     - elixir: 1.4

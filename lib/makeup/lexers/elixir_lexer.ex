@@ -78,8 +78,7 @@ defmodule Makeup.Lexers.ElixirLexer do
     ascii_string([?A..?Z], 1)
     |> optional(ascii_string([?a..?z, ?_, ?0..?9, ?A..?Z], min: 1))
 
-  module_name =
-    alias_part |> concat(repeat(string(".") |> concat(alias_part)))
+  module_name = alias_part |> concat(repeat(string(".") |> concat(alias_part)))
 
   module = token(module_name, :name_class)
 
@@ -96,8 +95,7 @@ defmodule Makeup.Lexers.ElixirLexer do
     word_from_list(~W(<<< >>>))
     |> token(:operator)
 
-  special_atom_name =
-    word_from_list(~W(... <<>> %{} %{ % {}))
+  special_atom_name = word_from_list(~W(... <<>> %{} %{ % {}))
 
   triple_colon = token(":::", :operator)
   double_colon = token("::", :operator)
@@ -128,11 +126,11 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> concat(variable_name)
     |> token(:name_attribute)
 
-
-  punctuation = word_from_list(
-    ~W( \\\\ => : ; , . % ),
-    :punctuation
-  )
+  punctuation =
+    word_from_list(
+      ~W( \\\\ => : ; , . % ),
+      :punctuation
+    )
 
   # Combinators that highlight elixir expressions surrounded by a pair of delimiters.
   # Most of the time, the delimiters can be described by symple characters, but the
@@ -140,22 +138,23 @@ defmodule Makeup.Lexers.ElixirLexer do
   interpolation = many_surrounded_by(parsec(:root_element), "\#{", "}", :string_interpol)
   tuple = many_surrounded_by(parsec(:root_element), "{", "}")
 
-
-  binary_inside_opaque_struct =
-    many_surrounded_by(parsec(:root_element), "<<", ">>")
+  binary_inside_opaque_struct = many_surrounded_by(parsec(:root_element), "<<", ">>")
   # Only for the IEx lexer (it's not valid Elixir code):
-  opaque_struct = many_surrounded_by(
-    choice([
-      binary_inside_opaque_struct,
-      parsec(:root_element)
-    ]),
-    token("#", :punctuation) |> concat(module) |> concat(token("<", :punctuation)),
-    token(">", :punctuation))
+  opaque_struct =
+    many_surrounded_by(
+      choice([
+        binary_inside_opaque_struct,
+        parsec(:root_element)
+      ]),
+      token("#", :punctuation) |> concat(module) |> concat(token("<", :punctuation)),
+      token(">", :punctuation)
+    )
 
-  delimiters_punctuation = word_from_list(
-    ~W( ( \) [ ] << >>),
-    :punctuation
-  )
+  delimiters_punctuation =
+    word_from_list(
+      ~W( ( \) [ ] << >>),
+      :punctuation
+    )
 
   map = many_surrounded_by(parsec(:root_element), "%{", "}")
 
@@ -204,7 +203,7 @@ defmodule Makeup.Lexers.ElixirLexer do
     unicode_char_in_string,
     escaped_char,
     interpolation,
-    iex_prompt_inside_string,
+    iex_prompt_inside_string
   ]
 
   string_atom =
@@ -219,7 +218,6 @@ defmodule Makeup.Lexers.ElixirLexer do
       normal_atom,
       string_atom
     ])
-
 
   string_keyword =
     choice([
@@ -237,7 +235,8 @@ defmodule Makeup.Lexers.ElixirLexer do
     choice([
       normal_keyword,
       string_keyword
-    ]) |> concat(whitespace)
+    ])
+    |> concat(whitespace)
 
   sigil_delimiters = [
     {~S["""], ~S["""]},
@@ -263,7 +262,8 @@ defmodule Makeup.Lexers.ElixirLexer do
         rdelim,
         normal_sigil_interpol_range,
         combinators_inside_string,
-        :string_sigil)
+        :string_sigil
+      )
     end
 
   sigils_no_interpol =
@@ -273,7 +273,8 @@ defmodule Makeup.Lexers.ElixirLexer do
         rdelim,
         normal_sigil_no_interpol_range,
         [escape_delim(rdelim), iex_prompt_inside_string],
-        :string_sigil)
+        :string_sigil
+      )
     end
 
   sigils_string_interpol =
@@ -314,20 +315,26 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_date_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?D, ?N], [escape_delim(rdelim), iex_prompt_inside_string], :literal_date)
+      sigil(
+        ldelim,
+        rdelim,
+        [?D, ?N],
+        [escape_delim(rdelim), iex_prompt_inside_string],
+        :literal_date
+      )
     end
 
   all_sigils =
     sigils_interpol ++
-    sigils_no_interpol ++
-    sigils_string_interpol ++
-    sigils_string_no_interpol ++
-    sigils_charlist_interpol ++
-    sigils_charlist_no_interpol ++
-    sigils_regex_interpol ++
-    sigils_regex_no_interpol ++
-    sigils_date_interpol ++
-    sigils_date_no_interpol
+      sigils_no_interpol ++
+      sigils_string_interpol ++
+      sigils_string_no_interpol ++
+      sigils_charlist_interpol ++
+      sigils_charlist_no_interpol ++
+      sigils_regex_interpol ++
+      sigils_regex_no_interpol ++
+      sigils_date_interpol ++
+      sigils_date_no_interpol
 
   double_quoted_string_interpol = string_like("\"", "\"", combinators_inside_string, :string)
   single_quoted_string_interpol = string_like("'", "'", combinators_inside_string, :string_char)
@@ -346,8 +353,7 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> concat(number_integer)
     |> concat(token(">", :punctuation))
 
-  line =
-    repeat(lookahead_not(ascii_char([?\n])) |> utf8_string([], 1))
+  line = repeat(lookahead_not(ascii_char([?\n])) |> utf8_string([], 1))
 
   inline_comment =
     string("#")
@@ -372,64 +378,70 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> token(:generic_traceback)
 
   root_element_combinator =
-    choice([
-      # START of IEx-specific tokens
-      # IEx prompt must come before names
-      newlines |> choice([iex_prompt, stacktrace]),
-      # a PID is a special kind of opaque struct
-      pid,
-      # Opaque struct (must come before inline comments)
-      opaque_struct,
-      # END of IEx-specific tokens
-      whitespace,
-      # Comments
-      inline_comment,
-      # Syntax sugar for keyword lists (must come before variables and strings)
-      keyword,
-      # Strings and sigils
-      double_quoted_heredocs,
-      single_quoted_heredocs,
-      double_quoted_string_interpol,
-      single_quoted_string_interpol
-    ] ++ all_sigils ++ [
-      # Chars
-      escape_char,
-      normal_char,
-      # Some operators (must come before the atoms)
-      triple_colon,
-      double_colon,
-      # Atoms
-      atom,
-      # Module attributes
-      attribute,
-      # Anonymous function arguments (must come before the operators)
-      anon_function_arguments,
-      # Bitwise operators must match first
-      bitshifts
-      # Matching delimiters
-    ] ++ delimiter_pairs ++ [
-      # Triple dot (must come before operators)
-      triple_dot,
-      # Operators
-      operator,
-      # Numbers
-      number_bin,
-      number_oct,
-      number_hex,
-      # Floats must come before integers
-      number_float,
-      number_integer,
-      # Names
-      variable,
-      # unused_variable,
-      # Module names
-      module,
-      punctuation,
-      # If we can't parse any of the above, we highlight the next character as an error
-      # and proceed from there.
-      # A lexer should always consume any string given as input.
-      any_char
-    ])
+    choice(
+      [
+        # START of IEx-specific tokens
+        # IEx prompt must come before names
+        newlines |> choice([iex_prompt, stacktrace]),
+        # a PID is a special kind of opaque struct
+        pid,
+        # Opaque struct (must come before inline comments)
+        opaque_struct,
+        # END of IEx-specific tokens
+        whitespace,
+        # Comments
+        inline_comment,
+        # Syntax sugar for keyword lists (must come before variables and strings)
+        keyword,
+        # Strings and sigils
+        double_quoted_heredocs,
+        single_quoted_heredocs,
+        double_quoted_string_interpol,
+        single_quoted_string_interpol
+      ] ++
+        all_sigils ++
+        [
+          # Chars
+          escape_char,
+          normal_char,
+          # Some operators (must come before the atoms)
+          triple_colon,
+          double_colon,
+          # Atoms
+          atom,
+          # Module attributes
+          attribute,
+          # Anonymous function arguments (must come before the operators)
+          anon_function_arguments,
+          # Bitwise operators must match first
+          bitshifts
+          # Matching delimiters
+        ] ++
+        delimiter_pairs ++
+        [
+          # Triple dot (must come before operators)
+          triple_dot,
+          # Operators
+          operator,
+          # Numbers
+          number_bin,
+          number_oct,
+          number_hex,
+          # Floats must come before integers
+          number_float,
+          number_integer,
+          # Names
+          variable,
+          # unused_variable,
+          # Module names
+          module,
+          punctuation,
+          # If we can't parse any of the above, we highlight the next character as an error
+          # and proceed from there.
+          # A lexer should always consume any string given as input.
+          any_char
+        ]
+    )
 
   # By default, don't inline the lexers.
   # Inlining them increases performance by ~20%
@@ -446,13 +458,18 @@ defmodule Makeup.Lexers.ElixirLexer do
   # meant to be used by end-users.
 
   # @impl Makeup.Lexer
-  defparsec :root_element,
+  defparsec(
+    :root_element,
     root_element_combinator |> map({__MODULE__, :__as_elixir_language__, []}),
     inline: @inline
+  )
 
   # @impl Makeup.Lexer
-  defparsec :root,
-    repeat(parsec(:root_element)), inline: @inline
+  defparsec(
+    :root,
+    repeat(parsec(:root_element)),
+    inline: @inline
+  )
 
   ###################################################################
   # Step #2: postprocess the list of tokens
@@ -482,56 +499,65 @@ defmodule Makeup.Lexers.ElixirLexer do
   # It should not be highlighted as a function name.
   # for that, we must scan a little further (one additional token) for the operator.
   defp postprocess_helper([
-        {:name, attrs1, text1},
-        {:whitespace, _, _} = ws1,
-        {:name, _, text2} = param,
-        {:whitespace, _, _} = ws2,
-        {:operator, _, _} = op
-        | tokens])
-      when text1 in @def_like and text2 != "unquote" do
+         {:name, attrs1, text1},
+         {:whitespace, _, _} = ws1,
+         {:name, _, text2} = param,
+         {:whitespace, _, _} = ws2,
+         {:operator, _, _} = op
+         | tokens
+       ])
+       when text1 in @def_like and text2 != "unquote" do
     [{:keyword_declaration, attrs1, text1}, ws1, param, ws2, op | postprocess_helper(tokens)]
   end
 
   # The same as above without whitespace
   defp postprocess_helper([
-      {:name, attrs1, text1},
-      {:whitespace, _, _} = ws,
-      {:name, _, text2} = param,
-      {:operator, _, _} = op
-      | tokens])
-    when text1 in @def_like and text2 != "unquote" do
-  [{:keyword_declaration, attrs1, text1}, ws, param, op | postprocess_helper(tokens)]
-end
+         {:name, attrs1, text1},
+         {:whitespace, _, _} = ws,
+         {:name, _, text2} = param,
+         {:operator, _, _} = op
+         | tokens
+       ])
+       when text1 in @def_like and text2 != "unquote" do
+    [{:keyword_declaration, attrs1, text1}, ws, param, op | postprocess_helper(tokens)]
+  end
 
   # If we're matching this branch, we already know that this is not an operator definition.
   # We can highlight the variable_name after the function name as a function name.
-  defp postprocess_helper([{:name, attrs1, text1}, {:whitespace, _, _} = ws, {:name, attrs2, text2} | tokens])
-        when text1 in @def_like and text2 != "unquote" do
-    [{:keyword_declaration, attrs1, text1}, ws, {:name_function, attrs2, text2} | postprocess_helper(tokens)]
+  defp postprocess_helper([
+         {:name, attrs1, text1},
+         {:whitespace, _, _} = ws,
+         {:name, attrs2, text2} | tokens
+       ])
+       when text1 in @def_like and text2 != "unquote" do
+    [
+      {:keyword_declaration, attrs1, text1},
+      ws,
+      {:name_function, attrs2, text2} | postprocess_helper(tokens)
+    ]
   end
 
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword,
+    do: [{:keyword, attrs, text} | postprocess_helper(tokens)]
 
-  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword, do:
-    [{:keyword, attrs, text} | postprocess_helper(tokens)]
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword_declaration,
+    do: [{:keyword_declaration, attrs, text} | postprocess_helper(tokens)]
 
-  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword_declaration, do:
-    [{:keyword_declaration, attrs, text} | postprocess_helper(tokens)]
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @operator_word,
+    do: [{:operator_word, attrs, text} | postprocess_helper(tokens)]
 
-  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @operator_word, do:
-    [{:operator_word, attrs, text} | postprocess_helper(tokens)]
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword_namespace,
+    do: [{:keyword_namespace, attrs, text} | postprocess_helper(tokens)]
 
-  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword_namespace, do:
-    [{:keyword_namespace, attrs, text} | postprocess_helper(tokens)]
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_constant,
+    do: [{:name_constant, attrs, text} | postprocess_helper(tokens)]
 
-  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_constant, do:
-    [{:name_constant, attrs, text} | postprocess_helper(tokens)]
-
-  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_builtin_pseudo, do:
-    [{:name_builtin_pseudo, attrs, text} | postprocess_helper(tokens)]
+  defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @name_builtin_pseudo,
+    do: [{:name_builtin_pseudo, attrs, text} | postprocess_helper(tokens)]
 
   # Unused variables
-  defp postprocess_helper([{:name, attrs, "_" <> _name = text} | tokens]), do:
-    [{:comment, attrs, text} | postprocess_helper(tokens)]
+  defp postprocess_helper([{:name, attrs, "_" <> _name = text} | tokens]),
+    do: [{:comment, attrs, text} | postprocess_helper(tokens)]
 
   # Otherwise, don't do anything with the current token and go to the next token.
   defp postprocess_helper([token | tokens]), do: [token | postprocess_helper(tokens)]
@@ -545,7 +571,7 @@ end
   ###################################################################
 
   @impl Makeup.Lexer
-  defgroupmatcher :match_groups, [
+  defgroupmatcher(:match_groups,
     do_end: [
       open: [
         [{:keyword, %{language: :elixir}, "do"}]
@@ -560,17 +586,14 @@ end
         [{:keyword, %{language: :elixir}, "end"}]
       ]
     ],
-
     fn_end: [
       open: [[{:keyword, %{language: :elixir}, "fn"}]],
       close: [[{:keyword, %{language: :elixir}, "end"}]]
     ],
-
     parentheses: [
       open: [[{:punctuation, %{language: :elixir}, "("}]],
       close: [[{:punctuation, %{language: :elixir}, ")"}]]
     ],
-
     list: [
       open: [
         [{:punctuation, %{language: :elixir}, "["}]
@@ -579,7 +602,6 @@ end
         [{:punctuation, %{language: :elixir}, "]"}]
       ]
     ],
-
     tuple: [
       open: [
         [{:punctuation, %{language: :elixir}, "{"}]
@@ -588,7 +610,6 @@ end
         [{:punctuation, %{language: :elixir}, "}"}]
       ]
     ],
-
     map: [
       open: [
         [{:punctuation, %{language: :elixir}, "%{"}]
@@ -597,19 +618,18 @@ end
         [{:punctuation, %{language: :elixir}, "}"}]
       ]
     ],
-
     struct: [
       open: [
         [
           {:punctuation, %{language: :elixir}, "%"},
           {:name_class, %{language: :elixir}, _},
-          {:punctuation, %{language: :elixir}, "{"}]
+          {:punctuation, %{language: :elixir}, "{"}
+        ]
       ],
       close: [
         [{:punctuation, %{language: :elixir}, "}"}]
       ]
     ],
-
     opaque_struct: [
       open: [
         [
@@ -622,7 +642,6 @@ end
         [{:punctuation, %{language: :elixir}, ">"}]
       ]
     ],
-
     binaries: [
       open: [
         [{:punctuation, %{language: :elixir}, "<<"}]
@@ -631,7 +650,6 @@ end
         [{:punctuation, %{language: :elixir}, ">>"}]
       ]
     ],
-
     interpolation: [
       open: [
         [{:string_interpol, %{language: :elixir}, "\#{"}]
@@ -640,7 +658,7 @@ end
         [{:string_interpol, %{language: :elixir}, "}"}]
       ]
     ]
-  ]
+  )
 
   defp remove_initial_newline([{ttype, meta, text} | tokens]) do
     case to_string(text) do

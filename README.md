@@ -1,4 +1,5 @@
 # MakeupElixir
+[![Build Status](https://travis-ci.org/tmbb/makeup_elixir.svg?branch=master)](https://travis-ci.org/tmbb/makeup_elixir)
 
 A [Makeup](https://github.com/tmbb/makeup/) lexer for the Elixir language.
 

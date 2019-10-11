@@ -15,7 +15,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   # 1. A combinator that ends with `_name` returns a string
   # 2. Other combinators will *usually* return a token
   #
-  # Why this convention? Tokens can't be composed forther, while raw strings can.
+  # Why this convention? Tokens can't be composed further, while raw strings can.
   # This way, we immediately know which of the combinators we can compose.
   # TODO: check we're following this convention
   # NOTE: if Elixir had a good static type system it would hep us do the right thing here.

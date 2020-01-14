@@ -128,7 +128,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   punctuation =
     word_from_list(
-      ~W( \\\\ => : ; , . % ),
+      ["\\\\", "=>", ":", ";", ",", ".", "%"],
       :punctuation
     )
 

@@ -18,13 +18,13 @@ defmodule Makeup.Lexers.ElixirLexer do
   # Why this convention? Tokens can't be composed further, while raw strings can.
   # This way, we immediately know which of the combinators we can compose.
   # TODO: check we're following this convention
-  # NOTE: if Elixir had a good static type system it would hep us do the right thing here.
+  # NOTE: if Elixir had a good static type system it would help us do the right thing here.
 
-  whitespace = ascii_string([?\s, ?\n, ?\f], min: 1) |> token(:whitespace)
+  whitespace = ascii_string([?\r, ?\s, ?\n, ?\f], min: 1) |> token(:whitespace)
 
   newlines =
-    string("\n")
-    |> optional(ascii_string([?\s, ?\n, ?\f], min: 1))
+    choice([string("\r\n"), string("\n")])
+    |> optional(ascii_string([?\s, ?\n, ?\f, ?\r], min: 1))
     |> token(:whitespace)
 
   any_char = utf8_char([]) |> token(:error)

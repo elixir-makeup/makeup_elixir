@@ -11,6 +11,22 @@ defmodule ElixirLexerTokenizerTestSnippet do
     assert lex("_") == [{:name_builtin_pseudo, %{}, "_"}]
   end
 
+  test "newlines" do
+    assert lex("1+\n2") == [
+             {:number_integer, %{}, "1"},
+             {:operator, %{}, "+"},
+             {:whitespace, %{}, "\n"},
+             {:number_integer, %{}, "2"}
+           ]
+
+    assert lex("1+\r\n2") == [
+             {:number_integer, %{}, "1"},
+             {:operator, %{}, "+"},
+             {:whitespace, %{}, "\r\n"},
+             {:number_integer, %{}, "2"}
+           ]
+  end
+
   test "unused variables" do
     assert lex("_123") == [{:comment, %{}, "_123"}]
     assert lex("_a") == [{:comment, %{}, "_a"}]

@@ -1,3 +1,3 @@
-RELEASE_TYPE: minor
+RELEASE_TYPE: patch
 
-Upgrade `:makeup` dependency to version 1.0.:wq
+Handle Windows-style newlines

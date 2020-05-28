@@ -2,6 +2,11 @@
 
 <!-- %% CHANGELOG_ENTRIES %% -->
 
+### 0.14.1 - 2020-05-28 09:24:57
+
+Handle Windows-style newlines
+
+
 ### 0.14.0 - 2019-07-16 22:54:32
 
 Upgrade `:makeup` dependency to version 1.0.:wq

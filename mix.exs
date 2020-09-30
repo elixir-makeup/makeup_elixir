@@ -52,7 +52,13 @@ defmodule MakeupElixir.Mixfile do
   defp deps do
     [
       {:makeup, "~> 1.0"},
-      {:benchee, "~> 0.13", only: [:dev, :test]}
+      {:nimble_parsec, "~> 1.0", override: true},
+      # Generate unicode character lists
+      {:unicode_set, "~> 0.8.0", only: [:dev]},
+      # Benchmarking utilities
+      {:benchee, "~> 1.0", only: [:dev, :test]},
+      {:benchee_markdown, "~> 0.2", only: :dev},
+      {:schism, github: "tmbb/schism", only: [:dev, :test]},
     ]
   end
 

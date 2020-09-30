@@ -3,6 +3,9 @@ defmodule Makeup.Lexers.ElixirLexer do
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
   import Makeup.Lexers.ElixirLexer.Helper
+  import Makeup.Lexers.ElixirLexer.RegexParsec
+  import Schism
+  alias Makeup.Lexers.ElixirLexer.Utf8Utils
   @behaviour Makeup.Lexer
 
   ###################################################################
@@ -60,14 +63,36 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> optional(float_scientific_notation_part)
     |> token(:number_float)
 
-  # Yes, Elixir supports much more than this.
-  # TODO: adapt the code from the official tokenizer, which parses the unicode database
-  variable_name =
-    ascii_string([?a..?z, ?_], 1)
-    |> optional(ascii_string([?a..?z, ?_, ?0..?9, ?A..?Z], min: 1))
-    |> optional(ascii_string([??, ?!], 1))
+  # Different implementations of the `variable_name` combinator
+  schism "parsec vs regex" do
+    dogma "parsec" do
+      defparsecp(:variable_start_chars, utf8_char(Utf8Utils.variable_start_chars()))
+      defparsecp(:variable_continue_chars, utf8_char(Utf8Utils.variable_continue_chars()))
 
-  # Can also be a function name
+      variable_name =
+        parsec(:variable_start_chars)
+        |> repeat(parsec(:variable_continue_chars))
+        |> optional(utf8_char(Utf8Utils.variable_ending_chars()))
+    end
+
+    heresy "regex" do
+      defregexparsec(
+        :variable_name,
+        # Not 100% correct, but a pretty good approximation
+        ~R/[_\p{Ll}\p{Lm}\p{Nl}][_p\{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}]*[\?!]?/
+      )
+
+      variable_name = parsec(:variable_name)
+    end
+
+    heresy "ascii only" do
+      variable_name =
+        ascii_string([?a..?z, ?_], 1)
+        |> optional(ascii_string([?a..?z, ?_, ?0..?9, ?A..?Z], min: 1))
+        |> optional(ascii_string([??, ?!], 1))
+    end
+  end
+
   variable =
     variable_name
     |> lexeme
@@ -164,9 +189,35 @@ defmodule Makeup.Lexers.ElixirLexer do
     map
   ]
 
-  normal_atom_name =
-    utf8_string([?A..?Z, ?a..?z, ?_], 1)
-    |> optional(utf8_string([?A..?Z, ?a..?z, ?_, ?0..?9, ?@], min: 1))
+
+  # Different implementations of the `normal_atom_name` combinator
+  schism "parsec vs regex" do
+    dogma "parsec" do
+      defparsecp(:atom_start_chars, utf8_char(Utf8Utils.atom_continue_chars()))
+      defparsecp(:atom_continue_chars, utf8_char(Utf8Utils.atom_continue_chars()))
+
+      normal_atom_name =
+        parsec(:atom_start_chars)
+        |> repeat(parsec(:atom_continue_chars))
+        |> optional(utf8_char(Utf8Utils.atom_ending_chars()))
+    end
+
+    heresy "regex" do
+      defregexparsec(
+        :normal_atom_name,
+        # Not 100% correct, but a pretty good approximation
+        ~R/[_\p{Ll}\p{Lm}\p{Nl}][_@p\{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}]*[\?!]?/
+      )
+
+      normal_atom_name = parsec(:normal_atom_name)
+    end
+
+    heresy "ascii only" do
+      normal_atom_name =
+        utf8_string([?A..?Z, ?a..?z, ?_], 1)
+        |> optional(utf8_string([?A..?Z, ?a..?z, ?_, ?0..?9, ?@], min: 1))
+    end
+  end
 
   normal_atom =
     string(":")
@@ -357,7 +408,6 @@ defmodule Makeup.Lexers.ElixirLexer do
           number_integer,
           # Names
           variable,
-          # unused_variable,
           # Module names
           module,
           punctuation,

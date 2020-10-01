@@ -2,6 +2,44 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
   @moduledoc false
   import NimbleParsec
   alias Makeup.Lexer.Combinators
+  alias Makeup.Lexers.ElixirLexer.BST
+
+  defmacro defbstfinder(name, list) do
+    {evaluated_list, _} = Code.eval_quoted(list)
+    bst = BST.create(evaluated_list)
+    name__0 = String.to_atom(Atom.to_string(name) <> "__0")
+
+    quote do
+      def unquote(name)(input) do
+        unquote(name__0)(input, [], [], %{}, {1, 0}, 0)
+      end
+
+      def unquote(name__0)(<< char::utf8, rest::binary >> = input, acc, stack, context, line_offset, column) do
+        bst = unquote(Macro.escape(bst))
+        case Makeup.Lexers.ElixirLexer.BST.find(bst, char) do
+          true ->
+            bin = << char::utf8 >>
+            length = byte_size(bin)
+            # -----------------------------------------------------------------
+            # For efficiency reason ignore line numbers; we won't be using them
+            # -----------------------------------------------------------------
+            {:ok, [bin | acc], rest, context, line_offset, column + length}
+
+          false ->
+            {:error, "expected to match given pattern", input, context,
+             line_offset, column}
+        end
+      end
+
+      def unquote(name__0)("", acc, stack, context, line_offset, column) do
+        {:error, "expected to match given pattern", "", context, line_offset, column}
+      end
+
+      def unquote(name__0)(input, acc, stack, context, line_offset, column) do
+        {:error, "expected to match given pattern", input, context, line_offset, column}
+      end
+    end
+  end
 
   def with_optional_separator(combinator, separator) when is_binary(separator) do
     combinator |> repeat(string(separator) |> concat(combinator))

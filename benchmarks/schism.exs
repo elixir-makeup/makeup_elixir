@@ -28,7 +28,7 @@ defmodule SchismBenchmarks do
     # Get a list of tokens from the code above, so that we can test the HTML Formatter in isolation
     tokens = ElixirLexer.lex(code)
 
-    settings = {"parsec vs regex", ["parsec", "regex", "ascii only"]}
+    settings = {"parsec vs regex", ["custom parsec", "parsec", "regex", "ascii only"]}
 
     lexer_performance_benchmarks =
       setup_conversions(
@@ -77,7 +77,7 @@ defmodule SchismBenchmarks do
       )
 
     benchmarks = [
-      {lexer_performance_benchmarks, "lexer_performance"},
+      # {lexer_performance_benchmarks, "lexer_performance"},
       {compilation_benchmarks, "compilation"}
     ]
 
@@ -86,10 +86,11 @@ defmodule SchismBenchmarks do
       Benchee.run(
         benchmark,
         formatters: [
+          {Benchee.Formatters.Console, []},
           {Benchee.Formatters.Markdown, file: path}
         ]
       )
-      
+
       Logger.info("finished benchmark - '#{name}'; output saved in '#{path}'")
     end
   end

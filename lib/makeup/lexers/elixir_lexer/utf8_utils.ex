@@ -2153,7 +2153,7 @@ defmodule Makeup.Lexers.ElixirLexer.Utf8Utils do
   def atom_continue_chars() do
     [
       48..57,
-      65..90,
+      64..90,
       95,
       97..122,
       170,

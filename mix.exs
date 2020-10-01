@@ -52,7 +52,7 @@ defmodule MakeupElixir.Mixfile do
   defp deps do
     [
       {:makeup, "~> 1.0"},
-      {:nimble_parsec, "~> 1.0", override: true},
+      {:nimble_parsec, "~> 1.0", override: true, github: "dashbitco/nimble_parsec"},
       # Generate unicode character lists
       {:unicode_set, "~> 0.8.0", only: [:dev]},
       # Benchmarking utilities

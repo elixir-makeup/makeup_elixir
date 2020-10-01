@@ -1,6 +1,4 @@
 defmodule Makeup.Lexers.ElixirLexer.RegexParsec do
-  import NimbleParsec
-
   defmacro defregexparsec(name, re) do
     {evaluated_re, _} = Code.eval_quoted(re)
     anchored_re = Regex.compile!("^" <> evaluated_re.source, evaluated_re.opts)

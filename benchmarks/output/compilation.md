@@ -1,6 +1,6 @@
 # Benchmark
 
-Benchmark run from 2020-10-01 13:43:05.162879Z UTC
+Benchmark run from 2020-10-01 18:30:49.145034Z UTC
 
 ## System
 
@@ -58,36 +58,36 @@ Run Time
     <th style="text-align: right">99th&nbsp;%</th>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer compilation time - ascii only</td>
-    <td style="white-space: nowrap; text-align: right">0.0579</td>
-    <td style="white-space: nowrap; text-align: right">17.28 s</td>
+    <td style="white-space: nowrap">Lexer compilation time - parsec</td>
+    <td style="white-space: nowrap; text-align: right">0.0252</td>
+    <td style="white-space: nowrap; text-align: right">39.71 s</td>
     <td style="white-space: nowrap; text-align: right">±0.00%</td>
-    <td style="white-space: nowrap; text-align: right">17.28 s</td>
-    <td style="white-space: nowrap; text-align: right">17.28 s</td>
+    <td style="white-space: nowrap; text-align: right">39.71 s</td>
+    <td style="white-space: nowrap; text-align: right">39.71 s</td>
+  </tr>
+  <tr>
+    <td style="white-space: nowrap">Lexer compilation time - ascii only</td>
+    <td style="white-space: nowrap; text-align: right">0.0193</td>
+    <td style="white-space: nowrap; text-align: right">51.85 s</td>
+    <td style="white-space: nowrap; text-align: right">±0.00%</td>
+    <td style="white-space: nowrap; text-align: right">51.85 s</td>
+    <td style="white-space: nowrap; text-align: right">51.85 s</td>
   </tr>
   <tr>
     <td style="white-space: nowrap">Lexer compilation time - custom parsec</td>
-    <td style="white-space: nowrap; text-align: right">0.0511</td>
-    <td style="white-space: nowrap; text-align: right">19.57 s</td>
+    <td style="white-space: nowrap; text-align: right">0.0168</td>
+    <td style="white-space: nowrap; text-align: right">59.66 s</td>
     <td style="white-space: nowrap; text-align: right">±0.00%</td>
-    <td style="white-space: nowrap; text-align: right">19.57 s</td>
-    <td style="white-space: nowrap; text-align: right">19.57 s</td>
+    <td style="white-space: nowrap; text-align: right">59.66 s</td>
+    <td style="white-space: nowrap; text-align: right">59.66 s</td>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer compilation time - regex</td>
-    <td style="white-space: nowrap; text-align: right">0.0497</td>
-    <td style="white-space: nowrap; text-align: right">20.13 s</td>
+    <td style="white-space: nowrap">Lexer compilation time - custom parsec 2</td>
+    <td style="white-space: nowrap; text-align: right">0.0137</td>
+    <td style="white-space: nowrap; text-align: right">72.92 s</td>
     <td style="white-space: nowrap; text-align: right">±0.00%</td>
-    <td style="white-space: nowrap; text-align: right">20.13 s</td>
-    <td style="white-space: nowrap; text-align: right">20.13 s</td>
-  </tr>
-  <tr>
-    <td style="white-space: nowrap">Lexer compilation time - parsec</td>
-    <td style="white-space: nowrap; text-align: right">0.0298</td>
-    <td style="white-space: nowrap; text-align: right">33.54 s</td>
-    <td style="white-space: nowrap; text-align: right">±0.00%</td>
-    <td style="white-space: nowrap; text-align: right">33.54 s</td>
-    <td style="white-space: nowrap; text-align: right">33.54 s</td>
+    <td style="white-space: nowrap; text-align: right">72.92 s</td>
+    <td style="white-space: nowrap; text-align: right">72.92 s</td>
   </tr>
 </table>
 Comparison
@@ -97,24 +97,24 @@ Comparison
     <th style="text-align: right">IPS</th>
     <th style="text-align: right">Slower</th>
   <tr>
-    <td style="white-space: nowrap">Lexer compilation time - ascii only</td>
-    <td style="white-space: nowrap;text-align: right">0.0579</td>
+    <td style="white-space: nowrap">Lexer compilation time - parsec</td>
+    <td style="white-space: nowrap;text-align: right">0.0252</td>
     <td>&nbsp;</td>
   </tr>
   <tr>
+    <td style="white-space: nowrap">Lexer compilation time - ascii only</td>
+    <td style="white-space: nowrap; text-align: right">0.0193</td>
+    <td style="white-space: nowrap; text-align: right">1.31x</td>
+  </tr>
+  <tr>
     <td style="white-space: nowrap">Lexer compilation time - custom parsec</td>
-    <td style="white-space: nowrap; text-align: right">0.0511</td>
-    <td style="white-space: nowrap; text-align: right">1.13x</td>
+    <td style="white-space: nowrap; text-align: right">0.0168</td>
+    <td style="white-space: nowrap; text-align: right">1.5x</td>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer compilation time - regex</td>
-    <td style="white-space: nowrap; text-align: right">0.0497</td>
-    <td style="white-space: nowrap; text-align: right">1.16x</td>
-  </tr>
-  <tr>
-    <td style="white-space: nowrap">Lexer compilation time - parsec</td>
-    <td style="white-space: nowrap; text-align: right">0.0298</td>
-    <td style="white-space: nowrap; text-align: right">1.94x</td>
+    <td style="white-space: nowrap">Lexer compilation time - custom parsec 2</td>
+    <td style="white-space: nowrap; text-align: right">0.0137</td>
+    <td style="white-space: nowrap; text-align: right">1.84x</td>
   </tr>
 </table>
 <hr/>

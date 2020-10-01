@@ -28,7 +28,7 @@ defmodule SchismBenchmarks do
     # Get a list of tokens from the code above, so that we can test the HTML Formatter in isolation
     tokens = ElixirLexer.lex(code)
 
-    settings = {"parsec vs regex", ["custom parsec", "parsec", "regex", "ascii only"]}
+    settings = {"parsec vs regex", ["custom parsec 2", "custom parsec", "parsec", "ascii only"]}
 
     lexer_performance_benchmarks =
       setup_conversions(

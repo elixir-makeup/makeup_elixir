@@ -65,7 +65,17 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   # Different implementations of the `variable_name` combinator
   schism "parsec vs regex" do
-    dogma "custom parsec" do
+    dogma "custom parsec 2" do
+      defmatcher(:variable_start_char, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
+      defmatcher(:variable_continue_char, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
+
+      variable_name =
+        parsec(:variable_start_char)
+        |> repeat(parsec(:variable_continue_char))
+        |> optional(utf8_char(Utf8Utils.variable_ending_chars()))
+    end
+
+    heresy "custom parsec" do
       defbstfinder(:variable_start_chars, Makeup.Lexers.ElixirLexer.Utf8Utils.variable_start_chars())
       defbstfinder(:variable_continue_chars, Makeup.Lexers.ElixirLexer.Utf8Utils.variable_continue_chars())
 
@@ -202,7 +212,17 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   # Different implementations of the `normal_atom_name` combinator
   schism "parsec vs regex" do
-    dogma "custom parsec" do
+    dogma "custom parsec 2" do
+      defmatcher(:atom_start_char, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
+      defmatcher(:atom_continue_char, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
+
+      normal_atom_name =
+        parsec(:atom_start_char)
+        |> repeat(parsec(:atom_continue_char))
+        |> optional(utf8_char(Utf8Utils.atom_ending_chars()))
+    end
+
+    heresy "custom parsec" do
       defbstfinder(:atom_start_chars, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
       defbstfinder(:atom_continue_chars, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_continue_chars())
 

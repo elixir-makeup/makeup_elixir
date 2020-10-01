@@ -426,6 +426,13 @@ defmodule ElixirLexerTokenizerTestSnippet do
     end
   end
 
+  test "calendar sigils" do
+    assert lex("~D[2020-01-01]") == [{:literal_date, %{}, "~D[2020-01-01]"}]
+    assert lex("~T[01:23:45]") == [{:literal_date, %{}, "~T[01:23:45]"}]
+    assert lex("~N[2020-01-01 01:23:45]") == [{:literal_date, %{}, "~N[2020-01-01 01:23:45]"}]
+    assert lex("~U[2020-01-01 01:23:45Z]") == [{:literal_date, %{}, "~U[2020-01-01 01:23:45Z]"}]
+  end
+
   describe "strings and sigils" do
     test "unicode codepoints" do
       assert lex(~S["\u0000"]) == [

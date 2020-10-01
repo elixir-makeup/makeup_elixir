@@ -3,8 +3,6 @@ defmodule Makeup.Lexers.ElixirLexer do
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
   import Makeup.Lexers.ElixirLexer.Helper
-  import Makeup.Lexers.ElixirLexer.RegexParsec
-  import Schism
 
   @behaviour Makeup.Lexer
 
@@ -63,32 +61,10 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> optional(float_scientific_notation_part)
     |> token(:number_float)
 
-  # Different implementations of the `variable_name` combinator
-  schism "parsec vs regex" do
-    dogma "parsec" do
-      variable_name =
-        parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_start_chars})
-        |> repeat(parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_continue_chars}))
-        |> optional(utf8_char([??, ?!]))
-    end
-
-    heresy "regex" do
-      defregexparsec(
-        :variable_name,
-        # Not 100% correct, but a pretty good approximation
-        ~R/[_\p{Ll}\p{Lm}\p{Nl}][_p\{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}]*[\?!]?/
-      )
-
-      variable_name = parsec(:variable_name)
-    end
-
-    heresy "ascii only" do
-      variable_name =
-        ascii_string([?a..?z, ?_], 1)
-        |> optional(ascii_string([?a..?z, ?_, ?0..?9, ?A..?Z], min: 1))
-        |> optional(ascii_string([??, ?!], 1))
-    end
-  end
+  variable_name =
+    parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_start_chars})
+    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_continue_chars}))
+    |> optional(utf8_char([??, ?!]))
 
   variable =
     variable_name
@@ -186,31 +162,10 @@ defmodule Makeup.Lexers.ElixirLexer do
     map
   ]
 
-  # Different implementations of the `normal_atom_name` combinator
-  schism "parsec vs regex" do
-    dogma "parsec" do
-      normal_atom_name =
-        parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_start_chars})
-        |> repeat(parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_continue_chars}))
-        |> optional(utf8_char([??, ?!]))
-    end
-
-    heresy "regex" do
-      defregexparsec(
-        :normal_atom_name,
-        # Not 100% correct, but a pretty good approximation
-        ~R/[_\p{Ll}\p{Lm}\p{Nl}][_@p\{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}]*[\?!]?/
-      )
-
-      normal_atom_name = parsec(:normal_atom_name)
-    end
-
-    heresy "ascii only" do
-      normal_atom_name =
-        utf8_string([?A..?Z, ?a..?z, ?_], 1)
-        |> optional(utf8_string([?A..?Z, ?a..?z, ?_, ?0..?9, ?@], min: 1))
-    end
-  end
+  normal_atom_name =
+    parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_start_chars})
+    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_continue_chars}))
+    |> optional(utf8_char([??, ?!]))
 
   normal_atom =
     string(":")

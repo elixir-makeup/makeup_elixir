@@ -54,11 +54,10 @@ defmodule MakeupElixir.Mixfile do
       {:makeup, "~> 1.0"},
       {:nimble_parsec, "~> 1.0", override: true, github: "dashbitco/nimble_parsec"},
       # Generate unicode character lists
-      {:unicode_set, "~> 0.8.0", only: [:dev]},
+      {:unicode_set, "~> 0.8.0", only: :dev},
       # Benchmarking utilities
-      {:benchee, "~> 1.0", only: [:dev, :test]},
-      {:benchee_markdown, "~> 0.2", only: :dev},
-      {:schism, github: "tmbb/schism", only: [:dev, :test]},
+      {:benchee, "~> 1.0", only: :dev},
+      {:benchee_markdown, "~> 0.2", only: :dev}
     ]
   end
 

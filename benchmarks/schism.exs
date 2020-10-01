@@ -77,7 +77,7 @@ defmodule SchismBenchmarks do
       )
 
     benchmarks = [
-      # {lexer_performance_benchmarks, "lexer_performance"},
+      {lexer_performance_benchmarks, "lexer_performance"},
       {compilation_benchmarks, "compilation"}
     ]
 

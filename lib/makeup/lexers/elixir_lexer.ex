@@ -246,14 +246,14 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> concat(whitespace)
 
   schism "sigils" do
-    heresy "external" do
+    dogma "external" do
       # Crazy recursive mutual dependencies
       all_sigils = [
         parsec({Makeup.Lexers.ElixirLexer.Sigils, :all_sigils})
       ]
     end
 
-    dogma "internal" do
+    heresy "internal" do
       sigil_delimiters = [
         {~S["""], ~S["""]},
         {"'''", "'''"},

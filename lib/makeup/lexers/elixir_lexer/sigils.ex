@@ -3,7 +3,7 @@ defmodule Makeup.Lexers.ElixirLexer.Sigils do
   import Schism
 
   schism "sigils" do
-    heresy "external" do
+    dogma "external" do
       # This module is generated at "dev time" so that the lexer
       # doesn't have to depend on the (excelent) `unicode_set` library,
       # which takes several minutes to compile.
@@ -118,7 +118,7 @@ defmodule Makeup.Lexers.ElixirLexer.Sigils do
       defcombinator(:all_sigils, choice(all_sigils))
     end
 
-    dogma "internal" do
+    heresy "internal" do
       # this module does not exist
     end
   end

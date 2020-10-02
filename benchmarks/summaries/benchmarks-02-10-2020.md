@@ -1,3 +1,12 @@
+# Latest benchmarks
+
+For these benchmarks I've done the following changes (sorry for mixing them all in the same commit, but I just went along with the changes and when I noticed I had this):
+
+* Modules are split just like in the original @josevalim's commit
+* Sigils have been split into their own module with clever use of the new features in `nimble_parsec/master`
+* Unicode patterns are tweaked slightly
+* This commit contains references to `schism`, which allowed me to compare the runtime and compilation speed of both implementations
+
 ## System
 
 Benchmark suite executing on the following system:

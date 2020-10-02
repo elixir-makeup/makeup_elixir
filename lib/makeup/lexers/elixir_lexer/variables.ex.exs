@@ -8,7 +8,7 @@ defmodule Makeup.Lexers.ElixirLexer.Variables do
   import NimbleParsec
 
   variable_start_unicode_syntax =
-    "[[_][:L:][:Nl:][:Other_ID_Start:]-[:Pattern_Syntax:]-[:Pattern_White_Space:]-[:Lu:]-[:Lt:]]"
+    "[[:L:][:Nl:][:Other_ID_Start:]-[:Pattern_Syntax:]-[:Pattern_White_Space:]-[:Lu:]-[:Lt:][_]]"
 
   variable_continue_unicode_syntax =
     "[[:ID_Start:][:Mn:][:Mc:][:Nd:][:Pc:][:Other_ID_Continue:]-[:Pattern_Syntax:]-[:Pattern_White_Space:]]"

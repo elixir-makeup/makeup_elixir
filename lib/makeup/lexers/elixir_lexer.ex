@@ -3,6 +3,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
   import Makeup.Lexers.ElixirLexer.Helper
+
   @behaviour Makeup.Lexer
 
   ###################################################################
@@ -60,14 +61,11 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> optional(float_scientific_notation_part)
     |> token(:number_float)
 
-  # Yes, Elixir supports much more than this.
-  # TODO: adapt the code from the official tokenizer, which parses the unicode database
   variable_name =
-    ascii_string([?a..?z, ?_], 1)
-    |> optional(ascii_string([?a..?z, ?_, ?0..?9, ?A..?Z], min: 1))
-    |> optional(ascii_string([??, ?!], 1))
+    parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_start_chars})
+    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_continue_chars}))
+    |> optional(utf8_char([??, ?!]))
 
-  # Can also be a function name
   variable =
     variable_name
     |> lexeme
@@ -165,8 +163,9 @@ defmodule Makeup.Lexers.ElixirLexer do
   ]
 
   normal_atom_name =
-    utf8_string([?A..?Z, ?a..?z, ?_], 1)
-    |> optional(utf8_string([?A..?Z, ?a..?z, ?_, ?0..?9, ?@], min: 1))
+    parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_start_chars})
+    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_continue_chars}))
+    |> optional(utf8_char([??, ?!]))
 
   normal_atom =
     string(":")
@@ -249,92 +248,17 @@ defmodule Makeup.Lexers.ElixirLexer do
     {"(", ")"}
   ]
 
-  # These are the "generic" sigils, that is, those that are not defined by default.
-  # For example, `~c` is not a "normal" sigil because be default it represents a charlist
-  # and is highlighted as such.
-  normal_sigil_interpol_range = [?a..?z, not: ?c, not: ?d, not: ?n, not: ?r, not: ?s]
-  normal_sigil_no_interpol_range = [?A..?Z, not: ?c, not: ?D, not: ?N, not: ?R, not: ?S]
-
   sigils_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(
-        ldelim,
-        rdelim,
-        normal_sigil_interpol_range,
-        combinators_inside_string,
-        :string_sigil
-      )
+      sigil(ldelim, rdelim, [?a..?z], combinators_inside_string)
     end
 
   sigils_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(
-        ldelim,
-        rdelim,
-        normal_sigil_no_interpol_range,
-        [escape_delim(rdelim), iex_prompt_inside_string],
-        :string_sigil
-      )
+      sigil(ldelim, rdelim, [?A..?Z], [escape_delim(rdelim), iex_prompt_inside_string])
     end
 
-  sigils_string_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?s], combinators_inside_string, :string)
-    end
-
-  sigils_string_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?S], [escape_delim(rdelim), iex_prompt_inside_string], :string)
-    end
-
-  sigils_charlist_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?c], combinators_inside_string, :string)
-    end
-
-  sigils_charlist_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?C], [escape_delim(rdelim), iex_prompt_inside_string], :string)
-    end
-
-  sigils_regex_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?r], combinators_inside_string, :string_regex)
-    end
-
-  sigils_regex_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?R], [escape_delim(rdelim), iex_prompt_inside_string], :string_regex)
-    end
-
-  # Dates (both naïve and with timezone)
-  sigils_date_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?d, ?n], combinators_inside_string, :literal_date)
-    end
-
-  sigils_date_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(
-        ldelim,
-        rdelim,
-        [?D, ?N],
-        [escape_delim(rdelim), iex_prompt_inside_string],
-        :literal_date
-      )
-    end
-
-  all_sigils =
-    sigils_interpol ++
-      sigils_no_interpol ++
-      sigils_string_interpol ++
-      sigils_string_no_interpol ++
-      sigils_charlist_interpol ++
-      sigils_charlist_no_interpol ++
-      sigils_regex_interpol ++
-      sigils_regex_no_interpol ++
-      sigils_date_interpol ++
-      sigils_date_no_interpol
+  all_sigils = sigils_interpol ++ sigils_no_interpol
 
   double_quoted_string_interpol = string_like("\"", "\"", combinators_inside_string, :string)
   single_quoted_string_interpol = string_like("'", "'", combinators_inside_string, :string_char)
@@ -432,7 +356,6 @@ defmodule Makeup.Lexers.ElixirLexer do
           number_integer,
           # Names
           variable,
-          # unused_variable,
           # Module names
           module,
           punctuation,

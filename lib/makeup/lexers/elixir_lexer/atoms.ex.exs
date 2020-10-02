@@ -16,7 +16,7 @@ defmodule Makeup.Lexers.ElixirLexer.Atoms do
   atom_start_chars = Unicode.Set.to_utf8_char(atom_start_unicode_syntax) |> List.flatten()
   atom_continue_chars = Unicode.Set.to_utf8_char(atom_continue_unicode_syntax) |> List.flatten()
 
-  defcombinator :atom_start_chars, utf8_char(atom_start_chars)
-  defcombinator :atom_continue_chars, utf8_char(atom_continue_chars)
+  defcombinator :atom_start_chars, label(utf8_char(atom_start_chars), "atom start")
+  defcombinator :atom_continue_chars, label(utf8_char(atom_continue_chars), "atom continue")
   # parsec:Makeup.Lexers.ElixirLexer.Atoms
 end

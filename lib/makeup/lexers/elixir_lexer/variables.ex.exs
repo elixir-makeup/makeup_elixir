@@ -17,7 +17,7 @@ defmodule Makeup.Lexers.ElixirLexer.Variables do
   variable_start_chars = Unicode.Set.to_utf8_char(variable_start_unicode_syntax) |> List.flatten()
   variable_continue_chars = Unicode.Set.to_utf8_char(variable_continue_unicode_syntax) |> List.flatten()
 
-  defcombinator :variable_start_chars, utf8_char(variable_start_chars)
-  defcombinator :variable_continue_chars, utf8_char(variable_continue_chars)
+  defcombinator :variable_start_chars, label(utf8_char(variable_start_chars), "variable start")
+  defcombinator :variable_continue_chars, label(utf8_char(variable_continue_chars), "variable continue")
   # parsec:Makeup.Lexers.ElixirLexer.Variables
 end

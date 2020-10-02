@@ -7,7 +7,7 @@ defmodule Releaser.VersionUtils do
 
   This script doesn't support pre-release versions or versions with build information.
   """
-  @version_line_regex ~r/(\n\s*@version\s+")([^\n]+)("\n)/
+  @version_line_regex ~r/(\n\s*@version\s+")([^"\n]+)("\n)/
 
   def bump_major(%Version{} = version) do
     %{version | major: version.major + 1, minor: 0, patch: 0}
@@ -26,7 +26,11 @@ defmodule Releaser.VersionUtils do
   end
 
   def get_version() do
-    config = File.read!("mix.exs")
+    # Remove Windows-style line endings
+    config =
+      "mix.exs"
+      |> File.read!()
+      |> String.replace("\r", "")
 
     case Regex.run(@version_line_regex, config) do
       [_line, _pre, version, _post] ->
@@ -73,10 +77,14 @@ defmodule Releaser.Changelog do
   end
 
   def extract_release_type() do
-    contents = File.read!(@release_filename)
+    # Remove Windows line endings
+    contents =
+      @release_filename
+      |> File.read!()
+      |> String.replace("\r", "")
 
     {type, text} =
-      case Regex.run(@release_type_regex, contents) do
+      case Regex.run(@release_type_regex, contents) |> IO.inspect() do
         [_line, _pre, type, text] ->
           {type, String.trim(text)}
 
@@ -106,7 +114,11 @@ defmodule Releaser.Changelog do
   end
 
   def add_changelog_entry(entry) do
-    contents = File.read!(@changelog_filename)
+    contents =
+      @changelog_filename
+      |> File.read!()
+      |> String.replace("\r", "")
+      
     [first, last] = String.split(contents, @changelog_entries_marker)
 
     replaced =

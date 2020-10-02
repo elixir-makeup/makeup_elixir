@@ -2,6 +2,12 @@
 
 <!-- %% CHANGELOG_ENTRIES %% -->
 
+### 0.15.0 - 2020-10-02 14:39:00
+
+Added support for Unicode characters in identifiers (atoms and variables).
+Improved handling of sigils.
+
+
 ### 0.14.1 - 2020-05-28 09:24:57
 
 Handle Windows-style newlines

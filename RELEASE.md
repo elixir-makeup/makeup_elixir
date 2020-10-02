@@ -1,3 +1,4 @@
-RELEASE_TYPE: patch
+RELEASE_TYPE: minor
 
-Handle Windows-style newlines
+Added support for Unicode characters in identifiers (atoms and variables).
+Improved handling of sigils.

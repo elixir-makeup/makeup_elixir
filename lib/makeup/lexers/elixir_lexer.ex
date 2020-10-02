@@ -3,6 +3,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
   import Makeup.Lexers.ElixirLexer.Helper
+
   @behaviour Makeup.Lexer
 
   ###################################################################
@@ -60,14 +61,11 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> optional(float_scientific_notation_part)
     |> token(:number_float)
 
-  # Yes, Elixir supports much more than this.
-  # TODO: adapt the code from the official tokenizer, which parses the unicode database
   variable_name =
-    ascii_string([?a..?z, ?_], 1)
-    |> optional(ascii_string([?a..?z, ?_, ?0..?9, ?A..?Z], min: 1))
-    |> optional(ascii_string([??, ?!], 1))
+    parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_start_chars})
+    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_continue_chars}))
+    |> optional(utf8_char([??, ?!]))
 
-  # Can also be a function name
   variable =
     variable_name
     |> lexeme
@@ -165,8 +163,9 @@ defmodule Makeup.Lexers.ElixirLexer do
   ]
 
   normal_atom_name =
-    utf8_string([?A..?Z, ?a..?z, ?_], 1)
-    |> optional(utf8_string([?A..?Z, ?a..?z, ?_, ?0..?9, ?@], min: 1))
+    parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_start_chars})
+    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_continue_chars}))
+    |> optional(utf8_char([??, ?!]))
 
   normal_atom =
     string(":")
@@ -357,7 +356,6 @@ defmodule Makeup.Lexers.ElixirLexer do
           number_integer,
           # Names
           variable,
-          # unused_variable,
           # Module names
           module,
           punctuation,

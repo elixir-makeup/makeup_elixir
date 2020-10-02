@@ -588,4 +588,18 @@ defmodule ElixirLexerTokenizerTestSnippet do
              {:punctuation, %{group_id: "group-1"}, ">"}
            ]
   end
+
+  test "unicode variables" do
+    assert lex("josé = 'awesome'") == [
+      {:name, %{}, "josé"},
+      {:whitespace, %{}, " "},
+      {:operator, %{}, "="},
+      {:whitespace, %{}, " "},
+      {:string_char, %{}, "'awesome'"}
+    ]
+  end
+
+  test "unicode atoms" do
+    assert lex(":josé@home") == [{:string_symbol, %{}, ":josé@home"}]
+  end
 end

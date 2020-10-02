@@ -1,11 +1,11 @@
 defmodule Makeup.Lexers.ElixirLexer do
+  # parsec:Makeup.Lexers.ElixirLexer
   import NimbleParsec
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
   import Makeup.Lexers.ElixirLexer.Helper
-  import Makeup.Lexers.ElixirLexer.RegexParsec
   import Schism
-  alias Makeup.Lexers.ElixirLexer.Utf8Utils
+
   @behaviour Makeup.Lexer
 
   ###################################################################
@@ -63,55 +63,10 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> optional(float_scientific_notation_part)
     |> token(:number_float)
 
-  # Different implementations of the `variable_name` combinator
-  schism "parsec vs regex" do
-    dogma "custom parsec 2" do
-      defmatcher(:variable_start_char, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
-      defmatcher(:variable_continue_char, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
-
-      variable_name =
-        parsec(:variable_start_char)
-        |> repeat(parsec(:variable_continue_char))
-        |> optional(utf8_char(Utf8Utils.variable_ending_chars()))
-    end
-
-    heresy "custom parsec" do
-      defbstfinder(:variable_start_chars, Makeup.Lexers.ElixirLexer.Utf8Utils.variable_start_chars())
-      defbstfinder(:variable_continue_chars, Makeup.Lexers.ElixirLexer.Utf8Utils.variable_continue_chars())
-
-      variable_name =
-        parsec(:variable_start_chars)
-        |> repeat(parsec(:variable_continue_chars))
-        |> optional(utf8_char(Utf8Utils.variable_ending_chars()))
-    end
-
-    heresy "parsec" do
-      defparsecp(:variable_start_chars, utf8_char(Utf8Utils.variable_start_chars()))
-      defparsecp(:variable_continue_chars, utf8_char(Utf8Utils.variable_continue_chars()))
-
-      variable_name =
-        parsec(:variable_start_chars)
-        |> repeat(parsec(:variable_continue_chars))
-        |> optional(utf8_char(Utf8Utils.variable_ending_chars()))
-    end
-
-    heresy "regex" do
-      defregexparsec(
-        :variable_name,
-        # Not 100% correct, but a pretty good approximation
-        ~R/[_\p{Ll}\p{Lm}\p{Nl}][_p\{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}]*[\?!]?/
-      )
-
-      variable_name = parsec(:variable_name)
-    end
-
-    heresy "ascii only" do
-      variable_name =
-        ascii_string([?a..?z, ?_], 1)
-        |> optional(ascii_string([?a..?z, ?_, ?0..?9, ?A..?Z], min: 1))
-        |> optional(ascii_string([??, ?!], 1))
-    end
-  end
+  variable_name =
+    parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_start_chars})
+    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_continue_chars}))
+    |> optional(utf8_char([??, ?!]))
 
   variable =
     variable_name
@@ -209,55 +164,10 @@ defmodule Makeup.Lexers.ElixirLexer do
     map
   ]
 
-
-  # Different implementations of the `normal_atom_name` combinator
-  schism "parsec vs regex" do
-    dogma "custom parsec 2" do
-      defmatcher(:atom_start_char, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
-      defmatcher(:atom_continue_char, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
-
-      normal_atom_name =
-        parsec(:atom_start_char)
-        |> repeat(parsec(:atom_continue_char))
-        |> optional(utf8_char(Utf8Utils.atom_ending_chars()))
-    end
-
-    heresy "custom parsec" do
-      defbstfinder(:atom_start_chars, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_start_chars())
-      defbstfinder(:atom_continue_chars, Makeup.Lexers.ElixirLexer.Utf8Utils.atom_continue_chars())
-
-      normal_atom_name =
-        parsec(:atom_start_chars)
-        |> repeat(parsec(:atom_continue_chars))
-        |> optional(utf8_char(Utf8Utils.atom_ending_chars()))
-    end
-
-    heresy "parsec" do
-      defparsecp(:atom_start_chars, utf8_char(Utf8Utils.atom_start_chars()))
-      defparsecp(:atom_continue_chars, utf8_char(Utf8Utils.atom_continue_chars()))
-
-      normal_atom_name =
-        parsec(:atom_start_chars)
-        |> repeat(parsec(:atom_continue_chars))
-        |> optional(utf8_char(Utf8Utils.atom_ending_chars()))
-    end
-
-    heresy "regex" do
-      defregexparsec(
-        :normal_atom_name,
-        # Not 100% correct, but a pretty good approximation
-        ~R/[_\p{Ll}\p{Lm}\p{Nl}][_@p\{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}]*[\?!]?/
-      )
-
-      normal_atom_name = parsec(:normal_atom_name)
-    end
-
-    heresy "ascii only" do
-      normal_atom_name =
-        utf8_string([?A..?Z, ?a..?z, ?_], 1)
-        |> optional(utf8_string([?A..?Z, ?a..?z, ?_, ?0..?9, ?@], min: 1))
-    end
-  end
+  normal_atom_name =
+    parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_start_chars})
+    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_continue_chars}))
+    |> optional(utf8_char([??, ?!]))
 
   normal_atom =
     string(":")
@@ -290,12 +200,18 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> optional(string(" "))
     |> token(:generic_prompt, %{selectable: false})
 
+  @doc false
+  defcombinator(:iex_prompt_inside_string, iex_prompt_inside_string)
+
   combinators_inside_string = [
     unicode_char_in_string,
     escaped_char,
     interpolation,
     iex_prompt_inside_string
   ]
+
+  @doc false
+  defcombinator(:combinators_inside_string, choice(combinators_inside_string))
 
   string_atom =
     choice([
@@ -329,103 +245,114 @@ defmodule Makeup.Lexers.ElixirLexer do
     ])
     |> concat(whitespace)
 
-  sigil_delimiters = [
-    {~S["""], ~S["""]},
-    {"'''", "'''"},
-    {"\"", "\""},
-    {"'", "'"},
-    {"/", "/"},
-    {"{", "}"},
-    {"[", "]"},
-    {"(", ")"}
-  ]
-
-  # These are the "generic" sigils, that is, those that are not defined by default.
-  # For example, `~c` is not a "normal" sigil because be default it represents a charlist
-  # and is highlighted as such.
-  normal_sigil_interpol_range = [?a..?z, not: ?c, not: ?d, not: ?n, not: ?r, not: ?s]
-  normal_sigil_no_interpol_range = [?A..?Z, not: ?c, not: ?D, not: ?N, not: ?R, not: ?S]
-
-  sigils_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(
-        ldelim,
-        rdelim,
-        normal_sigil_interpol_range,
-        combinators_inside_string,
-        :string_sigil
-      )
+  schism "sigils" do
+    heresy "external" do
+      # Crazy recursive mutual dependencies
+      all_sigils = [
+        parsec({Makeup.Lexers.ElixirLexer.Sigils, :all_sigils})
+      ]
     end
 
-  sigils_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(
-        ldelim,
-        rdelim,
-        normal_sigil_no_interpol_range,
-        [escape_delim(rdelim), iex_prompt_inside_string],
-        :string_sigil
-      )
-    end
+    dogma "internal" do
+      sigil_delimiters = [
+        {~S["""], ~S["""]},
+        {"'''", "'''"},
+        {"\"", "\""},
+        {"'", "'"},
+        {"/", "/"},
+        {"{", "}"},
+        {"[", "]"},
+        {"(", ")"}
+      ]
 
-  sigils_string_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?s], combinators_inside_string, :string)
-    end
+      # These are the "generic" sigils, that is, those that are not defined by default.
+      # For example, `~c` is not a "normal" sigil because be default it represents a charlist
+      # and is highlighted as such.
+      normal_sigil_interpol_range = [?a..?z, not: ?c, not: ?d, not: ?n, not: ?r, not: ?s]
+      normal_sigil_no_interpol_range = [?A..?Z, not: ?c, not: ?D, not: ?N, not: ?R, not: ?S]
 
-  sigils_string_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?S], [escape_delim(rdelim), iex_prompt_inside_string], :string)
-    end
+      sigils_interpol =
+        for {ldelim, rdelim} <- sigil_delimiters do
+          sigil(
+            ldelim,
+            rdelim,
+            normal_sigil_interpol_range,
+            combinators_inside_string,
+            :string_sigil
+          )
+        end
 
-  sigils_charlist_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?c], combinators_inside_string, :string)
-    end
+      sigils_no_interpol =
+        for {ldelim, rdelim} <- sigil_delimiters do
+          sigil(
+            ldelim,
+            rdelim,
+            normal_sigil_no_interpol_range,
+            [escape_delim(rdelim), iex_prompt_inside_string],
+            :string_sigil
+          )
+        end
 
-  sigils_charlist_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?C], [escape_delim(rdelim), iex_prompt_inside_string], :string)
-    end
+      sigils_string_interpol =
+        for {ldelim, rdelim} <- sigil_delimiters do
+          sigil(ldelim, rdelim, [?s, ?c], combinators_inside_string, :string)
+        end
 
-  sigils_regex_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?r], combinators_inside_string, :string_regex)
-    end
+      sigils_string_no_interpol =
+        for {ldelim, rdelim} <- sigil_delimiters do
+          sigil(
+            ldelim,
+            rdelim,
+            [?S, ?C],
+            [escape_delim(rdelim), iex_prompt_inside_string],
+            :string
+          )
+        end
 
-  sigils_regex_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?R], [escape_delim(rdelim), iex_prompt_inside_string], :string_regex)
-    end
+      sigils_regex_interpol =
+        for {ldelim, rdelim} <- sigil_delimiters do
+          sigil(ldelim, rdelim, [?r], combinators_inside_string, :string_regex)
+        end
 
-  # Dates (both naïve and with timezone)
-  sigils_date_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?d, ?n], combinators_inside_string, :literal_date)
-    end
+      sigils_regex_no_interpol =
+        for {ldelim, rdelim} <- sigil_delimiters do
+          sigil(
+            ldelim,
+            rdelim,
+            [?R],
+            [escape_delim(rdelim), iex_prompt_inside_string],
+            :string_regex
+          )
+        end
 
-  sigils_date_no_interpol =
-    for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(
-        ldelim,
-        rdelim,
-        [?D, ?N],
-        [escape_delim(rdelim), iex_prompt_inside_string],
-        :literal_date
-      )
-    end
+      # Calendar types
+      sigils_calendar_interpol =
+        for {ldelim, rdelim} <- sigil_delimiters do
+          sigil(ldelim, rdelim, [?d, ?n, ?t, ?u], combinators_inside_string, :literal_date)
+        end
 
-  all_sigils =
-    sigils_interpol ++
-      sigils_no_interpol ++
-      sigils_string_interpol ++
-      sigils_string_no_interpol ++
-      sigils_charlist_interpol ++
-      sigils_charlist_no_interpol ++
-      sigils_regex_interpol ++
-      sigils_regex_no_interpol ++
-      sigils_date_interpol ++
-      sigils_date_no_interpol
+      sigils_calendar_no_interpol =
+        for {ldelim, rdelim} <- sigil_delimiters do
+          sigil(
+            ldelim,
+            rdelim,
+            [?D, ?N, ?T, ?U],
+            [escape_delim(rdelim), iex_prompt_inside_string],
+            :literal_date
+          )
+        end
+
+      all_sigils =
+        sigils_interpol ++
+          sigils_no_interpol ++
+          sigils_string_interpol ++
+          sigils_string_no_interpol ++
+          sigils_regex_interpol ++
+          sigils_regex_no_interpol ++
+          sigils_calendar_interpol ++
+          sigils_calendar_no_interpol
+    end
+  end
 
   double_quoted_string_interpol = string_like("\"", "\"", combinators_inside_string, :string)
   single_quoted_string_interpol = string_like("'", "'", combinators_inside_string, :string_char)
@@ -768,4 +695,6 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> postprocess([])
     |> match_groups(group_prefix)
   end
+
+  # parsec:Makeup.Lexers.ElixirLexer
 end

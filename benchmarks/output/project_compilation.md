@@ -1,6 +1,6 @@
 # Benchmark
 
-Benchmark run from 2020-10-02 00:21:41.371936Z UTC
+Benchmark run from 2020-10-02 00:22:41.312885Z UTC
 
 ## System
 
@@ -58,20 +58,20 @@ Run Time
     <th style="text-align: right">99th&nbsp;%</th>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer performance - external</td>
-    <td style="white-space: nowrap; text-align: right">146.39</td>
-    <td style="white-space: nowrap; text-align: right">6.83 ms</td>
-    <td style="white-space: nowrap; text-align: right">±6.48%</td>
-    <td style="white-space: nowrap; text-align: right">6.82 ms</td>
-    <td style="white-space: nowrap; text-align: right">8.26 ms</td>
+    <td style="white-space: nowrap">Project compilation time - external</td>
+    <td style="white-space: nowrap; text-align: right">0.159</td>
+    <td style="white-space: nowrap; text-align: right">6.28 s</td>
+    <td style="white-space: nowrap; text-align: right">±0.00%</td>
+    <td style="white-space: nowrap; text-align: right">6.28 s</td>
+    <td style="white-space: nowrap; text-align: right">6.28 s</td>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer performance - internal</td>
-    <td style="white-space: nowrap; text-align: right">141.31</td>
-    <td style="white-space: nowrap; text-align: right">7.08 ms</td>
-    <td style="white-space: nowrap; text-align: right">±4.55%</td>
-    <td style="white-space: nowrap; text-align: right">7.02 ms</td>
-    <td style="white-space: nowrap; text-align: right">8.39 ms</td>
+    <td style="white-space: nowrap">Project compilation time - internal</td>
+    <td style="white-space: nowrap; text-align: right">0.0738</td>
+    <td style="white-space: nowrap; text-align: right">13.55 s</td>
+    <td style="white-space: nowrap; text-align: right">±0.00%</td>
+    <td style="white-space: nowrap; text-align: right">13.55 s</td>
+    <td style="white-space: nowrap; text-align: right">13.55 s</td>
   </tr>
 </table>
 Comparison
@@ -81,14 +81,14 @@ Comparison
     <th style="text-align: right">IPS</th>
     <th style="text-align: right">Slower</th>
   <tr>
-    <td style="white-space: nowrap">Lexer performance - external</td>
-    <td style="white-space: nowrap;text-align: right">146.39</td>
+    <td style="white-space: nowrap">Project compilation time - external</td>
+    <td style="white-space: nowrap;text-align: right">0.159</td>
     <td>&nbsp;</td>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer performance - internal</td>
-    <td style="white-space: nowrap; text-align: right">141.31</td>
-    <td style="white-space: nowrap; text-align: right">1.04x</td>
+    <td style="white-space: nowrap">Project compilation time - internal</td>
+    <td style="white-space: nowrap; text-align: right">0.0738</td>
+    <td style="white-space: nowrap; text-align: right">2.16x</td>
   </tr>
 </table>
 <hr/>

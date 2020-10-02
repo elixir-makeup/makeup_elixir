@@ -28,7 +28,7 @@ defmodule SchismBenchmarks do
     # Get a list of tokens from the code above, so that we can test the HTML Formatter in isolation
     tokens = ElixirLexer.lex(code)
 
-    settings = {"parsec vs regex", ["custom parsec 2", "custom parsec", "parsec", "ascii only"]}
+    settings = {"sigils", ["internal", "external"]}
 
     lexer_performance_benchmarks =
       setup_conversions(
@@ -69,16 +69,16 @@ defmodule SchismBenchmarks do
 
     compilation_benchmarks =
       setup_conversions(
-        "Lexer compilation time",
+        "Project compilation time",
         fn _ ->
-          Kernel.ParallelCompiler.compile(["lib/makeup/lexers/elixir_lexer.ex"])
+          Mix.Tasks.Compile.Elixir.run(["--force"])
         end,
         settings
       )
 
     benchmarks = [
       {lexer_performance_benchmarks, "lexer_performance"},
-      {compilation_benchmarks, "compilation"}
+      {compilation_benchmarks, "project_compilation"}
     ]
 
     for {benchmark, name} <- benchmarks do

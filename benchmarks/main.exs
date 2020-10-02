@@ -26,8 +26,8 @@ Benchee.run(%{
     |> ElixirLexer.lex()
     |> HTMLFormatter.format_as_binary()
   end,
-  "Lexer compilation time" => fn ->
-    Kernel.ParallelCompiler.compile(["lib/makeup/lexers/elixir_lexer.ex"])
+  "Project compilation time" => fn ->
+    Mix.Tasks.Compile.run([])
   end
 },
   console: [

@@ -17,6 +17,7 @@ defmodule Makeup.Lexers.ElixirLexer.Testing do
   end
 
   def contains?([], _x), do: false
+
   def contains?([%Range{} = range | rest], x) do
     case x in range do
       true ->
@@ -26,6 +27,7 @@ defmodule Makeup.Lexers.ElixirLexer.Testing do
         contains?(rest, x)
     end
   end
+
   def contains?([y | _rest], x) when x == y, do: true
   def contains?([_y | rest], x), do: contains?(rest, x)
 end

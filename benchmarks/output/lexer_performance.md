@@ -1,6 +1,6 @@
 # Benchmark
 
-Benchmark run from 2020-10-02 00:21:41.371936Z UTC
+Benchmark run from 2020-10-02 11:54:22.486565Z UTC
 
 ## System
 
@@ -58,20 +58,36 @@ Run Time
     <th style="text-align: right">99th&nbsp;%</th>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer performance - external</td>
-    <td style="white-space: nowrap; text-align: right">146.39</td>
-    <td style="white-space: nowrap; text-align: right">6.83 ms</td>
-    <td style="white-space: nowrap; text-align: right">±6.48%</td>
-    <td style="white-space: nowrap; text-align: right">6.82 ms</td>
-    <td style="white-space: nowrap; text-align: right">8.26 ms</td>
+    <td style="white-space: nowrap">Lexer performance %{"sigils" => "external", "variables and atoms" => "split"}</td>
+    <td style="white-space: nowrap; text-align: right">146.92</td>
+    <td style="white-space: nowrap; text-align: right">6.81 ms</td>
+    <td style="white-space: nowrap; text-align: right">±6.02%</td>
+    <td style="white-space: nowrap; text-align: right">6.84 ms</td>
+    <td style="white-space: nowrap; text-align: right">8.22 ms</td>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer performance - internal</td>
-    <td style="white-space: nowrap; text-align: right">141.31</td>
-    <td style="white-space: nowrap; text-align: right">7.08 ms</td>
-    <td style="white-space: nowrap; text-align: right">±4.55%</td>
-    <td style="white-space: nowrap; text-align: right">7.02 ms</td>
-    <td style="white-space: nowrap; text-align: right">8.39 ms</td>
+    <td style="white-space: nowrap">Lexer performance %{"sigils" => "internal", "variables and atoms" => "together"}</td>
+    <td style="white-space: nowrap; text-align: right">145.01</td>
+    <td style="white-space: nowrap; text-align: right">6.90 ms</td>
+    <td style="white-space: nowrap; text-align: right">±6.23%</td>
+    <td style="white-space: nowrap; text-align: right">6.87 ms</td>
+    <td style="white-space: nowrap; text-align: right">8.14 ms</td>
+  </tr>
+  <tr>
+    <td style="white-space: nowrap">Lexer performance %{"sigils" => "external", "variables and atoms" => "together"}</td>
+    <td style="white-space: nowrap; text-align: right">144.83</td>
+    <td style="white-space: nowrap; text-align: right">6.90 ms</td>
+    <td style="white-space: nowrap; text-align: right">±7.30%</td>
+    <td style="white-space: nowrap; text-align: right">6.89 ms</td>
+    <td style="white-space: nowrap; text-align: right">8.59 ms</td>
+  </tr>
+  <tr>
+    <td style="white-space: nowrap">Lexer performance %{"sigils" => "internal", "variables and atoms" => "split"}</td>
+    <td style="white-space: nowrap; text-align: right">144.11</td>
+    <td style="white-space: nowrap; text-align: right">6.94 ms</td>
+    <td style="white-space: nowrap; text-align: right">±5.61%</td>
+    <td style="white-space: nowrap; text-align: right">6.91 ms</td>
+    <td style="white-space: nowrap; text-align: right">8.17 ms</td>
   </tr>
 </table>
 Comparison
@@ -81,14 +97,24 @@ Comparison
     <th style="text-align: right">IPS</th>
     <th style="text-align: right">Slower</th>
   <tr>
-    <td style="white-space: nowrap">Lexer performance - external</td>
-    <td style="white-space: nowrap;text-align: right">146.39</td>
+    <td style="white-space: nowrap">Lexer performance %{"sigils" => "external", "variables and atoms" => "split"}</td>
+    <td style="white-space: nowrap;text-align: right">146.92</td>
     <td>&nbsp;</td>
   </tr>
   <tr>
-    <td style="white-space: nowrap">Lexer performance - internal</td>
-    <td style="white-space: nowrap; text-align: right">141.31</td>
-    <td style="white-space: nowrap; text-align: right">1.04x</td>
+    <td style="white-space: nowrap">Lexer performance %{"sigils" => "internal", "variables and atoms" => "together"}</td>
+    <td style="white-space: nowrap; text-align: right">145.01</td>
+    <td style="white-space: nowrap; text-align: right">1.01x</td>
+  </tr>
+  <tr>
+    <td style="white-space: nowrap">Lexer performance %{"sigils" => "external", "variables and atoms" => "together"}</td>
+    <td style="white-space: nowrap; text-align: right">144.83</td>
+    <td style="white-space: nowrap; text-align: right">1.01x</td>
+  </tr>
+  <tr>
+    <td style="white-space: nowrap">Lexer performance %{"sigils" => "internal", "variables and atoms" => "split"}</td>
+    <td style="white-space: nowrap; text-align: right">144.11</td>
+    <td style="white-space: nowrap; text-align: right">1.02x</td>
   </tr>
 </table>
 <hr/>

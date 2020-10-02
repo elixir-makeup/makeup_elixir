@@ -1,5 +1,4 @@
 defmodule Makeup.Lexers.ElixirLexer do
-  # parsec:Makeup.Lexers.ElixirLexer
   import NimbleParsec
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups
@@ -63,10 +62,21 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> optional(float_scientific_notation_part)
     |> token(:number_float)
 
-  variable_name =
-    parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_start_chars})
-    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_continue_chars}))
-    |> optional(utf8_char([??, ?!]))
+  schism "variables and atoms" do
+    dogma "split" do
+      variable_name =
+        parsec({Makeup.Lexers.ElixirLexer.VariablesStart, :variable_start_chars})
+        |> repeat(parsec({Makeup.Lexers.ElixirLexer.VariablesContinue, :variable_continue_chars}))
+        |> optional(utf8_char([??, ?!]))
+    end
+
+    heresy "together" do
+      variable_name =
+        parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_start_chars})
+        |> repeat(parsec({Makeup.Lexers.ElixirLexer.Variables, :variable_continue_chars}))
+        |> optional(utf8_char([??, ?!]))
+    end
+  end
 
   variable =
     variable_name
@@ -164,10 +174,21 @@ defmodule Makeup.Lexers.ElixirLexer do
     map
   ]
 
-  normal_atom_name =
-    parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_start_chars})
-    |> repeat(parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_continue_chars}))
-    |> optional(utf8_char([??, ?!]))
+  schism "variables and atoms" do
+    dogma "split" do
+      normal_atom_name =
+        parsec({Makeup.Lexers.ElixirLexer.AtomsStart, :atom_start_chars})
+        |> repeat(parsec({Makeup.Lexers.ElixirLexer.AtomsContinue, :atom_continue_chars}))
+        |> optional(utf8_char([??, ?!]))
+    end
+
+    heresy "together" do
+      normal_atom_name =
+        parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_start_chars})
+        |> repeat(parsec({Makeup.Lexers.ElixirLexer.Atoms, :atom_continue_chars}))
+        |> optional(utf8_char([??, ?!]))
+    end
+  end
 
   normal_atom =
     string(":")
@@ -342,7 +363,7 @@ defmodule Makeup.Lexers.ElixirLexer do
           )
         end
 
-      all_sigils =
+      all_sigils_ =
         sigils_interpol ++
           sigils_no_interpol ++
           sigils_string_interpol ++
@@ -351,6 +372,11 @@ defmodule Makeup.Lexers.ElixirLexer do
           sigils_regex_no_interpol ++
           sigils_calendar_interpol ++
           sigils_calendar_no_interpol
+
+      defparsec(:all_sigils, choice(all_sigils_))
+      all_sigils = [
+        parsec(:all_sigils)
+      ]
     end
   end
 
@@ -695,6 +721,4 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> postprocess([])
     |> match_groups(group_prefix)
   end
-
-  # parsec:Makeup.Lexers.ElixirLexer
 end

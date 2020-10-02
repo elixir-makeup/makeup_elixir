@@ -1,4 +1,4 @@
-defmodule SchismBenchmarks do
+defmodule MakeupElixir.SchismBenchmarksVariablesAndAtoms do
   alias Makeup.Lexers.ElixirLexer
   alias Makeup.Formatters.HTML.HTMLFormatter
   require Logger
@@ -26,44 +26,13 @@ defmodule SchismBenchmarks do
     # Read the file into a variable because we're not interested in the time it takes to read from disk.
     code = File.read!(source_path)
     # Get a list of tokens from the code above, so that we can test the HTML Formatter in isolation
-    tokens = ElixirLexer.lex(code)
 
-    settings = {"sigils", ["internal", "external"]}
+    settings = {"variables and atoms", ["split", "together"]}
 
     lexer_performance_benchmarks =
       setup_conversions(
         "Lexer performance",
         fn _ -> ElixirLexer.lex(code) end,
-        settings
-      )
-
-    _format_performance_benchmarks =
-      setup_conversions(
-        "Formatter performance",
-        fn _ -> HTMLFormatter.format_as_binary(tokens) end,
-        settings
-      )
-
-    _lexer_plus_formatter_performance_benchmarks =
-      setup_conversions(
-        "Lexer + Formatter",
-        fn _ ->
-          code
-          |> ElixirLexer.lex()
-          |> HTMLFormatter.format_as_binary()
-        end,
-        settings
-      )
-
-    _end_to_end_performance_benchmarks =
-      setup_conversions(
-        "Reading file from disk + Lexer + Formatter (end to end)",
-        fn _ ->
-          source_path
-          |> File.read!()
-          |> ElixirLexer.lex()
-          |> HTMLFormatter.format_as_binary()
-        end,
         settings
       )
 
@@ -82,7 +51,7 @@ defmodule SchismBenchmarks do
     ]
 
     for {benchmark, name} <- benchmarks do
-      path = Path.join("benchmarks/output", name <> ".md")
+      path = Path.join("benchmarks/output/variables_and_atoms", name <> ".md")
       Benchee.run(
         benchmark,
         formatters: [
@@ -96,4 +65,4 @@ defmodule SchismBenchmarks do
   end
 end
 
-SchismBenchmarks.run()
+MakeupElixir.SchismBenchmarksVariablesAndAtoms.run()

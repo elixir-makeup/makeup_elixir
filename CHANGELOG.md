@@ -1,4 +1,4 @@
-# Chnagelog
+# Changelog
 
 <!-- %% CHANGELOG_ENTRIES %% -->
 
@@ -9,7 +9,7 @@ Handle Windows-style newlines
 
 ### 0.14.0 - 2019-07-16 22:54:32
 
-Upgrade `:makeup` dependency to version 1.0.:wq
+Upgrade `:makeup` dependency to version 1.0.
 
 
 ### 0.13.0 - 2019-01-01 17:33:33

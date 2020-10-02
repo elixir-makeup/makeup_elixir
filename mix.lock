@@ -4,6 +4,6 @@
   "deep_merge": {:hex, :deep_merge, "1.0.0", "b4aa1a0d1acac393bdf38b2291af38cb1d4a52806cf7a4906f718e1feb5ee961", [:mix], [], "hexpm", "ce708e5f094b9cd4e8f2be4f00d2f4250c4095be93f8cd6d018c753894885430"},
   "ex_unicode": {:hex, :ex_unicode, "1.8.0", "5becbefc92dbad66a46f093deb08d116f095ed777c32de27504d479b6a864c9f", [:mix], [], "hexpm", "4d98ef2da09843a827c0b602aeb090d6b984c6b66a49dd423ffe3507eb068191"},
   "makeup": {:hex, :makeup, "1.0.4", "6d1936d21585cd258aeadf7728a572ae2a6017a909349a12270c1e460e360f49", [:mix], [{:nimble_parsec, "~> 0.5 or ~> 1.0", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm", "a45dc0440b9ff1aca4883bedcae1f5939ec3b1f6e28026a15147ed1a45d897cd"},
-  "nimble_parsec": {:git, "https://github.com/dashbitco/nimble_parsec.git", "ec75d36737c8a7ef9d4f21b4049858950bd963d3", []},
-  "unicode_set": {:hex, :unicode_set, "0.8.0", "61246878c131758f8c6b443ec02c675e3ac48ed4aaf711b82d57287f05347fe7", [:mix], [{:ex_unicode, "~> 1.8", [hex: :ex_unicode, repo: "hexpm", optional: false]}, {:nimble_parsec, "~> 0.5", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm", "28f2058fe8675b3e9c16054fd7fb8ee5b4dc032812b7221afb34e355b6198482"},
+  "nimble_parsec": {:hex, :nimble_parsec, "1.1.0", "3a6fca1550363552e54c216debb6a9e95bd8d32348938e13de5eda962c0d7f89", [:mix], [], "hexpm", "08eb32d66b706e913ff748f11694b17981c0b04a33ef470e33e11b3d3ac8f54b"},
+  "unicode_set": {:hex, :unicode_set, "0.9.0", "da21a675130c101ee218ca75946743c52fdf3ccf991b01ae4eba2a96a32e2394", [:mix], [{:ex_unicode, "~> 1.8", [hex: :ex_unicode, repo: "hexpm", optional: false]}, {:nimble_parsec, "~> 0.5 or ~> 1.0", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm", "c12c655144a6177dbb5375dc20ff2bf16ea07b70d235ed6920ebe3d52e810c5c"},
 }

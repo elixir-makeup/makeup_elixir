@@ -1,4 +1,8 @@
 defmodule Makeup.Lexers.ElixirLexer do
+  @moduledoc """
+  A `Makeup` lexer for the Elixir language.
+  """
+
   import NimbleParsec
   import Makeup.Lexer.Combinators
   import Makeup.Lexer.Groups

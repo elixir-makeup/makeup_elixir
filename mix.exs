@@ -2,7 +2,7 @@ defmodule MakeupElixir.Mixfile do
   use Mix.Project
 
   @version "0.15.0"
-  @url "https://github.com/tmbb/makeup_elixir"
+  @url "https://github.com/elixir-makeup/makeup_elixir"
 
   def project do
     [
@@ -11,17 +11,9 @@ defmodule MakeupElixir.Mixfile do
       elixir: "~> 1.4",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      # Package
       package: package(),
       description: description(),
-      aliases: aliases(),
-      docs: [
-        main: "readme",
-        assets: "assets",
-        extras: [
-          "README.md"
-        ]
-      ]
+      aliases: aliases()
     ]
   end
 

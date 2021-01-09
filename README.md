@@ -1,7 +1,8 @@
 # MakeupElixir
-[![Build Status](https://travis-ci.org/tmbb/makeup_elixir.svg?branch=master)](https://travis-ci.org/tmbb/makeup_elixir)
 
-A [Makeup](https://github.com/tmbb/makeup/) lexer for the Elixir language.
+[![Build Status](https://github.com/elixir-makeup/makeup_elixir/workflows/CI/badge.svg)](https://github.com/elixir-makeup/makeup_elixir/actions)
+
+A [Makeup](https://github.com/elixir-makeup/makeup/) lexer for the Elixir language.
 
 ## Installation
 

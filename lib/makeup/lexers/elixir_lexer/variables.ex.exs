@@ -3,7 +3,7 @@ defmodule Makeup.Lexers.ElixirLexer.Variables do
 
   # parsec:Makeup.Lexers.ElixirLexer.Variables
   # This module is generated at "dev time" so that the lexer
-  # doesn't have to depend on the (excelent) `unicode_set` library,
+  # doesn't have to depend on the (excellent) `unicode_set` library,
   # which takes several minutes to compile.
   import NimbleParsec
 

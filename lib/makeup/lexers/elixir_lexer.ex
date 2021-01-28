@@ -405,7 +405,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   @def_like ~W[def defp defmacro defmacrop defguard defguardp defcallback defmacrocallback]
   @keyword_declaration @def_like ++ ~W[
-    defmodule defprotocol defdelegate defexception defstruct defimpl defcallback]
+    defmodule defprotocol defdelegate defexception defstruct defimpl]
   @keyword ~W[
     fn do end after else rescue catch with
     case cond for if unless try receive raise

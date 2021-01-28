@@ -15,9 +15,16 @@ defmodule Makeup.Lexers.ElixirLexer.Variables do
 
   # TODO: Why do we need to flatten these lists? A bug in `unicode_set`?
   variable_start_chars = Unicode.Set.to_utf8_char(variable_start_unicode_syntax) |> List.flatten()
-  variable_continue_chars = Unicode.Set.to_utf8_char(variable_continue_unicode_syntax) |> List.flatten()
 
-  defcombinator :variable_start_chars, label(utf8_char(variable_start_chars), "variable start")
-  defcombinator :variable_continue_chars, label(utf8_char(variable_continue_chars), "variable continue")
+  variable_continue_chars =
+    Unicode.Set.to_utf8_char(variable_continue_unicode_syntax) |> List.flatten()
+
+  defcombinator(:variable_start_chars, label(utf8_char(variable_start_chars), "variable start"))
+
+  defcombinator(
+    :variable_continue_chars,
+    label(utf8_char(variable_continue_chars), "variable continue")
+  )
+
   # parsec:Makeup.Lexers.ElixirLexer.Variables
 end

@@ -622,12 +622,12 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
   test "unicode variables" do
     assert lex("josé = 'awesome'") == [
-      {:name, %{}, "josé"},
-      {:whitespace, %{}, " "},
-      {:operator, %{}, "="},
-      {:whitespace, %{}, " "},
-      {:string_char, %{}, "'awesome'"}
-    ]
+             {:name, %{}, "josé"},
+             {:whitespace, %{}, " "},
+             {:operator, %{}, "="},
+             {:whitespace, %{}, " "},
+             {:string_char, %{}, "'awesome'"}
+           ]
   end
 
   test "unicode atoms" do

@@ -656,13 +656,13 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
   test "map" do
     assert lex("%{:a => 1}") == [
-      {:punctuation, %{group_id: "group-1"}, "%{"},
-      {:string_symbol, %{}, ":a"},
-      {:whitespace, %{}, " "},
-      {:punctuation, %{}, "=>"},
-      {:whitespace, %{}, " "},
-      {:number_integer, %{}, "1"},
-      {:punctuation, %{group_id: "group-1"}, "}"}
-    ]
+             {:punctuation, %{group_id: "group-1"}, "%{"},
+             {:string_symbol, %{}, ":a"},
+             {:whitespace, %{}, " "},
+             {:punctuation, %{}, "=>"},
+             {:whitespace, %{}, " "},
+             {:number_integer, %{}, "1"},
+             {:punctuation, %{group_id: "group-1"}, "}"}
+           ]
   end
 end

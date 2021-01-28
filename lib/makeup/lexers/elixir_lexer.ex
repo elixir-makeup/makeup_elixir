@@ -249,7 +249,9 @@ defmodule Makeup.Lexers.ElixirLexer do
     {"/", "/"},
     {"{", "}"},
     {"[", "]"},
-    {"(", ")"}
+    {"(", ")"},
+    {"<", ">"},
+    {"|", "|"}
   ]
 
   sigils_interpol =

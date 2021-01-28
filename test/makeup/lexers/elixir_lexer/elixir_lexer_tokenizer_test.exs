@@ -50,6 +50,37 @@ defmodule ElixirLexerTokenizerTestSnippet do
       assert lex("...(12)> ") == [{:generic_prompt, %{selectable: false}, "...(12)> "}]
     end
 
+    test "parses multiline iex prompt correctly" do
+      source = """
+      iex> x = [
+      ...>   key:
+      ...>     "value"
+      ...> ]
+      """
+
+      assert lex(source) == [
+               {:generic_prompt, %{selectable: false}, "iex> "},
+               {:name, %{}, "x"},
+               {:whitespace, %{}, " "},
+               {:operator, %{}, "="},
+               {:whitespace, %{}, " "},
+               {:punctuation, %{group_id: "group-1"}, "["},
+               {:whitespace, %{}, "\n"},
+               {:generic_prompt, %{selectable: false}, "...> "},
+               {:whitespace, %{}, "  "},
+               {:string_symbol, %{}, "key"},
+               {:punctuation, %{}, ":"},
+               {:whitespace, %{}, "\n"},
+               {:generic_prompt, %{selectable: false}, "...> "},
+               {:whitespace, %{}, "    "},
+               {:string, %{}, "\"value\""},
+               {:whitespace, %{}, "\n"},
+               {:generic_prompt, %{selectable: false}, "...> "},
+               {:punctuation, %{group_id: "group-1"}, "]"},
+               {:whitespace, %{}, "\n"}
+             ]
+    end
+
     test "rejects incomplete iex prompt (first line)" do
       # missing the `>`
       assert lex("iex") == [{:name, %{}, "iex"}]

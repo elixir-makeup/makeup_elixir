@@ -239,7 +239,7 @@ defmodule Makeup.Lexers.ElixirLexer do
       normal_keyword,
       string_keyword
     ])
-    |> concat(whitespace)
+    |> lookahead(whitespace)
 
   sigil_delimiters = [
     {~S["""], ~S["""]},

@@ -344,6 +344,14 @@ defmodule ElixirLexerTokenizerTestSnippet do
       assert lex(~S[:"a!&;//"]) == [{:string_symbol, %{}, ~S[:"a!&;//"]}]
       assert lex(~S[:'a!&;//']) == [{:string_symbol, %{}, ~S[:'a!&;//']}]
     end
+
+    test "triple colon" do
+      assert lex(":::") === [{:string_symbol, %{}, ":::"}]
+    end
+
+    test "operator names" do
+      assert lex(":+") === [{:string_symbol, %{}, ":+"}]
+    end
   end
 
   describe "numbers" do

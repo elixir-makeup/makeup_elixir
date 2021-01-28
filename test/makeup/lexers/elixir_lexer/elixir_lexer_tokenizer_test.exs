@@ -351,6 +351,12 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
     test "operator names" do
       assert lex(":+") === [{:string_symbol, %{}, ":+"}]
+      assert lex(":..") === [{:string_symbol, %{}, ":.."}]
+    end
+
+    test "special atom names" do
+      assert lex(":...") === [{:string_symbol, %{}, ":..."}]
+      assert lex(":%{}") === [{:string_symbol, %{}, ":%{}"}]
     end
   end
 
@@ -642,5 +648,9 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
   test "unicode atoms" do
     assert lex(":josé@home") == [{:string_symbol, %{}, ":josé@home"}]
+  end
+
+  test "triple dot is a special name" do
+    assert lex("...") == [{:name, %{}, "..."}]
   end
 end

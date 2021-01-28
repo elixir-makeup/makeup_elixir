@@ -86,8 +86,8 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   operator_name = word_from_list(~W(
       <<< >>> ||| &&& ^^^ ~~~ === !== ~>> <~> |~> <|>
-      == != <= >= && || \\ <> ++ -- |> =~ -> <- ~> <~
-      = < > + - * / | . ^ & ! ::
+      == != <= >= && || \\ <> ++ -- |> =~ -> <- ~> <~ :: ..
+      = < > + - * / | . ^ & !
     ))
 
   operator = token(operator_name, :operator)

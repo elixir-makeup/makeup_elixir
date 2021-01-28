@@ -414,7 +414,9 @@ defmodule ElixirLexerTokenizerTestSnippet do
     {"/", "/"},
     {"{", "}"},
     {"[", "]"},
-    {"(", ")"}
+    {"(", ")"},
+    {"<", ">"},
+    {"|", "|"}
   ]
 
   # A subset of `@sigil_delimiters`

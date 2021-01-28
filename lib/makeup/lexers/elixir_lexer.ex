@@ -101,6 +101,8 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   triple_dot = token("...", :name)
 
+  map_arrow = token("=>", :punctuation)
+
   anon_function_arguments =
     string("&")
     |> concat(digits)
@@ -128,7 +130,7 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   punctuation =
     word_from_list(
-      ["\\\\", "=>", ":", ";", ",", ".", "%"],
+      [":", ";", ",", ".", "%"],
       :punctuation
     )
 
@@ -346,6 +348,8 @@ defmodule Makeup.Lexers.ElixirLexer do
         [
           # Triple dot (must come before operators)
           triple_dot,
+          # Map arrow (must come before operators)
+          map_arrow,
           # Operators
           operator,
           # Numbers

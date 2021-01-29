@@ -317,7 +317,6 @@ defmodule ElixirLexerTokenizerTestSnippet do
       assert lex("defp") == [{:keyword_declaration, %{}, "defp"}]
       assert lex("defmacro") == [{:keyword_declaration, %{}, "defmacro"}]
       assert lex("defmacrop") == [{:keyword_declaration, %{}, "defmacrop"}]
-      assert lex("defcallback") == [{:keyword_declaration, %{}, "defcallback"}]
       assert lex("defimpl") == [{:keyword_declaration, %{}, "defimpl"}]
     end
   end

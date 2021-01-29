@@ -403,7 +403,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   # Step #2: postprocess the list of tokens
   ###################################################################
 
-  @def_like ~W[def defp defmacro defmacrop defguard defguardp defcallback defmacrocallback]
+  @def_like ~W[def defp defmacro defmacrop defguard defguardp defn defnp]
   @keyword_declaration @def_like ++ ~W[
     defmodule defprotocol defdelegate defexception defstruct defimpl]
   @keyword ~W[

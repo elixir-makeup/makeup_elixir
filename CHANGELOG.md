@@ -2,6 +2,11 @@
 
 <!-- %% CHANGELOG_ENTRIES %% -->
 
+### 0.15.1 - 2021-01-29 29:28:00
+
+Multiple bug fixes and update list of tokens.
+
+
 ### 0.15.0 - 2020-10-02 14:39:00
 
 Added support for Unicode characters in identifiers (atoms and variables).

@@ -8,7 +8,7 @@ defmodule MakeupElixir.Mixfile do
     [
       app: :makeup_elixir,
       version: @version,
-      elixir: "~> 1.4",
+      elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),

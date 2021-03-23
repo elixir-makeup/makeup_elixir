@@ -87,7 +87,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   operator_name = word_from_list(~W(
       <<< >>> ||| &&& ^^^ ~~~ === !== ~>> <~> |~> <|>
       == != <= >= && || \\ <> ++ -- |> =~ -> <- ~> <~ :: ..
-      = < > + - * / | . ^ & !
+      = < > + - * / | . ^ & ! //
     ))
 
   operator = token(operator_name, :operator)
@@ -97,7 +97,7 @@ defmodule Makeup.Lexers.ElixirLexer do
     word_from_list(~W(<<< >>>))
     |> token(:operator)
 
-  special_atom_name = word_from_list(~W(... <<>> %{} % {}))
+  special_atom_name = word_from_list(~W(... <<>> %{} % {} ..//))
 
   triple_dot = token("...", :name)
 

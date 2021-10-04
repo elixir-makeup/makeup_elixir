@@ -24,7 +24,7 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
     left
     |> repeat(lookahead_not(right) |> choice(choices))
     |> concat(right)
-    |> optional(utf8_string([?a..?z, ?A..?Z], min: 1))
+    |> optional(utf8_string([?a..?z, ?A..?Z, ?0..?9], min: 1))
     |> post_traverse({__MODULE__, :build_sigil, []})
   end
 

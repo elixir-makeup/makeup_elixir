@@ -357,6 +357,17 @@ defmodule ElixirLexerTokenizerTestSnippet do
       assert lex(":...") === [{:string_symbol, %{}, ":..."}]
       assert lex(":%{}") === [{:string_symbol, %{}, ":%{}"}]
     end
+
+    test "atoms used as modules are highlighted as modules" do
+      assert lex(":crypto.strong_rand_bytes(4)") === [
+               {:name_class, %{}, ":crypto"},
+               {:operator, %{}, "."},
+               {:name, %{}, "strong_rand_bytes"},
+               {:punctuation, %{group_id: "group-1"}, "("},
+               {:number_integer, %{}, "4"},
+               {:punctuation, %{group_id: "group-1"}, ")"}
+             ]
+    end
   end
 
   describe "numbers" do

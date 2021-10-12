@@ -465,6 +465,18 @@ defmodule Makeup.Lexers.ElixirLexer do
     ]
   end
 
+  # When calling functions from an erlang module, highlight the atom as a module.
+  #
+  #     :crypto.strong_rand_bytes(4)
+  defp postprocess_helper([
+         {:string_symbol, attrs1, [":" | _] = module},
+         {:operator, _, "."} = op,
+         {:name, _, _} = text
+         | tokens
+       ]) do
+    [{:name_class, attrs1, module}, op, text | postprocess_helper(tokens)]
+  end
+
   defp postprocess_helper([{:name, attrs, text} | tokens]) when text in @keyword,
     do: [{:keyword, attrs, text} | postprocess_helper(tokens)]
 

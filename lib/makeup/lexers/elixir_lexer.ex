@@ -14,7 +14,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   # Step #1: tokenize the input (into a list of tokens)
   ###################################################################
   # We will often compose combinators into larger combinators.
-  # Sometimes, the smaller combinator is usefull on its own as a token, and sometimes it isn't.
+  # Sometimes, the smaller combinator is useful on its own as a token, and sometimes it isn't.
   # We'll adopt the following "convention":
   #
   # 1. A combinator that ends with `_name` returns a string

@@ -1,7 +1,7 @@
 defmodule Releaser.VersionUtils do
   @doc """
   Some utilities to get and set version numbers in the `mix.exs` file
-  and to programatically transform version numbers.
+  and to programmatically transform version numbers.
 
   Maybe the `bump_*` functions should be in the standard library?
 
@@ -182,7 +182,7 @@ defmodule Releaser do
     VersionUtils.set_version(new_version)
     # Commit the changes and ad a new 'v*.*.*' tag
     Git.add_commit_and_tag(new_version)
-    # Now that we have commited the changes, we can remove the release file
+    # Now that we have committed the changes, we can remove the release file
     Changelog.remove_release_file()
   end
 end

@@ -46,7 +46,7 @@ defmodule MakeupElixir.Mixfile do
       {:makeup, "~> 1.0"},
       {:nimble_parsec, "~> 1.1"},
       # Generate unicode character lists
-      {:unicode_set, "~> 0.9.0", only: :dev},
+      {:unicode_set, "~> 1.1.0", only: :dev},
       # Benchmarking utilities
       {:benchee, "~> 1.0", only: :dev},
       {:benchee_markdown, "~> 0.2", only: :dev}

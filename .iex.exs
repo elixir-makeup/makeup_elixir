@@ -1,1 +1,0 @@
-import_if_available Makeup.Lexers.ElixirLexer.Testing

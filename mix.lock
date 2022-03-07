@@ -3,7 +3,7 @@
   "benchee_markdown": {:hex, :benchee_markdown, "0.2.4", "4789717e11d38a8ac3ac341b257ab429d8255c7a8274cea35bffb01f6b5d53dd", [:mix], [{:benchee, ">= 0.99.0 and < 2.0.0", [hex: :benchee, repo: "hexpm", optional: false]}], "hexpm", "80baf253bba2bffe4cd59d9861360217c17babbb4ea4bf14fbadb7d75137eee3"},
   "deep_merge": {:hex, :deep_merge, "1.0.0", "b4aa1a0d1acac393bdf38b2291af38cb1d4a52806cf7a4906f718e1feb5ee961", [:mix], [], "hexpm", "ce708e5f094b9cd4e8f2be4f00d2f4250c4095be93f8cd6d018c753894885430"},
   "makeup": {:hex, :makeup, "1.1.0", "6b67c8bc2882a6b6a445859952a602afc1a41c2e08379ca057c0f525366fc3ca", [:mix], [{:nimble_parsec, "~> 1.2.2 or ~> 1.3", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm", "0a45ed501f4a8897f580eabf99a2e5234ea3e75a4373c8a52824f6e873be57a6"},
-  "nimble_parsec": {:hex, :nimble_parsec, "1.2.2", "811e32fb77aabb2b5b6196b21f76fe6ba8b6861c3d8c9eaeedbbf1f4cda627d1", [:mix], [], "hexpm", "dd3504559b0ddfeb7f55297557313fc05340120a037f981a4775b1c43e61d1b9"},
+  "nimble_parsec": {:hex, :nimble_parsec, "1.2.3", "244836e6e3f1200c7f30cb56733fd808744eca61fd182f731eac4af635cc6d0b", [:mix], [], "hexpm", "c8d789e39b9131acf7b99291e93dae60ab48ef14a7ee9d58c6964f59efb570b0"},
   "unicode": {:hex, :unicode, "1.13.1", "4ebb6dc60e91f04e0dd46dca93576416473bc22bae69484122c11682af48e8df", [:mix], [], "hexpm", "fe4fcc8e15f444cf07bfbca30ad726be99c12d45da06d70b0e4f0c49b0d7d5ce"},
   "unicode_set": {:hex, :unicode_set, "1.1.0", "32971b9b8061f2b2f0c607ba588ad9a6202e78a0c577555df4da899fd4434f23", [:mix], [{:nimble_parsec, "~> 0.5 or ~> 1.0", [hex: :nimble_parsec, repo: "hexpm", optional: false]}, {:unicode, "~> 1.13", [hex: :unicode, repo: "hexpm", optional: false]}], "hexpm", "b416e7b18d1297bbdc25c05e56506291e8fd3f339b8386d4e1f6ddb57c047918"},
 }

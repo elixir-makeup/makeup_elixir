@@ -389,14 +389,16 @@ defmodule Makeup.Lexers.ElixirLexer do
   defparsec(
     :root_element,
     root_element_combinator |> map({__MODULE__, :__as_elixir_language__, []}),
-    inline: @inline
+    inline: @inline,
+    export_combinator: true
   )
 
   # @impl Makeup.Lexer
   defparsec(
     :root,
     repeat(parsec(:root_element)),
-    inline: @inline
+    inline: @inline,
+    export_combinator: true
   )
 
   ###################################################################

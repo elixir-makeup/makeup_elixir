@@ -28,7 +28,8 @@ defmodule Makeup.Lexers.ElixirLexer do
   whitespace = ascii_string([?\r, ?\s, ?\n, ?\f], min: 1) |> token(:whitespace)
 
   newlines =
-    choice([string("\r\n"), string("\n")])
+    optional(ascii_string([?\s, ?\t, ?\r], min: 1))
+    |> choice([string("\r\n"), string("\n")])
     |> optional(ascii_string([?\s, ?\n, ?\f, ?\r], min: 1))
     |> token(:whitespace)
 

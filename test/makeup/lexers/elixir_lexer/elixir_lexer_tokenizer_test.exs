@@ -143,6 +143,20 @@ defmodule ElixirLexerTokenizerTestSnippet do
                {:operator, %{}, ">"}
              ]
     end
+
+    test "iex prompt works when previous line has trailing whitespace" do
+      assert lex("x \niex> ") == [
+        {:name, %{}, "x"},
+        {:whitespace, %{}, " \n"},
+        {:generic_prompt, %{selectable: false}, "iex> "},
+      ]
+
+      assert lex("x \r\niex> ") == [
+        {:name, %{}, "x"},
+        {:whitespace, %{}, " \r\n"},
+        {:generic_prompt, %{selectable: false}, "iex> "},
+      ]
+    end
   end
 
   describe "def-like macros" do

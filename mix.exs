@@ -26,7 +26,7 @@ defmodule MakeupElixir.Mixfile do
   defp package do
     [
       name: :makeup_elixir,
-      licenses: ["BSD"],
+      licenses: ["BSD-2-Clause"],
       maintainers: ["Tiago Barroso <tmbb@campus.ul.pt>"],
       links: %{"GitHub" => @url}
     ]

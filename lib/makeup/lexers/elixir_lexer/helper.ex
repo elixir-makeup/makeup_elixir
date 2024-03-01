@@ -31,9 +31,9 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
   def build_sigil(rest, acc, context, line, offset) do
     type =
       case Enum.at(acc, -2) do
-        sigil when sigil in 'sScC' -> :string
-        sigil when sigil in 'rR' -> :string_regex
-        sigil when sigil in 'TDNU' -> :literal_date
+        sigil when sigil in ~c"sScC" -> :string
+        sigil when sigil in ~c"rR" -> :string_regex
+        sigil when sigil in ~c"TDNU" -> :literal_date
         _ -> :string_sigil
       end
 

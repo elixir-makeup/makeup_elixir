@@ -1,6 +1,8 @@
 # Changelog
 
-<!-- %% CHANGELOG_ENTRIES %% -->
+## 0.16.2 (2024-03-01)
+
+* Fix warnings on Elixir v1.16+
 
 ## 0.16.1 (2023-04-03)
 

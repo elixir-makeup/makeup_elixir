@@ -1,7 +1,7 @@
 defmodule MakeupElixir.Mixfile do
   use Mix.Project
 
-  @version "0.16.1"
+  @version "0.16.2"
   @url "https://github.com/elixir-makeup/makeup_elixir"
 
   def project do
@@ -54,10 +54,7 @@ defmodule MakeupElixir.Mixfile do
   end
 
   defp aliases do
-    [
-      docs: &build_docs/1,
-      publish: "run scripts/publish.exs"
-    ]
+    [docs: &build_docs/1]
   end
 
   defp build_docs(_) do

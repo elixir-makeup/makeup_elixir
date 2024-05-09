@@ -198,7 +198,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   # Inside the string we don't expect the `iex>` prompt, only the `...>` prompt.
   iex_prompt_inside_string =
     string("\n...")
-    |> optional(string("(") |> concat(digits) |> string(")"))
+    |> optional(string("(") |> ascii_string([not: ?)], min: 1) |> string(")"))
     |> string(">")
     |> optional(string(" "))
     |> token(:generic_prompt, %{selectable: false})
@@ -295,7 +295,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   # would be extremely rare
   iex_prompt =
     choice([string("iex"), string("...")])
-    |> optional(string("(") |> concat(digits) |> string(")"))
+    |> optional(string("(") |> ascii_string([not: ?)], min: 1) |> string(")"))
     |> string(">")
     |> optional(string(" "))
     |> token(:generic_prompt, %{selectable: false})

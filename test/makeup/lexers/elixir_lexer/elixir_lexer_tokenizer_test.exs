@@ -48,6 +48,8 @@ defmodule ElixirLexerTokenizerTestSnippet do
       assert lex("iex> ") == [{:generic_prompt, %{selectable: false}, "iex> "}]
       assert lex("iex(1)> ") == [{:generic_prompt, %{selectable: false}, "iex(1)> "}]
       assert lex("...(12)> ") == [{:generic_prompt, %{selectable: false}, "...(12)> "}]
+      assert lex("iex(foo@bar)> ") == [{:generic_prompt, %{selectable: false}, "iex(foo@bar)> "}]
+      assert lex("...(foo@bar)> ") == [{:generic_prompt, %{selectable: false}, "...(foo@bar)> "}]
     end
 
     test "parses multiline iex prompt correctly" do
@@ -146,16 +148,16 @@ defmodule ElixirLexerTokenizerTestSnippet do
 
     test "iex prompt works when previous line has trailing whitespace" do
       assert lex("x \niex> ") == [
-        {:name, %{}, "x"},
-        {:whitespace, %{}, " \n"},
-        {:generic_prompt, %{selectable: false}, "iex> "},
-      ]
+               {:name, %{}, "x"},
+               {:whitespace, %{}, " \n"},
+               {:generic_prompt, %{selectable: false}, "iex> "}
+             ]
 
       assert lex("x \r\niex> ") == [
-        {:name, %{}, "x"},
-        {:whitespace, %{}, " \r\n"},
-        {:generic_prompt, %{selectable: false}, "iex> "},
-      ]
+               {:name, %{}, "x"},
+               {:whitespace, %{}, " \r\n"},
+               {:generic_prompt, %{selectable: false}, "iex> "}
+             ]
     end
   end
 

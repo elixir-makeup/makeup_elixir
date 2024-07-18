@@ -7,7 +7,6 @@ defmodule ElixirLexerTokenizerTestSnippet do
     assert lex("\s") == [{:whitespace, %{}, "\s"}]
     assert lex("\n") == [{:whitespace, %{}, "\n"}]
     assert lex("\t") == [{:whitespace, %{}, "\t"}]
-    assert lex("\f") == [{:whitespace, %{}, "\f"}]
     assert lex("\r") == [{:whitespace, %{}, "\r"}]
   end
 

@@ -25,7 +25,7 @@ defmodule Makeup.Lexers.ElixirLexer do
   # TODO: check we're following this convention
   # NOTE: if Elixir had a good static type system it would help us do the right thing here.
 
-  whitespace = ascii_string([?\r, ?\s, ?\n, ?\f, ?\t], min: 1) |> token(:whitespace)
+  whitespace = ascii_string([?\r, ?\s, ?\n, ?\t], min: 1) |> token(:whitespace)
 
   newlines =
     optional(ascii_string([?\s, ?\t, ?\r], min: 1))

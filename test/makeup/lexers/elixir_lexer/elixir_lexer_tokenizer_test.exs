@@ -2,8 +2,12 @@ defmodule ElixirLexerTokenizerTestSnippet do
   use ExUnit.Case, async: false
   import Makeup.Lexers.ElixirLexer.Testing, only: [lex: 1]
 
-  test "?\\f is recognized as whitespace character" do
-    assert lex("\f") == [{:whitespace, %{}, "\f"}]
+  test "whitespace" do
+    assert lex(" ") == [{:whitespace, %{}, " "}]
+    assert lex("\s") == [{:whitespace, %{}, "\s"}]
+    assert lex("\n") == [{:whitespace, %{}, "\n"}]
+    assert lex("\t") == [{:whitespace, %{}, "\t"}]
+    assert lex("\r") == [{:whitespace, %{}, "\r"}]
   end
 
   test "builtins" do

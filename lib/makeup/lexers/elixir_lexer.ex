@@ -665,6 +665,6 @@ defmodule Makeup.Lexers.ElixirLexer do
   end
 
   defp get_sigil_lexers() do
-    Application.get_env(:makeup_elixir, :sigil_lexers, %{})
+    Application.fetch_env!(:makeup_elixir, :sigil_lexers)
   end
 end

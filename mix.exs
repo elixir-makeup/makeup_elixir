@@ -1,7 +1,7 @@
 defmodule MakeupElixir.Mixfile do
   use Mix.Project
 
-  @version "0.16.2"
+  @version "1.0.0"
   @url "https://github.com/elixir-makeup/makeup_elixir"
 
   def project do
@@ -36,7 +36,8 @@ defmodule MakeupElixir.Mixfile do
   def application do
     [
       extra_applications: [],
-      mod: {Makeup.Lexers.ElixirLexer.Application, []}
+      mod: {Makeup.Lexers.ElixirLexer.Application, []},
+      env: [sigil_lexers: %{}]
     ]
   end
 

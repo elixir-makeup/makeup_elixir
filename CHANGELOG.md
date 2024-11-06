@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0 (2024-11-06)
+
+* Allow registering custom sigils
+* Allow node names in prompts
+* Allow \t and \f as whitespace
+
 ## 0.16.2 (2024-03-01)
 
 * Fix warnings on Elixir v1.16+

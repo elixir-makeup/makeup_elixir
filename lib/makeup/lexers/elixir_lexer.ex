@@ -502,6 +502,35 @@ defmodule Makeup.Lexers.ElixirLexer do
   defp postprocess_helper([{:name, attrs, "_" <> _name = text} | tokens]),
     do: [{:comment, attrs, text} | postprocess_helper(tokens)]
 
+  # Custom sigil lexers
+  defp postprocess_helper([{:string_sigil, attrs, content} | tokens]) do
+    # content is a list of the format ["~", sigil_char, separator, ... sigil_content ..., end_separator]
+    sigil =
+      content
+      |> Enum.at(1)
+      |> List.wrap()
+      |> List.to_string()
+
+    lexer = Map.get(get_sigil_lexers(), sigil)
+
+    if lexer do
+      ["~", _sigil, separator | content_with_end_separator] = content
+      end_separator = Enum.at(content_with_end_separator, -1)
+      content = Enum.slice(content_with_end_separator, 0..-2//1) |> List.to_string()
+
+      inner_tokens = lexer.lex(content)
+
+      List.flatten([
+        {:string_sigil, attrs, "~#{sigil}#{separator}"},
+        inner_tokens,
+        [{:string_sigil, attrs, end_separator}]
+        | postprocess_helper(tokens)
+      ])
+    else
+      [{:string_sigil, attrs, content} | postprocess_helper(tokens)]
+    end
+  end
+
   # Otherwise, don't do anything with the current token and go to the next token.
   defp postprocess_helper([token | tokens]), do: [token | postprocess_helper(tokens)]
 
@@ -620,5 +649,22 @@ defmodule Makeup.Lexers.ElixirLexer do
     |> remove_initial_newline()
     |> postprocess([])
     |> match_groups(group_prefix)
+  end
+
+  @doc """
+  Register a custom lexer to be used for lexing sigil contents.
+
+  ## Examples
+
+      > Makeup.Lexers.ElixirLexer.register_sigil_lexer("H", Makeup.Lexers.HEExLexer)
+
+  """
+  def register_sigil_lexer(sigil, lexer) do
+    lexers = get_sigil_lexers()
+    Application.put_env(:makeup_elixir, :sigil_lexers, Map.put(lexers, sigil, lexer))
+  end
+
+  defp get_sigil_lexers() do
+    Application.get_env(:makeup_elixir, :sigil_lexers, %{})
   end
 end

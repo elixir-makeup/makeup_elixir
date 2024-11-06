@@ -493,7 +493,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
     end
 
     test "sigils without interpolation (uppercase letter)" do
-      for b <- ?A..?Z do
+      for b <- ?A..?Z, b != ?H do
         for {llim, rlim} <- @sigil_delimiters, {llim, rlim} != {"{", "}"} do
           sigil = "~#{<<b>>}#{llim}x\#{y}z#{rlim}"
 

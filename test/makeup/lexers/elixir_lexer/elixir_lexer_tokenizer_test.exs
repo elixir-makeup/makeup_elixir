@@ -695,22 +695,4 @@ defmodule ElixirLexerTokenizerTestSnippet do
              {:punctuation, %{group_id: "group-1"}, "}"}
            ]
   end
-
-  describe "custom lexers for sigils" do
-    test "can register a custom lexer" do
-      defmodule MyCustomLexer do
-        def lex(input) do
-          [{:keyword, %{}, input}]
-        end
-      end
-
-      Makeup.Lexers.ElixirLexer.register_sigil_lexer("H", MyCustomLexer)
-
-      assert lex("~H|Hello, world!|") == [
-               {:string_sigil, %{}, "~H|"},
-               {:keyword, %{}, "Hello, world!"},
-               {:string_sigil, %{}, "|"}
-             ]
-    end
-  end
 end

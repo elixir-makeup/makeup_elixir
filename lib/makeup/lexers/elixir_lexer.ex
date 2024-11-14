@@ -511,14 +511,14 @@ defmodule Makeup.Lexers.ElixirLexer do
       |> List.wrap()
       |> List.to_string()
 
-    lexer = Map.get(get_sigil_lexers(), sigil)
+    {lexer, options} = Map.get(get_sigil_lexers(), sigil, {nil, []})
 
     if lexer do
       ["~", _sigil, separator | content_with_end_separator] = content
       end_separator = Enum.at(content_with_end_separator, -1)
       content = Enum.slice(content_with_end_separator, 0..-2//1) |> List.to_string()
 
-      inner_tokens = lexer.lex(content)
+      inner_tokens = lexer.lex(content, options)
 
       List.flatten([
         {:string_sigil, attrs, "~#{sigil}#{separator}"},
@@ -659,9 +659,9 @@ defmodule Makeup.Lexers.ElixirLexer do
       > Makeup.Lexers.ElixirLexer.register_sigil_lexer("H", Makeup.Lexers.HEExLexer)
 
   """
-  def register_sigil_lexer(sigil, lexer) do
+  def register_sigil_lexer(sigil, lexer, options \\ []) do
     lexers = get_sigil_lexers()
-    Application.put_env(:makeup_elixir, :sigil_lexers, Map.put(lexers, sigil, lexer))
+    Application.put_env(:makeup_elixir, :sigil_lexers, Map.put(lexers, sigil, {lexer, options}))
   end
 
   defp get_sigil_lexers() do

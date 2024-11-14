@@ -5,16 +5,16 @@ defmodule ElixirLexerSigilLexerTest do
   describe "custom lexers for sigils" do
     test "can register a custom lexer" do
       defmodule MyCustomLexer do
-        def lex(input) do
-          [{:keyword, %{}, input}]
+        def lex(input, opts) do
+          [{:keyword, %{opts: opts}, input}]
         end
       end
 
-      Makeup.Lexers.ElixirLexer.register_sigil_lexer("H", MyCustomLexer)
+      Makeup.Lexers.ElixirLexer.register_sigil_lexer("H", MyCustomLexer, foo: :bar)
 
       assert lex("~H|Hello, world!|") == [
                {:string_sigil, %{}, "~H|"},
-               {:keyword, %{}, "Hello, world!"},
+               {:keyword, %{opts: [foo: :bar]}, "Hello, world!"},
                {:string_sigil, %{}, "|"}
              ]
     after

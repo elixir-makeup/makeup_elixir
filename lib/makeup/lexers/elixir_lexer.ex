@@ -257,12 +257,15 @@ defmodule Makeup.Lexers.ElixirLexer do
 
   sigils_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?a..?z], combinators_inside_string)
+      sigil(ldelim, rdelim, utf8_string([?a..?z], 1), combinators_inside_string)
     end
 
   sigils_no_interpol =
     for {ldelim, rdelim} <- sigil_delimiters do
-      sigil(ldelim, rdelim, [?A..?Z], [escape_delim(rdelim), iex_prompt_inside_string])
+      sigil(ldelim, rdelim, ascii_string([?A..?Z], min: 1), [
+        escape_delim(rdelim),
+        iex_prompt_inside_string
+      ])
     end
 
   all_sigils = sigils_interpol ++ sigils_no_interpol

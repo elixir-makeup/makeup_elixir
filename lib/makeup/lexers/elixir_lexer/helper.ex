@@ -15,8 +15,8 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
     string("\\" <> rdelim_first_char)
   end
 
-  def sigil(ldelim, rdelim, ranges, middle) do
-    left = string("~") |> utf8_char(ranges) |> string(ldelim)
+  def sigil(ldelim, rdelim, name, middle) do
+    left = string("~") |> concat(name) |> string(ldelim)
     right = string(rdelim)
 
     choices = middle ++ [utf8_char([])]
@@ -31,9 +31,9 @@ defmodule Makeup.Lexers.ElixirLexer.Helper do
   def build_sigil(rest, acc, context, line, offset) do
     type =
       case Enum.at(acc, -2) do
-        sigil when sigil in ~c"sScC" -> :string
-        sigil when sigil in ~c"rR" -> :string_regex
-        sigil when sigil in ~c"TDNU" -> :literal_date
+        sigil when sigil in ~w"s S c C" -> :string
+        sigil when sigil in ~w"r" -> :string_regex
+        sigil when sigil in ~w"T D N U" -> :literal_date
         _ -> :string_sigil
       end
 

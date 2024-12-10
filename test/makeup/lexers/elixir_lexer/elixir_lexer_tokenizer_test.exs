@@ -510,6 +510,10 @@ defmodule ElixirLexerTokenizerTestSnippet do
     assert lex("~U[2020-01-01 01:23:45Z]") == [{:literal_date, %{}, "~U[2020-01-01 01:23:45Z]"}]
   end
 
+  test "custom sigils" do
+    assert lex("~VEC[1 2.0 3]f64") == [{:string_sigil, %{}, "~VEC[1 2.0 3]f64"}]
+  end
+
   describe "strings and sigils" do
     test "unicode codepoints" do
       assert lex(~S["\u0000"]) == [

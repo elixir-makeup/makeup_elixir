@@ -13,7 +13,10 @@ defmodule MakeupElixir.Mixfile do
       deps: deps(),
       package: package(),
       description: description(),
-      aliases: aliases()
+      aliases: aliases(),
+      test_ignore_filters: [
+        &String.starts_with?(&1, "test/generators/")
+      ]
     ]
   end
 

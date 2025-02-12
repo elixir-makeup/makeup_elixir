@@ -20,5 +20,29 @@ defmodule ElixirLexerSigilLexerTest do
     after
       Application.put_env(:makeup_elixir, :sigil_lexers, %{})
     end
+
+    test "does not lex inside iex prompts" do
+      # does not exist, but should also not be invoked
+      Makeup.Lexers.ElixirLexer.register_sigil_lexer("PY", DoesNotExist, foo: :bar)
+
+      # if it tried to use the sigil lexer, it would crash
+      assert lex("""
+             iex> import Pythonx
+             iex> x = 1
+             iex> ~PY\"""
+             ...> y = 10
+             ...> x + y
+             ...> \"""
+             #Pythonx.Object<
+               11
+             >
+             iex> x
+             1
+             iex> y
+             #Pythonx.Object<
+               10
+             >
+             """)
+    end
   end
 end

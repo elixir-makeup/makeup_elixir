@@ -506,6 +506,20 @@ defmodule Makeup.Lexers.ElixirLexer do
     do: [{:comment, attrs, text} | postprocess_helper(tokens)]
 
   # Custom sigil lexers
+  # special case: sigil inside iex prompt
+  defp postprocess_helper([
+         {:generic_prompt, %{language: :elixir}, ["iex" | _]} = first,
+         # in the iex case, we don't get the whole sigil content in one token
+         {:string_sigil, _, ["~", _sigil_char, _separator]} = second | rest
+       ]) do
+    # we don't handle this case, because it would require some special inside
+    # and outside lexing, similar to what makeup_eex is doing
+    {extra_tokens, [end_sigil | rest]} =
+      Enum.split_while(rest, fn token -> not match?({:string_sigil, _, _}, token) end)
+
+    [first, second | extra_tokens ++ [end_sigil | postprocess_helper(rest)]]
+  end
+
   defp postprocess_helper([{:string_sigil, attrs, content} | tokens]) do
     # content is a list of the format ["~", sigil_char, separator, ... sigil_content ..., end_separator]
     sigil =

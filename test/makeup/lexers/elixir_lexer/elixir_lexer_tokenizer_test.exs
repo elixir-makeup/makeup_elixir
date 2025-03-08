@@ -553,13 +553,17 @@ defmodule ElixirLexerTokenizerTestSnippet do
              {:operator, %{}, "="},
              {:whitespace, %{}, " "},
              {:string, %{}, "\""},
-             {:generic_prompt, %{selectable: false}, "\n...> "},
+             {:generic_prompt, %{selectable: true}, "\n"},
+             {:generic_prompt, %{selectable: false}, "...> "},
              {:string, %{}, "ine1"},
-             {:generic_prompt, %{selectable: false}, "\n...> "},
+             {:generic_prompt, %{selectable: true}, "\n"},
+             {:generic_prompt, %{selectable: false}, "...> "},
              {:string, %{}, "line2"},
-             {:generic_prompt, %{selectable: false}, "\n...> "},
+             {:generic_prompt, %{selectable: true}, "\n"},
+             {:generic_prompt, %{selectable: false}, "...> "},
              {:string, %{}, "ilne3"},
-             {:generic_prompt, %{selectable: false}, "\n...> "},
+             {:generic_prompt, %{selectable: true}, "\n"},
+             {:generic_prompt, %{selectable: false}, "...> "},
              {:string, %{}, "\""},
              {:whitespace, %{}, "\n"}
            ]
@@ -578,7 +582,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
         '''
 
         first_prompt = "iex#{prompt_number}> "
-        other_prompt = "\n...#{prompt_number}> "
+        other_prompt = "...#{prompt_number}> "
 
         assert [
                  {:generic_prompt, %{selectable: false}, ^first_prompt},
@@ -587,12 +591,16 @@ defmodule ElixirLexerTokenizerTestSnippet do
                  {:operator, %{}, "="},
                  {:whitespace, %{}, " "},
                  {ttype, %{}, ^ldelim},
+                 {:generic_prompt, %{selectable: true}, "\n"},
                  {:generic_prompt, %{selectable: false}, ^other_prompt},
                  {ttype, %{}, "line1"},
+                 {:generic_prompt, %{selectable: true}, "\n"},
                  {:generic_prompt, %{selectable: false}, ^other_prompt},
                  {ttype, %{}, "line2"},
+                 {:generic_prompt, %{selectable: true}, "\n"},
                  {:generic_prompt, %{selectable: false}, ^other_prompt},
                  {ttype, %{}, "line3"},
+                 {:generic_prompt, %{selectable: true}, "\n"},
                  {:generic_prompt, %{selectable: false}, ^other_prompt},
                  {ttype, %{}, ^rdelim},
                  {:whitespace, %{}, "\n"}
@@ -618,7 +626,7 @@ defmodule ElixirLexerTokenizerTestSnippet do
           '''
 
           first_prompt = "iex#{prompt_number}> "
-          other_prompt = "\n...#{prompt_number}> "
+          other_prompt = "...#{prompt_number}> "
 
           sigil_start = sigil_prefix <> ldelim
 
@@ -629,12 +637,16 @@ defmodule ElixirLexerTokenizerTestSnippet do
                    {:operator, %{}, "="},
                    {:whitespace, %{}, " "},
                    {ttype, %{}, ^sigil_start},
+                   {:generic_prompt, %{selectable: true}, "\n"},
                    {:generic_prompt, %{selectable: false}, ^other_prompt},
                    {ttype, %{}, "line1"},
+                   {:generic_prompt, %{selectable: true}, "\n"},
                    {:generic_prompt, %{selectable: false}, ^other_prompt},
                    {ttype, %{}, "line2"},
+                   {:generic_prompt, %{selectable: true}, "\n"},
                    {:generic_prompt, %{selectable: false}, ^other_prompt},
                    {ttype, %{}, "line3"},
+                   {:generic_prompt, %{selectable: true}, "\n"},
                    {:generic_prompt, %{selectable: false}, ^other_prompt},
                    {ttype, %{}, ^rdelim},
                    {:whitespace, %{}, "\n"}

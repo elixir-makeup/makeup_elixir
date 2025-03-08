@@ -520,6 +520,17 @@ defmodule Makeup.Lexers.ElixirLexer do
     [first, second | extra_tokens ++ [end_sigil | postprocess_helper(rest)]]
   end
 
+  # When parsing a ...> from a string we need to ensure that the newline is still selectable
+  defp postprocess_helper([
+         {:generic_prompt, %{language: :elixir} = meta, ["\n..." | rest_text]}
+         | rest
+       ]) do
+    newline = {:generic_prompt, %{language: :elixir, selectable: true}, ["\n"]}
+    # Remove the \n from the ...> prompt
+    first = {:generic_prompt, meta, ["..." | rest_text]}
+    [newline, first | postprocess_helper(rest)]
+  end
+
   defp postprocess_helper([{:string_sigil, attrs, content} | tokens]) do
     # content is a list of the format ["~", sigil_char, separator, ... sigil_content ..., end_separator]
     sigil =

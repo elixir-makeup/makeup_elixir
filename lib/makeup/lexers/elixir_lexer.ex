@@ -531,8 +531,11 @@ defmodule Makeup.Lexers.ElixirLexer do
     [newline, first | postprocess_helper(rest)]
   end
 
-  defp postprocess_helper([{:string_sigil, attrs, content} | tokens]) do
-    # content is a list of the format ["~", sigil_char, separator, ... sigil_content ..., end_separator]
+  defp postprocess_helper([{:string_sigil, attrs, ["~" | _] = content} | tokens]) do
+    # content is a list of the format ["~", sigil_char, separator, ... sigil_content ..., end_separator].
+    # A sigil containing interpolation is split into multiple :string_sigil tokens,
+    # of which only the first starts with "~"; the rest are plain sigil content
+    # and fall through to the catch-all clause.
     sigil =
       content
       |> Enum.at(1)

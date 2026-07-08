@@ -21,6 +21,29 @@ defmodule ElixirLexerSigilLexerTest do
       Application.put_env(:makeup_elixir, :sigil_lexers, %{})
     end
 
+    test "does not treat continuation tokens of interpolated sigils as sigils" do
+      defmodule PassthroughLexer do
+        def lex(input, opts) do
+          [{:keyword, %{opts: opts}, input}]
+        end
+      end
+
+      Makeup.Lexers.ElixirLexer.register_sigil_lexer("H", PassthroughLexer)
+
+      # A sigil containing interpolation is split into multiple :string_sigil
+      # tokens. The `H` at index 1 of the continuation token `/HEAD"` must not
+      # be mistaken for a ~H sigil.
+      assert lex(~S[~w"refs/remotes/#{remote}/HEAD"]) == [
+               {:string_sigil, %{}, "~w\"refs/remotes/"},
+               {:string_interpol, %{group_id: "group-1"}, "\#{"},
+               {:name, %{}, "remote"},
+               {:string_interpol, %{group_id: "group-1"}, "}"},
+               {:string_sigil, %{}, "/HEAD\""}
+             ]
+    after
+      Application.put_env(:makeup_elixir, :sigil_lexers, %{})
+    end
+
     test "does not lex inside iex prompts" do
       # does not exist, but should also not be invoked
       Makeup.Lexers.ElixirLexer.register_sigil_lexer("PY", DoesNotExist, foo: :bar)
